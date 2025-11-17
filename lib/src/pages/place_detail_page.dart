@@ -11,25 +11,36 @@ class PlaceDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(place.name), actions: [
-        Consumer<FavoritesProvider>(builder: (ctx, favs, _) {
-          final isFav = favs.isFavorite(place.id);
-          return IconButton(
-            icon: Icon(isFav ? Icons.favorite : Icons.favorite_border, color: isFav ? Colors.red : null),
-            onPressed: () => favs.toggle(place.id),
-          );
-        })
-      ]),
+      appBar: AppBar(
+        title: Text(place.name),
+        actions: [
+          Consumer<FavoritesProvider>(
+            builder: (ctx, favs, _) {
+              final isFav = favs.isFavorite(place.id);
+              return IconButton(
+                icon: Icon(
+                  isFav ? Icons.favorite : Icons.favorite_border,
+                  color: isFav ? Colors.red : null,
+                ),
+                onPressed: () => favs.toggle(place.id),
+              );
+            },
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Image.network(
-              place.imageUrl,
-              height: 220,
-              fit: BoxFit.cover,
-              errorBuilder: (c, e, s) =>
-                  Container(height: 220, color: Colors.grey),
+            Hero(
+              tag: 'place_image_${place.id}',
+              child: Image.network(
+                place.imageUrl,
+                height: 220,
+                fit: BoxFit.cover,
+                errorBuilder: (c, e, s) =>
+                    Container(height: 220, color: Colors.grey),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),

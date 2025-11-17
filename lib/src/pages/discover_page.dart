@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../providers/places_provider.dart';
 import '../widgets/cards/place_card.dart';
+import '../theme/app_colors.dart';
 import 'place_detail_page.dart';
 
 class DiscoverPage extends StatelessWidget {
@@ -96,16 +97,26 @@ class DiscoverPage extends StatelessWidget {
                               builder: (_) => PlaceDetailPage(place: p),
                             ),
                           ),
-                          child: ClipRRect(
+                          child: Material(
+                            elevation: 8,
                             borderRadius: BorderRadius.circular(12),
+                            clipBehavior: Clip.hardEdge,
                             child: Stack(
                               fit: StackFit.expand,
                               children: [
                                 Image.network(
                                   p.imageUrl,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) =>
-                                      Container(color: Colors.grey),
+                                  errorBuilder: (_, __, ___) => Container(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.surface,
+                                  ),
+                                ),
+                                Container(
+                                  decoration: const BoxDecoration(
+                                    gradient: AppColors.overlayGradient,
+                                  ),
                                 ),
                                 Positioned(
                                   left: 12,
@@ -114,7 +125,7 @@ class DiscoverPage extends StatelessWidget {
                                   child: Container(
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
-                                      color: Colors.black54,
+                                      color: Colors.black26,
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Column(
@@ -124,10 +135,17 @@ class DiscoverPage extends StatelessWidget {
                                       children: [
                                         Text(
                                           p.name,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
+                                            shadows: [
+                                              Shadow(
+                                                blurRadius: 6,
+                                                color: Colors.black45,
+                                                offset: Offset(0, 2),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                         Text(

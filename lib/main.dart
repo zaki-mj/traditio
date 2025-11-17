@@ -8,7 +8,7 @@ import 'src/providers/favorites_provider.dart';
 import 'src/theme/app_theme.dart';
 import 'src/l10n/app_localizations.dart';
 import 'src/pages/welcome_page.dart';
-import 'src/pages/discover_page.dart';
+import 'src/pages/discover_shell.dart';
 import 'src/pages/admin_login_page.dart';
 import 'src/pages/settings_page.dart';
 
@@ -47,7 +47,7 @@ class MainApp extends StatelessWidget {
             initialRoute: '/',
             routes: {
               '/': (_) => const WelcomePage(),
-              '/discover': (_) => const DiscoverPage(),
+              '/discover': (_) => const DiscoverShell(),
               '/admin': (_) => const AdminLoginPage(),
               '/settings': (_) => const SettingsPage(),
             },

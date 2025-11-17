@@ -2,95 +2,176 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/place.dart';
 import '../../providers/favorites_provider.dart';
+import '../../theme/app_colors.dart';
 
 class PlaceCard extends StatelessWidget {
   final Place place;
   final VoidCallback? onTap;
+  final bool enableHero;
 
-  const PlaceCard({super.key, required this.place, this.onTap});
+  const PlaceCard({
+    super.key,
+    required this.place,
+    this.onTap,
+    this.enableHero = true,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final sec = theme.colorScheme.secondary;
+    final onSurface = theme.colorScheme.onSurface;
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
+      elevation: 8,
       clipBehavior: Clip.hardEdge,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: InkWell(
         onTap: onTap,
-        child: Row(
-          children: [
-            Stack(
-              children: [
-                AspectRatio(
-                  aspectRatio: 4 / 3,
-                  child: Image.network(
-                    place.imageUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (ctx, err, st) =>
-                        Container(color: Colors.grey[300]),
-                  ),
-                ),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Consumer<FavoritesProvider>(
-                    builder: (ctx, favs, _) {
-                      final isFav = favs.isFavorite(place.id);
-                      return CircleAvatar(
-                        backgroundColor: Colors.white70,
-                        child: IconButton(
-                          icon: Icon(
-                            isFav ? Icons.favorite : Icons.favorite_border,
-                            color: isFav ? Colors.red : Colors.black87,
-                          ),
-                          onPressed: () {
-                            favs.toggle(place.id);
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        child: SizedBox(
+          height: 140,
+          child: Row(
+            children: [
+              Expanded(
+                flex: 4,
+                child: Stack(
+                  fit: StackFit.expand,
                   children: [
-                    Text(
-                      place.name,
-                      style: Theme.of(context).textTheme.titleMedium,
+                    if (enableHero)
+                      Hero(
+                        tag: 'place_image_${place.id}',
+                        child: Image.network(
+                          place.imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) =>
+                              Container(color: Colors.grey[300]),
+                        ),
+                      )
+                    else
+                      Image.network(
+                        place.imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) =>
+                            Container(color: Colors.grey[300]),
+                      ),
+                    Container(
+                      decoration: const BoxDecoration(
+                        gradient: AppColors.overlayGradient,
+                      ),
                     ),
-                    const SizedBox(height: 6),
-                    Text(
-                      '${place.location} • ${place.type}',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            place.description,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                    Positioned(
+                      left: 12,
+                      bottom: 12,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            place.name,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Chip(
-                          label: Text(place.rating.toString()),
-                          backgroundColor: Colors.amber[700],
-                        ),
-                      ],
+                          const SizedBox(height: 4),
+                          Text(
+                            '${place.location} • ${place.type}',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: Colors.white70,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Consumer<FavoritesProvider>(
+                        builder: (ctx, favs, _) {
+                          final isFav = favs.isFavorite(place.id);
+                          return Material(
+                            color: Colors.black26,
+                            shape: const CircleBorder(),
+                            child: InkWell(
+                              customBorder: const CircleBorder(),
+                              onTap: () => favs.toggle(place.id),
+                              child: Padding(
+                                padding: const EdgeInsets.all(6.0),
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 300),
+                                  transitionBuilder: (child, anim) =>
+                                      ScaleTransition(
+                                        scale: anim,
+                                        child: child,
+                                      ),
+                                  child: Icon(
+                                    isFav
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    key: ValueKey<bool>(isFav),
+                                    color: isFav
+                                        ? theme.colorScheme.secondary
+                                        : Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
+              Expanded(
+                flex: 6,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(place.name, style: theme.textTheme.titleMedium),
+                      const SizedBox(height: 6),
+                      Text(
+                        '${place.location} • ${place.type}',
+                        style: theme.textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 8),
+                      Expanded(
+                        child: Text(
+                          place.description,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Chip(
+                            label: Text(place.rating.toString()),
+                            backgroundColor: Color.fromARGB(
+                              (0.9 * 255).round(),
+                              (sec.r * 255.0).round() & 0xff,
+                              (sec.g * 255.0).round() & 0xff,
+                              (sec.b * 255.0).round() & 0xff,
+                            ),
+                          ),
+                          Icon(
+                            Icons.chevron_right,
+                            color: Color.fromARGB(
+                              (0.6 * 255).round(),
+                              (onSurface.r * 255.0).round() & 0xff,
+                              (onSurface.g * 255.0).round() & 0xff,
+                              (onSurface.b * 255.0).round() & 0xff,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
