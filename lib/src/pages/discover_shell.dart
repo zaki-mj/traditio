@@ -28,7 +28,10 @@ class _DiscoverShellState extends State<DiscoverShell> {
         onTap: (i) => setState(() => _index = i),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Categories'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.category),
+            label: 'Categories',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             label: 'Favorites',

@@ -15,7 +15,9 @@ class HomePage extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: false,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       backgroundColor: theme.scaffoldBackgroundColor,
       builder: (ctx) {
         return SingleChildScrollView(
@@ -37,12 +39,7 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // Title
-                Text(
-                  'Refine Your Search',
-                  style: theme.textTheme.titleLarge,
-                ),
-                const SizedBox(height: 20),
+
                 // Search field
                 TextField(
                   decoration: InputDecoration(
@@ -50,11 +47,15 @@ class HomePage extends StatelessWidget {
                     hintText: 'Search places, cuisine, etc...',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: theme.colorScheme.primary.withAlpha(100)),
+                      borderSide: BorderSide(
+                        color: theme.colorScheme.primary.withAlpha(100),
+                      ),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: theme.colorScheme.primary.withAlpha(100)),
+                      borderSide: BorderSide(
+                        color: theme.colorScheme.primary.withAlpha(100),
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -67,10 +68,7 @@ class HomePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 // Type filters
-                Text(
-                  'Category',
-                  style: theme.textTheme.titleMedium,
-                ),
+                Text('Category', style: theme.textTheme.titleMedium),
                 const SizedBox(height: 12),
                 GridView.count(
                   crossAxisCount: 2,
@@ -86,18 +84,26 @@ class HomePage extends StatelessWidget {
                       child: Container(
                         decoration: BoxDecoration(
                           border: Border.all(
-                            color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface.withAlpha(50),
+                            color: isSelected
+                                ? theme.colorScheme.primary
+                                : theme.colorScheme.onSurface.withAlpha(50),
                             width: isSelected ? 2 : 1,
                           ),
                           borderRadius: BorderRadius.circular(10),
-                          color: isSelected ? theme.colorScheme.primary.withAlpha(30) : Colors.transparent,
+                          color: isSelected
+                              ? theme.colorScheme.primary.withAlpha(30)
+                              : Colors.transparent,
                         ),
                         child: Center(
                           child: Text(
                             t,
                             style: TextStyle(
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                              color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              color: isSelected
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.onSurface,
                             ),
                           ),
                         ),
@@ -107,14 +113,13 @@ class HomePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 // Location filter
-                Text(
-                  'Location',
-                  style: theme.textTheme.titleMedium,
-                ),
+                Text('Location', style: theme.textTheme.titleMedium),
                 const SizedBox(height: 12),
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: theme.colorScheme.primary.withAlpha(100)),
+                    border: Border.all(
+                      color: theme.colorScheme.primary.withAlpha(100),
+                    ),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -122,7 +127,9 @@ class HomePage extends StatelessWidget {
                     isExpanded: true,
                     underline: const SizedBox(),
                     value: prov.currentLocation,
-                    items: prov.availableLocations.map((l) => DropdownMenuItem(value: l, child: Text(l))).toList(),
+                    items: prov.availableLocations
+                        .map((l) => DropdownMenuItem(value: l, child: Text(l)))
+                        .toList(),
                     onChanged: (v) => prov.setLocation(v ?? 'All'),
                   ),
                 ),
@@ -131,7 +138,7 @@ class HomePage extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: OutlinedButton(
+                      child: ElevatedButton(
                         onPressed: () {
                           prov.setSearchQuery('');
                           for (var t in types) {
@@ -143,7 +150,9 @@ class HomePage extends StatelessWidget {
                         },
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
                         child: const Text('Clear Filters'),
                       ),
@@ -153,8 +162,12 @@ class HomePage extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () => Navigator.pop(ctx),
                         style: ElevatedButton.styleFrom(
+                          foregroundColor: theme.colorScheme.surface,
+                          backgroundColor: theme.colorScheme.primary,
                           padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
                         child: const Text('Search'),
                       ),

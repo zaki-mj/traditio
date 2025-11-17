@@ -13,9 +13,21 @@ class CategoriesPage extends StatelessWidget {
     final prov = context.watch<PlacesProvider>();
 
     final categories = [
-      {'type': 'hotel', 'icon': Icons.hotel, 'label': loc.translate('type_hotel')},
-      {'type': 'restaurant', 'icon': Icons.restaurant, 'label': loc.translate('type_restaurant')},
-      {'type': 'attraction', 'icon': Icons.landscape, 'label': loc.translate('type_attraction')},
+      {
+        'type': 'hotel',
+        'icon': Icons.hotel,
+        'label': loc.translate('type_hotel'),
+      },
+      {
+        'type': 'restaurant',
+        'icon': Icons.restaurant,
+        'label': loc.translate('type_restaurant'),
+      },
+      {
+        'type': 'attraction',
+        'icon': Icons.landscape,
+        'label': loc.translate('type_attraction'),
+      },
     ];
 
     final counts = {
@@ -49,11 +61,15 @@ class CategoriesPage extends StatelessWidget {
                 if (!prov.isTypeSelected(type)) {
                   prov.toggleType(type);
                 }
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ExplorePage()));
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (_) => const ExplorePage()));
               },
               child: Card(
                 elevation: 8,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
@@ -73,19 +89,27 @@ class CategoriesPage extends StatelessWidget {
                       const SizedBox(height: 16),
                       Text(
                         label,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium?.copyWith(color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white24,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
                           '$count items',
-                          style: const TextStyle(color: Colors.white, fontSize: 12),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
                         ),
                       ),
                     ],
