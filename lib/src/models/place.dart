@@ -6,6 +6,12 @@ class Place {
   final String location; // city or area
   final String imageUrl;
   final double rating;
+  final String? phone;
+  final String? email;
+  final String? address;
+  final String? facebookUrl;
+  final String? instagramUrl;
+  final String? twitterUrl;
 
   const Place({
     required this.id,
@@ -15,5 +21,11 @@ class Place {
     required this.location,
     required this.imageUrl,
     required this.rating,
+    this.phone,
+    this.email,
+    this.address,
+    this.facebookUrl,
+    this.instagramUrl,
+    this.twitterUrl,
   });
 }

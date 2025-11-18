@@ -5,11 +5,13 @@ import 'src/providers/theme_provider.dart';
 import 'src/providers/locale_provider.dart';
 import 'src/providers/places_provider.dart';
 import 'src/providers/favorites_provider.dart';
+import 'src/providers/admin_provider.dart';
 import 'src/theme/app_theme.dart';
 import 'src/l10n/app_localizations.dart';
 import 'src/pages/welcome_page.dart';
 import 'src/pages/discover_shell.dart';
 import 'src/pages/admin_login_page.dart';
+import 'src/pages/admin_shell.dart';
 import 'src/pages/settings_page.dart';
 
 void main() {
@@ -27,6 +29,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
         ChangeNotifierProvider(create: (_) => PlacesProvider()),
         ChangeNotifierProvider(create: (_) => FavoritesProvider()),
+        ChangeNotifierProvider(create: (_) => AdminProvider()),
       ],
       child: Consumer2<ThemeProvider, LocaleProvider>(
         builder: (context, themeProv, localeProv, _) {
@@ -49,6 +52,7 @@ class MainApp extends StatelessWidget {
               '/': (_) => const WelcomePage(),
               '/discover': (_) => const DiscoverShell(),
               '/admin': (_) => const AdminLoginPage(),
+              '/admin-dashboard': (_) => const AdminShell(),
               '/settings': (_) => const SettingsPage(),
             },
           );

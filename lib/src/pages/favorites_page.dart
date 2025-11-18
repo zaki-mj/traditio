@@ -26,7 +26,6 @@ class FavoritesPage extends StatelessWidget {
         .toList();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Favorites')),
       body: favPlaces.isEmpty
           ? const Center(child: Text('No favorites yet'))
           : ListView.builder(

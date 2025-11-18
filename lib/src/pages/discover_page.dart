@@ -13,15 +13,6 @@ class DiscoverPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = AppLocalizations(Localizations.localeOf(context));
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loc.translate('discover_page')),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () => Navigator.of(context).pushNamed('/settings'),
-          ),
-        ],
-      ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Consumer<PlacesProvider>(

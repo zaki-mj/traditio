@@ -28,16 +28,27 @@ class CategoriesPage extends StatelessWidget {
         'icon': Icons.landscape,
         'label': loc.translate('type_attraction'),
       },
+      {
+        'type': 'store',
+        'icon': Icons.shopping_bag,
+        'label': loc.translate('type_store'),
+      },
+      {
+        'type': 'other',
+        'icon': Icons.more_horiz,
+        'label': loc.translate('type_other'),
+      },
     ];
 
     final counts = {
       'hotel': prov.allPlaces.where((p) => p.type == 'hotel').length,
       'restaurant': prov.allPlaces.where((p) => p.type == 'restaurant').length,
       'attraction': prov.allPlaces.where((p) => p.type == 'attraction').length,
+      'store': prov.allPlaces.where((p) => p.type == 'store').length,
+      'other': prov.allPlaces.where((p) => p.type == 'other').length,
     };
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Categories')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: GridView.count(
@@ -53,7 +64,13 @@ class CategoriesPage extends StatelessWidget {
             return GestureDetector(
               onTap: () {
                 prov.setSearchQuery('');
-                for (var t in ['hotel', 'restaurant', 'attraction']) {
+                for (var t in [
+                  'hotel',
+                  'restaurant',
+                  'attraction',
+                  'store',
+                  'other',
+                ]) {
                   if (prov.isTypeSelected(t) && t != type) {
                     prov.toggleType(t);
                   }

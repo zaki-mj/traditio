@@ -15,4 +15,9 @@ class FavoritesProvider extends ChangeNotifier {
   }
 
   List<String> get allFavorites => _fav.toList(growable: false);
+
+  void clearAll() {
+    _fav.clear();
+    notifyListeners();
+  }
 }

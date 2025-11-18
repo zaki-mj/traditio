@@ -10,7 +10,7 @@ class HomePage extends StatelessWidget {
 
   void _openSearchFilters(BuildContext context) {
     final prov = context.read<PlacesProvider>();
-    final types = ['hotel', 'restaurant', 'attraction'];
+    final types = ['hotel', 'restaurant', 'attraction', 'store', 'other'];
     final theme = Theme.of(context);
     showModalBottomSheet(
       context: context,
@@ -187,7 +187,6 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = AppLocalizations(Localizations.localeOf(context));
     return Scaffold(
-      appBar: AppBar(title: Text(loc.translate('app_title'))),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Consumer<PlacesProvider>(
