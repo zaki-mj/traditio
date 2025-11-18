@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/app_colors.dart';
+import '../../pages/about_page.dart';
 
 class SharedMenuDrawer extends StatelessWidget {
   final bool isAdmin;
@@ -76,7 +77,9 @@ class SharedMenuDrawer extends StatelessWidget {
                   title: Text(loc.translate('about_us')),
                   onTap: () {
                     Navigator.pop(context);
-                    _showAboutDialog(context, theme, loc);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const AboutPage()),
+                    );
                   },
                 ),
               ],
@@ -99,32 +102,6 @@ class SharedMenuDrawer extends StatelessWidget {
                 ),
               ),
             ),
-        ],
-      ),
-    );
-  }
-
-  void _showAboutDialog(
-    BuildContext context,
-    ThemeData theme,
-    AppLocalizations loc,
-  ) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('About Traditio'),
-        content: const SingleChildScrollView(
-          child: Text(
-            'Traditio is a traditional touristic discovery app designed to help you explore '
-            'authentic places, hotels, restaurants, and attractions. '
-            '\n\nVersion 1.0.0\n\n© 2025 All Rights Reserved',
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Close'),
-          ),
         ],
       ),
     );

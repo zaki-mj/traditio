@@ -34,15 +34,6 @@ class SettingsPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      loc.translate('settings'),
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
                     // Theme Toggle
                     Consumer<ThemeProvider>(
                       builder: (context, themeProvider, _) => SwitchListTile(
@@ -182,48 +173,6 @@ class SettingsPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-
-            // App Info Section
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'About Traditio',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    ListTile(
-                      leading: Icon(Icons.info, color: AppColors.primary),
-                      title: const Text('Version'),
-                      subtitle: const Text('1.0.0'),
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.business, color: AppColors.primary),
-                      title: const Text('Developer'),
-                      subtitle: const Text('Traditio Team'),
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.copyright, color: AppColors.primary),
-                      title: const Text('Copyright'),
-                      subtitle: const Text('© 2025 All Rights Reserved'),
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                  ],
-                ),
-              ),
-            ),
             const SizedBox(height: 32),
           ],
         ),

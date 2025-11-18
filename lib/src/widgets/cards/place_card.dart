@@ -19,8 +19,6 @@ class PlaceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final sec = theme.colorScheme.secondary;
-    final onSurface = theme.colorScheme.onSurface;
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
       elevation: 8,
@@ -65,13 +63,6 @@ class PlaceCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            place.name,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
                           Text(
                             '${place.location} • ${place.type}',
                             style: theme.textTheme.bodySmall?.copyWith(
@@ -130,11 +121,7 @@ class PlaceCard extends StatelessWidget {
                     children: [
                       Text(place.name, style: theme.textTheme.titleMedium),
                       const SizedBox(height: 6),
-                      Text(
-                        '${place.location} • ${place.type}',
-                        style: theme.textTheme.bodySmall,
-                      ),
-                      const SizedBox(height: 8),
+
                       Expanded(
                         child: Text(
                           place.description,
@@ -148,22 +135,9 @@ class PlaceCard extends StatelessWidget {
                         children: [
                           Chip(
                             label: Text(place.rating.toString()),
-                            backgroundColor: Color.fromARGB(
-                              (0.9 * 255).round(),
-                              (sec.r * 255.0).round() & 0xff,
-                              (sec.g * 255.0).round() & 0xff,
-                              (sec.b * 255.0).round() & 0xff,
-                            ),
+                            backgroundColor: theme.primaryColor,
                           ),
-                          Icon(
-                            Icons.chevron_right,
-                            color: Color.fromARGB(
-                              (0.6 * 255).round(),
-                              (onSurface.r * 255.0).round() & 0xff,
-                              (onSurface.g * 255.0).round() & 0xff,
-                              (onSurface.b * 255.0).round() & 0xff,
-                            ),
-                          ),
+                          Icon(Icons.chevron_right, color: theme.hintColor),
                         ],
                       ),
                     ],

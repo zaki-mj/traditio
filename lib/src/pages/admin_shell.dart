@@ -23,6 +23,7 @@ class _AdminShellState extends State<AdminShell> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations(Localizations.localeOf(context));
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -39,34 +40,96 @@ class _AdminShellState extends State<AdminShell> {
         },
       ),
       body: SafeArea(child: _pages[_index]),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (_) => const PlaceFormPage()));
-        },
-        child: const Icon(Icons.add),
+      // Use a sized FAB so the notch matches its diameter
+      floatingActionButton: SizedBox(
+        width: 64,
+        height: 64,
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const PlaceFormPage()));
+          },
+          shape: const CircleBorder(),
+          child: const Icon(Icons.add, size: 28),
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
-        notchMargin: 8,
+        // use theme surface container color to stand out from scaffold background
+        color: theme.colorScheme.surfaceContainerHighest,
+        // notchMargin tuned for the 64x64 FAB
+        notchMargin: 10,
         shape: const CircularNotchedRectangle(),
-        child: BottomNavigationBar(
-          currentIndex: _index,
-          onTap: (i) => setState(() => _index = i),
-          selectedItemColor: Theme.of(context).colorScheme.primary,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          items: [
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.dashboard),
-              label: loc.translate('dashboard'),
-            ),
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.list),
-              label: loc.translate('places'),
-            ),
-          ],
+        elevation: 12,
+  shadowColor: Colors.black.withValues(alpha: 0.25),
+
+        child: SizedBox(
+          height: 72,
+          child: Row(
+            children: [
+              // Dashboard item
+              Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => setState(() => _index = 0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.dashboard,
+                        color: _index == 0
+                            ? theme.colorScheme.primary
+                            : theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        loc.translate('dashboard'),
+                        style: TextStyle(
+                          fontSize: 12,
+              color: _index == 0
+                ? theme.colorScheme.primary
+                : theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Spacer for FAB notch (center)
+              const SizedBox(width: 8),
+
+              // Places item
+              Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => setState(() => _index = 1),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.list,
+            color: _index == 1
+              ? theme.colorScheme.primary
+              : theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        loc.translate('places'),
+                        style: TextStyle(
+                          fontSize: 12,
+              color: _index == 1
+                ? theme.colorScheme.primary
+                : theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
