@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart';
 import '../providers/favorites_provider.dart';
 import '../providers/places_provider.dart';
 import '../widgets/cards/place_card.dart';
@@ -27,7 +28,13 @@ class FavoritesPage extends StatelessWidget {
 
     return Scaffold(
       body: favPlaces.isEmpty
-          ? const Center(child: Text('No favorites yet'))
+          ? Center(
+              child: Text(
+                AppLocalizations(
+                  Localizations.localeOf(context),
+                ).translate('no_favorites_yet'),
+              ),
+            )
           : ListView.builder(
               itemCount: favPlaces.length,
               itemBuilder: (ctx, i) => PlaceCard(

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class LocaleProvider extends ChangeNotifier {
-  Locale _locale = const Locale('en');
+  // Default to Arabic as the main app language
+  Locale _locale = const Locale('ar');
 
   Locale get locale => _locale;
 

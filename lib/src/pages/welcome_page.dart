@@ -73,7 +73,7 @@ class WelcomePage extends StatelessWidget {
                 // Description
                 Center(
                   child: Text(
-                    'Discover traditional touristic places: hotels, restaurants and more.',
+                    loc.translate('welcome_description'),
                     style: theme.textTheme.bodyLarge?.copyWith(
                       color: Colors.white.withAlpha(200),
                     ),

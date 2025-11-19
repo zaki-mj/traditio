@@ -33,6 +33,7 @@ class _DiscoverShellState extends State<DiscoverShell> {
       drawer: const SharedMenuDrawer(isAdmin: false),
       body: SafeArea(child: _pages[_index]),
       bottomNavigationBar: BottomNavigationBar(
+        
         currentIndex: _index,
         onTap: (i) => setState(() => _index = i),
         selectedItemColor: Theme.of(context).colorScheme.primary,

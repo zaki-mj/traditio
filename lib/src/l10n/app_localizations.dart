@@ -9,8 +9,8 @@ class AppLocalizations {
 
   static const Map<String, Map<String, String>> _translations = {
     'en': {
-      'app_title': 'Traditio',
-      'welcome': 'Welcome to Traditio',
+      'app_title': 'Traditional Gems',
+      'welcome': 'Welcome to Traditional Gems',
       'start_discovering': 'Start Discovering',
       'admin_login': 'Admin Login',
       'discover_page': 'Discover',
@@ -65,9 +65,9 @@ class AppLocalizations {
       'email': 'Email',
       'about': 'About',
       'slogan': 'Discover traditional places in Algeria',
-      'about_title': 'About Traditio',
+      'about_title': 'About Traditional Gems',
       'about_description':
-          'Traditio is an app dedicated to discovering and exploring traditional and cultural places across Algeria. Our mission is to help you find authentic experiences and preserve cultural heritage.',
+          'Traditional Gems is an app dedicated to discovering and exploring traditional and cultural places across Algeria. Our mission is to help you find authentic experiences and preserve cultural heritage.',
       'technical_details': 'Technical Details',
       'app_version': 'Version',
       'app_version_number': '0.4.1',
@@ -77,10 +77,51 @@ class AppLocalizations {
       'medjdoub_hadjirat': 'Medjdoub Hadjirat',
       'developed_by': 'Developed By',
       'medjdoub_zakaria': 'Medjdoub Zakaria',
+      'login_title': 'Admin Login',
+      'password': 'Password',
+      'login_button': 'Login',
+      'welcome_description':
+          'Discover traditional touristic places: hotels, restaurants and more.',
+      'forgot_password': 'Forgot password?',
+      'contact_developer': 'Please contact the developer',
+      'switch_to_light_mode': 'Switch to light mode',
+      'switch_to_dark_mode': 'Switch to dark mode',
+      'reset_filters_description':
+          'Reset all search filters and preferences to default.',
+      'filters_cleared_successfully': 'Filters cleared successfully',
+      'please_fill_required_fields': 'Please fill in all required fields',
+      'place_created_successfully': 'Place created successfully!',
+      'place_updated_successfully': 'Place updated successfully!',
+      'edit_place': 'Edit Place',
+      'create_place': 'Create Place',
+      'basic_information': 'Basic Information',
+      'name_label': 'Name *',
+      'description_label': 'Description *',
+      'type_label': 'Type *',
+      'link_not_available': 'Link not available',
+      'invalid_link': 'Invalid link',
+      'could_not_open_link': 'Could not open the link',
+      'failed_to_launch': 'Failed to launch: {error}',
+      'no_favorites_yet': 'No favorites yet',
+      'add_to_rec': 'Add to Recommended',
+      'added_to_recommended': '{name} added to recommended',
+      'delete_place': 'Delete Place',
+      'confirm_delete_place': 'Are you sure you want to delete "{name}"?',
+      'place_deleted': '{name} deleted',
+      'manage_recommended': 'Manage Recommended',
+      'stores': 'Stores',
+      'other': 'Other',
+      'location': 'Location',
+      'total': 'Total',
+      'recommended_list': 'Recommended List',
+      'drag_to_reorder': 'Drag to reorder',
+
+
     },
     'ar': {
-      'app_title': 'ترديتيو',
-      'welcome': 'مرحبا بك في ترديتيو',
+
+      'app_title': 'جواهر تقليدية',
+      'welcome': 'مرحبًا بك في جواهر تقليدية',
       'start_discovering': 'ابدأ الاكتشاف',
       'admin_login': 'دخول المسؤول',
       'discover_page': 'الاكتشاف',
@@ -135,9 +176,9 @@ class AppLocalizations {
       'email': 'بريد إلكتروني',
       'about': 'حول',
       'slogan': 'اكتشف الأماكن التقليدية في الجزائر',
-      'about_title': 'حول ترديتيو',
+      'about_title': 'حول جواهر تقليدية',
       'about_description':
-          'ترديتيو هو تطبيق مخصص لاكتشاف واستكشاف الأماكن التقليدية والثقافية عبر الجزائر. مهمتنا هي مساعدتك في العثور على تجارب أصلية والحفاظ على التراث الثقافي.',
+          'جواهر تقليدية هو تطبيق مخصص لاكتشاف واستكشاف الأماكن التقليدية والثقافية عبر الجزائر. مهمتنا هي مساعدتك في العثور على تجارب أصلية والحفاظ على التراث الثقافي.',
       'technical_details': 'التفاصيل التقنية',
       'app_version': 'الإصدار',
       'app_version_number': '0.4.1',
@@ -147,10 +188,51 @@ class AppLocalizations {
       'medjdoub_hadjirat': 'مجدوب حاجرات',
       'developed_by': 'تطوير',
       'medjdoub_zakaria': 'مجدوب زكريا',
+      'login_title': 'دخول المسؤول',
+      'password': 'كلمة المرور',
+      'login_button': 'دخول',
+      'welcome_description':
+          'اكتشف أماكن سياحية تقليدية: فنادق، مطاعم والمزيد.',
+      'forgot_password': 'هل نسيت كلمة المرور؟',
+      'contact_developer': 'يرجى الاتصال بالمطور',
+      'switch_to_light_mode': 'التبديل إلى الوضع النهاري',
+      'switch_to_dark_mode': 'التبديل إلى الوضع الليلي',
+      'reset_filters_description':
+          'إعادة جميع مرشحات البحث والتفضيلات إلى الافتراضي.',
+      'filters_cleared_successfully': 'تم مسح عوامل التصفية بنجاح',
+      'please_fill_required_fields': 'يرجى ملء جميع الحقول المطلوبة',
+      'place_created_successfully': 'تم إنشاء المكان بنجاح!',
+      'place_updated_successfully': 'تم تحديث المكان بنجاح!',
+      'edit_place': 'تعديل المكان',
+      'create_place': 'إنشاء مكان',
+      'basic_information': 'معلومات أساسية',
+      'name_label': 'الاسم *',
+      'description_label': 'الوصف *',
+      'type_label': 'النوع *',
+      'link_not_available': 'الرابط غير متوفر',
+      'invalid_link': 'رابط غير صالح',
+      'could_not_open_link': 'تعذر فتح الرابط',
+      'failed_to_launch': 'فشل في الفتح: {error}',
+      'no_favorites_yet': 'لا توجد مفضلات بعد',
+      'add_to_rec': 'أضف إلى الموصى به',
+      'added_to_recommended': 'تمت إضافة {name} إلى الموصى به',
+      'delete_place': 'حذف المكان',
+      'confirm_delete_place': 'هل أنت متأكد أنك تريد حذف "{name}"؟',
+      'place_deleted': 'تم حذف {name}',
+      'manage_recommended': 'إدارة الأماكن الموصى بها',
+  
+      'stores': 'متاجر',
+      'other': 'أخرى',
+      
+      'location': 'الموقع',
+      'recommended_list': 'قائمة الموصى بهم',
+      'drag_to_reorder': 'اسحب لإعادة الترتيب',
+
+      
     },
     'fr': {
-      'app_title': 'Traditio',
-      'welcome': 'Bienvenue à Traditio',
+      'app_title': 'Trésors Traditionnels',
+      'welcome': 'Bienvenue à Trésors Traditionnels',
       'start_discovering': 'Commencer à Découvrir',
       'admin_login': 'Connexion Admin',
       'discover_page': 'Découvrir',
@@ -201,9 +283,9 @@ class AppLocalizations {
       'email': 'E-mail',
       'about': 'À Propos',
       'slogan': 'Découvrez des lieux traditionnels en Algérie',
-      'about_title': 'À Propos de Traditio',
+      'about_title': 'À Propos de Trésors Traditionnels',
       'about_description':
-          'Traditio est une application dédiée à la découverte et l\'exploration des lieux traditionnels et culturels en Algérie. Notre mission est de vous aider à trouver des expériences authentiques et de préserver le patrimoine culturel.',
+          'Trésors Traditionnels est une application dédiée à la découverte et l\'exploration des lieux traditionnels et culturels en Algérie. Notre mission est de vous aider à trouver des expériences authentiques et de préserver le patrimoine culturel.',
       'technical_details': 'Détails Techniques',
       'app_version': 'Version',
       'app_version_number': '0.4.1',
@@ -213,12 +295,43 @@ class AppLocalizations {
       'medjdoub_hadjirat': 'Medjdoub Hadjirat',
       'developed_by': 'Développé Par',
       'medjdoub_zakaria': 'Medjdoub Zakaria',
+      'login_title': 'Connexion Admin',
+      'password': 'Mot de Passe',
+      'login_button': 'Connexion',
+      'welcome_description':
+          'Découvrez des lieux touristiques traditionnels : hôtels, restaurants et plus.',
+      'forgot_password': 'Mot de passe oublié ?',
+      'contact_developer': 'Veuillez contacter le développeur',
+      'switch_to_light_mode': 'Basculer en mode clair',
+      'switch_to_dark_mode': 'Basculer en mode sombre',
+      'reset_filters_description':
+          'Réinitialiser tous les filtres de recherche et préférences par défaut.',
+      'filters_cleared_successfully': 'Filtres effacés avec succès',
+      'please_fill_required_fields': 'Veuillez remplir tous les champs requis',
+      'place_created_successfully': 'Lieu créé avec succès !',
+      'place_updated_successfully': 'Lieu mis à jour avec succès !',
+      'edit_place': 'Modifier le lieu',
+      'create_place': 'Créer un lieu',
+      'basic_information': 'Informations de base',
+      'name_label': 'Nom *',
+      'description_label': 'Description *',
+      'type_label': 'Type *',
+      'link_not_available': 'Lien non disponible',
+      'invalid_link': 'Lien invalide',
+      'could_not_open_link': 'Impossible d\'ouvrir le lien',
+      'failed_to_launch': 'Échec de l\'ouverture : {error}',
+      'no_favorites_yet': 'Pas de favoris pour le moment',
+      'add_to_rec': 'Ajouter aux recommandés',
+      'added_to_recommended': '{name} ajouté aux recommandés',
+      'delete_place': 'Supprimer le lieu',
+      'confirm_delete_place': 'Voulez-vous vraiment supprimer "{name}" ?',
+      'place_deleted': '{name} supprimé',
     },
   };
 
   String translate(String key) {
     return _translations[locale.languageCode]?[key] ??
-        _translations['en']?[key] ??
+        _translations['ar']?[key] ??
         key;
   }
 
@@ -226,8 +339,8 @@ class AppLocalizations {
       _AppLocalizationsDelegate();
 
   static List<Locale> get supportedLocales => const [
-    Locale('en'),
     Locale('ar'),
+    Locale('en'),
     Locale('fr'),
   ];
 }

@@ -135,7 +135,7 @@ class PlaceCard extends StatelessWidget {
                         children: [
                           Chip(
                             label: Text(place.rating.toString()),
-                            backgroundColor: theme.primaryColor,
+                            backgroundColor: theme.colorScheme.onPrimaryFixedVariant,
                           ),
                           Icon(Icons.chevron_right, color: theme.hintColor),
                         ],

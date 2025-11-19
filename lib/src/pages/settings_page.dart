@@ -51,8 +51,8 @@ class SettingsPage extends StatelessWidget {
                         ),
                         subtitle: Text(
                           themeProvider.isDark
-                              ? 'Switch to light mode'
-                              : 'Switch to dark mode',
+                              ? loc.translate('switch_to_light_mode')
+                              : loc.translate('switch_to_dark_mode'),
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.colorScheme.onSurface.withValues(
                               alpha: 0.6,
@@ -120,7 +120,7 @@ class SettingsPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'Reset all search filters and preferences to default.',
+                      loc.translate('reset_filters_description'),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.colorScheme.onSurface.withValues(
                           alpha: 0.7,
@@ -146,7 +146,7 @@ class SettingsPage extends StatelessWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'Filters cleared successfully',
+                                loc.translate('filters_cleared_successfully'),
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: Colors.white,
                                 ),
@@ -198,7 +198,7 @@ class SettingsPage extends StatelessWidget {
               children: <Widget>[
                 ListTile(
                   leading: Icon(Icons.language, color: AppColors.primary),
-                  title: const Text('العربية'),
+                  title: Text('العربية'),
                   onTap: () {
                     localeProvider.setLocale(const Locale('ar'));
                     Navigator.of(context).pop();
@@ -206,17 +206,17 @@ class SettingsPage extends StatelessWidget {
                 ),
                 ListTile(
                   leading: Icon(Icons.language, color: AppColors.primary),
-                  title: const Text('Français'),
+                  title: Text('English'),
                   onTap: () {
-                    localeProvider.setLocale(const Locale('fr'));
+                    localeProvider.setLocale(const Locale('en'));
                     Navigator.of(context).pop();
                   },
                 ),
                 ListTile(
                   leading: Icon(Icons.language, color: AppColors.primary),
-                  title: const Text('English'),
+                  title: Text('Français'),
                   onTap: () {
-                    localeProvider.setLocale(const Locale('en'));
+                    localeProvider.setLocale(const Locale('fr'));
                     Navigator.of(context).pop();
                   },
                 ),
@@ -225,7 +225,7 @@ class SettingsPage extends StatelessWidget {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: Text(loc.translate('cancel')),
               onPressed: () {
                 Navigator.of(context).pop();
               },

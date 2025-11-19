@@ -18,7 +18,14 @@ class PlaceDetailPage extends StatelessWidget {
     if (url == null || url.trim().isEmpty) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(fallbackMessage ?? 'Link not available')),
+        SnackBar(
+          content: Text(
+            fallbackMessage ??
+                AppLocalizations(
+                  Localizations.localeOf(context),
+                ).translate('link_not_available'),
+          ),
+        ),
       );
       return;
     }
@@ -27,7 +34,14 @@ class PlaceDetailPage extends StatelessWidget {
     if (uri == null) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(fallbackMessage ?? 'Invalid link')),
+        SnackBar(
+          content: Text(
+            fallbackMessage ??
+                AppLocalizations(
+                  Localizations.localeOf(context),
+                ).translate('invalid_link'),
+          ),
+        ),
       );
       return;
     }
@@ -41,14 +55,21 @@ class PlaceDetailPage extends StatelessWidget {
       if (!launched) {
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open the link')),
+          SnackBar(
+            content: Text(
+              AppLocalizations(
+                Localizations.localeOf(context),
+              ).translate('could_not_open_link'),
+            ),
+          ),
         );
       }
     } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to launch: $e')));
+      final msg = AppLocalizations(
+        Localizations.localeOf(context),
+      ).translate('failed_to_launch').replaceAll('{error}', e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
     }
   }
 
@@ -174,7 +195,9 @@ class PlaceDetailPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'About',
+                          AppLocalizations(
+                            Localizations.localeOf(context),
+                          ).translate('about'),
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: theme.colorScheme.primary,

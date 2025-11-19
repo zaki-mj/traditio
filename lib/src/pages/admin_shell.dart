@@ -55,81 +55,95 @@ class _AdminShellState extends State<AdminShell> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        // use theme surface container color to stand out from scaffold background
-        color: theme.colorScheme.surfaceContainerHighest,
-        // notchMargin tuned for the 64x64 FAB
-        notchMargin: 10,
-        shape: const CircularNotchedRectangle(),
-        elevation: 12,
-  shadowColor: Colors.black.withValues(alpha: 0.25),
-
-        child: SizedBox(
-          height: 72,
-          child: Row(
-            children: [
-              // Dashboard item
-              Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => setState(() => _index = 0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+      bottomNavigationBar: SizedBox(
+        height: 72,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Positioned.fill(
+              child: BottomAppBar(
+                color: Colors.transparent,
+                notchMargin: 10,
+                shape: const CircularNotchedRectangle(),
+                elevation: 0,
+                child: Container(
+                  color: Colors.transparent,
+                  child: Row(
                     children: [
-                      Icon(
-                        Icons.dashboard,
-                        color: _index == 0
-                            ? theme.colorScheme.primary
-                            : theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                      // Dashboard item
+                      Expanded(
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => setState(() => _index = 0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.dashboard,
+                                color: _index == 0
+                                    ? theme.colorScheme.primary
+                                    : theme.colorScheme.onSurface.withValues(
+                                        alpha: 0.5,
+                                      ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                loc.translate('dashboard'),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: _index == 0
+                                      ? theme.colorScheme.primary
+                                      : theme.colorScheme.onSurface.withValues(
+                                          alpha: 0.6,
+                                        ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        loc.translate('dashboard'),
-                        style: TextStyle(
-                          fontSize: 12,
-              color: _index == 0
-                ? theme.colorScheme.primary
-                : theme.colorScheme.onSurface.withValues(alpha: 0.6),
+
+                      // Spacer for FAB notch (center)
+                      const SizedBox(width: 8),
+
+                      // Places item
+                      Expanded(
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => setState(() => _index = 1),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.list,
+                                color: _index == 1
+                                    ? theme.colorScheme.primary
+                                    : theme.colorScheme.onSurface.withValues(
+                                        alpha: 0.5,
+                                      ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                loc.translate('places'),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: _index == 1
+                                      ? theme.colorScheme.primary
+                                      : theme.colorScheme.onSurface.withValues(
+                                          alpha: 0.6,
+                                        ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-
-              // Spacer for FAB notch (center)
-              const SizedBox(width: 8),
-
-              // Places item
-              Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => setState(() => _index = 1),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.list,
-            color: _index == 1
-              ? theme.colorScheme.primary
-              : theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        loc.translate('places'),
-                        style: TextStyle(
-                          fontSize: 12,
-              color: _index == 1
-                ? theme.colorScheme.primary
-                : theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

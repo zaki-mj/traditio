@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/places_provider.dart';
 import '../providers/admin_provider.dart';
 import '../theme/app_colors.dart';
 import 'place_form_page.dart';
+import '../l10n/app_localizations.dart';
+import '../providers/favorites_provider.dart';
 
 class AdminListPage extends StatelessWidget {
   const AdminListPage({super.key});
@@ -13,25 +16,22 @@ class AdminListPage extends StatelessWidget {
     final adminProv = context.watch<AdminProvider>();
     final placesProv = context.watch<PlacesProvider>();
     final theme = Theme.of(context);
+    final loc = AppLocalizations(Localizations.localeOf(context));
+    final favsProv = context.watch<FavoritesProvider>();
 
-    // Get all available locations
+    // Get all available locations from provider (provider already includes 'All')
     final locations = placesProv.availableLocations;
 
-    // Get all unique types
-    final allTypes = <String>{
-      'hotel',
-      'restaurant',
-      'attraction',
-      'store',
-      'other',
-    }.toList();
+    // Static list of known types
+    final allTypes = ['hotel', 'restaurant', 'attraction', 'store', 'other'];
 
     // Filter places
     var filteredPlaces = placesProv.allPlaces.where((p) {
+      final query = adminProv.searchQuery.toLowerCase();
       final matchesQuery =
-          adminProv.searchQuery.isEmpty ||
-          p.name.toLowerCase().contains(adminProv.searchQuery) ||
-          p.description.toLowerCase().contains(adminProv.searchQuery);
+          query.isEmpty ||
+          p.name.toLowerCase().contains(query) ||
+          p.description.toLowerCase().contains(query);
       final matchesLocation =
           adminProv.selectedLocation == 'All' ||
           p.location == adminProv.selectedLocation;
@@ -40,12 +40,11 @@ class AdminListPage extends StatelessWidget {
       return matchesQuery && matchesLocation && matchesType;
     }).toList();
 
-    // Sort alphabetically
+    // Sort alphabetically by name
     filteredPlaces.sort((a, b) => a.name.compareTo(b.name));
 
     return Column(
       children: [
-        // Filters section
         Padding(
           padding: const EdgeInsets.all(12),
           child: Column(
@@ -54,20 +53,17 @@ class AdminListPage extends StatelessWidget {
               // Search field
               TextField(
                 decoration: InputDecoration(
-                  hintText: 'Search places...',
+                  hintText: loc.translate('search_places'),
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
                   ),
                 ),
                 onChanged: (val) => adminProv.setSearchQuery(val),
               ),
               const SizedBox(height: 12),
-              // Location and Type filters
+
+              // Filters row
               Row(
                 children: [
                   Expanded(
@@ -79,14 +75,14 @@ class AdminListPage extends StatelessWidget {
                       ),
                       child: DropdownButton<String>(
                         isExpanded: true,
-                        underline: const SizedBox(),
+                        underline: const SizedBox.shrink(),
                         value: adminProv.selectedLocation,
                         items: locations
                             .map(
-                              (loc) => DropdownMenuItem(
-                                value: loc,
+                              (l) => DropdownMenuItem(
+                                value: l,
                                 child: Text(
-                                  loc,
+                                  l,
                                   style: theme.textTheme.bodySmall,
                                 ),
                               ),
@@ -108,20 +104,20 @@ class AdminListPage extends StatelessWidget {
                       ),
                       child: DropdownButton<String>(
                         isExpanded: true,
-                        underline: const SizedBox(),
+                        underline: const SizedBox.shrink(),
                         value: adminProv.selectedType.isEmpty
                             ? ''
                             : adminProv.selectedType,
                         items: [
-                          const DropdownMenuItem(
+                          DropdownMenuItem(
                             value: '',
-                            child: Text('All Types'),
+                            child: Text(loc.translate('all_types')),
                           ),
                           ...allTypes.map(
-                            (type) => DropdownMenuItem(
-                              value: type,
+                            (t) => DropdownMenuItem(
+                              value: t,
                               child: Text(
-                                type[0].toUpperCase() + type.substring(1),
+                                t[0].toUpperCase() + t.substring(1),
                                 style: theme.textTheme.bodySmall,
                               ),
                             ),
@@ -138,12 +134,13 @@ class AdminListPage extends StatelessWidget {
             ],
           ),
         ),
-        // List section
+
+        // List
         Expanded(
           child: filteredPlaces.isEmpty
               ? Center(
                   child: Text(
-                    'No places found',
+                    loc.translate('no_places_found'),
                     style: theme.textTheme.bodyLarge?.copyWith(
                       color: Colors.grey,
                     ),
@@ -165,7 +162,6 @@ class AdminListPage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Place info
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -226,93 +222,55 @@ class AdminListPage extends StatelessWidget {
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          place.description,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: theme.textTheme.bodySmall
-                                              ?.copyWith(
-                                                color: Colors.grey.shade700,
-                                              ),
-                                        ),
                                       ],
                                     ),
                                   ),
                                   const SizedBox(width: 12),
-                                  Column(
+                                  Row(
                                     children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.amber.withAlpha(50),
-                                          borderRadius: BorderRadius.circular(
-                                            4,
-                                          ),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            const Icon(
-                                              Icons.star,
-                                              size: 14,
-                                              color: Colors.amber,
+                                      // Replace rating display with a tappable star that
+                                      // toggles favorite status (behaves like favorites system)
+                                      
+                                      
+                                      Text(
+                                        loc.translate('add_to_rec'),
+                                        style: theme.textTheme.bodySmall
+                                            ?.copyWith(
+                                              color: Colors.grey.shade700,
                                             ),
-                                            const SizedBox(width: 4),
-                                            Text(
-                                              place.rating.toString(),
-                                              style: theme.textTheme.bodySmall
-                                                  ?.copyWith(
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                            ),
-                                          ],
+                                      ),
+                                      const SizedBox(height: 4),
+                                      IconButton(
+                                        padding: EdgeInsets.zero,
+                                        constraints: const BoxConstraints(),
+                                        icon: Icon(
+                                          favsProv.isFavorite(place.id)
+                                              ? Icons.star
+                                              : Icons.star_border,
+                                          color: favsProv.isFavorite(place.id)
+                                              ? Colors.amber
+                                              : Colors.grey.shade600,
                                         ),
+                                        onPressed: () {
+                                          favsProv.toggle(place.id);
+                                        },
                                       ),
                                     ],
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 12),
-                              // Action buttons
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  ElevatedButton.icon(
-                                    icon: const Icon(Icons.add, size: 18),
-                                    label: const Text('Add to Rec'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.teal,
-                                      foregroundColor: Colors.white,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 8,
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      placesProv.addRecommended(place.id);
-                                      ScaffoldMessenger.of(ctx).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            '${place.name} added to recommended',
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                  // Removed: direct "Add to Recommended" button.
                                   const SizedBox(width: 8),
                                   ElevatedButton.icon(
                                     icon: const Icon(Icons.edit, size: 18),
-                                    label: const Text('Edit'),
+                                    label: Text(loc.translate('edit')),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: AppColors.primary,
                                       foregroundColor: Colors.white,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 8,
-                                      ),
                                     ),
                                     onPressed: () {
                                       Navigator.of(ctx).push(
@@ -326,39 +284,56 @@ class AdminListPage extends StatelessWidget {
                                   const SizedBox(width: 8),
                                   ElevatedButton.icon(
                                     icon: const Icon(Icons.delete, size: 18),
-                                    label: const Text('Delete'),
+                                    label: Text(loc.translate('delete')),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.red,
                                       foregroundColor: Colors.white,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 8,
-                                      ),
                                     ),
                                     onPressed: () {
                                       showDialog(
                                         context: ctx,
                                         builder: (dialogCtx) => AlertDialog(
-                                          title: const Text('Delete Place'),
+                                          title: Text(
+                                            loc.translate('delete_place'),
+                                          ),
                                           content: Text(
-                                            'Are you sure you want to delete "${place.name}"?',
+                                            loc
+                                                .translate(
+                                                  'confirm_delete_place',
+                                                )
+                                                .replaceAll(
+                                                  '{name}',
+                                                  place.name,
+                                                ),
                                           ),
                                           actions: [
                                             TextButton(
                                               onPressed: () =>
                                                   Navigator.pop(dialogCtx),
-                                              child: const Text('Cancel'),
+                                              child: Text(
+                                                loc.translate('cancel'),
+                                              ),
                                             ),
                                             TextButton(
                                               onPressed: () {
-                                                // TODO: Call deletePlace on provider
+                                                // For now simulate deletion
+                                                placesProv.deletePlace(
+                                                  place.id,
+                                                );
                                                 Navigator.pop(dialogCtx);
                                                 ScaffoldMessenger.of(
                                                   ctx,
                                                 ).showSnackBar(
                                                   SnackBar(
                                                     content: Text(
-                                                      '${place.name} deleted',
+                                                      loc
+                                                          .translate(
+                                                            'place_deleted',
+                                                          )
+                                                          .replaceAll(
+                                                            '{name}',
+                                                            place.name,
+                                                          ),
                                                     ),
                                                   ),
                                                 );
@@ -366,7 +341,9 @@ class AdminListPage extends StatelessWidget {
                                               style: TextButton.styleFrom(
                                                 foregroundColor: Colors.red,
                                               ),
-                                              child: const Text('Delete'),
+                                              child: Text(
+                                                loc.translate('delete'),
+                                              ),
                                             ),
                                           ],
                                         ),

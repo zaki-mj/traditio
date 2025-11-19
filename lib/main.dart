@@ -35,7 +35,7 @@ class MainApp extends StatelessWidget {
         builder: (context, themeProv, localeProv, _) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            title: 'Traditio',
+            title: AppLocalizations(localeProv.locale).translate('app_title'),
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: themeProv.mode,

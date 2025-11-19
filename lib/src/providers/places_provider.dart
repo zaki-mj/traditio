@@ -5,11 +5,11 @@ class PlacesProvider extends ChangeNotifier {
   final List<Place> _all = [
     const Place(
       id: 'p1',
-      name: 'Casbah of Algiers',
+      name: 'القصبة بالجزائر',
       description:
-          'Historic medina and UNESCO site with narrow alleys, Ottoman palaces and local life.',
+          'منطقة مدينة قديمة وموقع اليونسكو للتراث العالمي تتميز بأزقة ضيقة وقصور عثمانية وحياة محلية أصيلة.',
       type: 'attraction',
-      location: 'Algiers',
+      location: 'الجزائر',
       imageUrl: 'https://picsum.photos/seed/p1/600/400',
       rating: 4.8,
       phone: '+213 21 123 456',
@@ -18,11 +18,11 @@ class PlacesProvider extends ChangeNotifier {
     ),
     const Place(
       id: 'p2',
-      name: 'Martyrs\' Memorial (Maqam Echahid)',
+      name: 'مقام الشهيد',
       description:
-          'Iconic concrete monument commemorating Algeria\'s independence with panoramic city views.',
+          'نصب تذكاري بخرسانة أيقونية يخلد استقلال الجزائر مع إطلالات بانورامية على المدينة.',
       type: 'attraction',
-      location: 'Algiers',
+      location: 'الجزائر',
       imageUrl: 'https://picsum.photos/seed/p2/600/400',
       rating: 4.7,
       phone: '+213 21 234 567',
@@ -31,11 +31,11 @@ class PlacesProvider extends ChangeNotifier {
     ),
     const Place(
       id: 'p3',
-      name: 'Santa Cruz Fortress',
+      name: 'حصن سانتا كروز',
       description:
-          'Historic Spanish-built fortress above Oran offering sweeping views of the bay.',
+          'حصن تاريخي بني من قبل الإسبان فوق وهران يوفر إطلالات شاملة على الخليج.',
       type: 'attraction',
-      location: 'Oran',
+      location: 'وهران',
       imageUrl: 'https://picsum.photos/seed/p3/600/400',
       rating: 4.6,
       phone: '+213 41 345 678',
@@ -44,11 +44,11 @@ class PlacesProvider extends ChangeNotifier {
     ),
     const Place(
       id: 'p4',
-      name: 'Hotel El Djazaïr',
+      name: 'فندق الجزائر',
       description:
-          'A landmark hotel in the heart of Algiers combining colonial charm and modern comfort.',
+          'فندق علامة فارقة في قلب الجزائر يجمع بين الأناقة الاستعمارية والراحة الحديثة.',
       type: 'hotel',
-      location: 'Algiers',
+      location: 'الجزائر',
       imageUrl: 'https://picsum.photos/seed/p4/600/400',
       rating: 4.4,
       phone: '+213 21 456 789',
@@ -57,11 +57,11 @@ class PlacesProvider extends ChangeNotifier {
     ),
     const Place(
       id: 'p5',
-      name: 'Le Méditerranée',
+      name: 'لو ميديتيرانيه',
       description:
-          'Seafood and Mediterranean dishes popular with locals and visitors in Oran.',
+          'أطباق المأكولات البحرية والبحر المتوسط المفضلة لدى السكان المحليين والزوار في وهران.',
       type: 'restaurant',
-      location: 'Oran',
+      location: 'وهران',
       imageUrl: 'https://picsum.photos/seed/p5/600/400',
       rating: 4.5,
       phone: '+213 41 567 890',
@@ -70,11 +70,11 @@ class PlacesProvider extends ChangeNotifier {
     ),
     const Place(
       id: 'p6',
-      name: 'Tipasa Archaeological Park',
+      name: 'حديقة تيبازة الأثرية',
       description:
-          'Coastal Roman ruins set against cliffs and Mediterranean sea views, a UNESCO site.',
+          'أطلال رومانية ساحلية ضد منحدرات البحر المتوسط وإطلالات ساحرة، موقع تراث عالمي لليونسكو.',
       type: 'attraction',
-      location: 'Tipasa',
+      location: 'تيبازة',
       imageUrl: 'https://picsum.photos/seed/p6/600/400',
       rating: 4.7,
       phone: '+213 24 678 901',
@@ -83,11 +83,11 @@ class PlacesProvider extends ChangeNotifier {
     ),
     const Place(
       id: 'p7',
-      name: 'M\'Zab Valley (Ghardaïa)',
+      name: 'واد مزاب (غرداية)',
       description:
-          'Unique fortified cities in the Sahara with traditional architecture and a living cultural landscape.',
+          'مدن محصنة فريدة في الصحراء بعمارة تقليدية وحافظة على تراث ثقافي حي في المنطقة.',
       type: 'attraction',
-      location: 'Ghardaïa',
+      location: 'غرداية',
       imageUrl: 'https://picsum.photos/seed/p7/600/400',
       rating: 4.8,
       phone: '+213 29 789 012',
@@ -96,11 +96,11 @@ class PlacesProvider extends ChangeNotifier {
     ),
     const Place(
       id: 'p8',
-      name: 'Souk El Fellah (Bejaïa)',
+      name: 'سوق الفلاح (بجاية)',
       description:
-          'Traditional market offering local produce, crafts and Kabyle handmade goods.',
+          'سوق تقليدي يقدم المحاصيل والحرف المحلية والسلع اليدوية القبائلية الأصيلة.',
       type: 'store',
-      location: 'Béjaïa',
+      location: 'بجاية',
       imageUrl: 'https://picsum.photos/seed/p8/600/400',
       rating: 4.4,
       phone: '+213 34 890 123',
@@ -109,10 +109,10 @@ class PlacesProvider extends ChangeNotifier {
     ),
     const Place(
       id: 'p9',
-      name: 'Tizi Ouzou Crafts Market',
-      description: 'Local crafts and textile market in the Kabylie region.',
+      name: 'سوق الحرف بتيزي وزو',
+      description: 'سوق الحرف المحلية والنسيج في منطقة القبائل.',
       type: 'store',
-      location: 'Tizi Ouzou',
+      location: 'تيزي وزو',
       imageUrl: 'https://picsum.photos/seed/p9/600/400',
       rating: 4.3,
       phone: '+213 26 901 234',
@@ -121,11 +121,11 @@ class PlacesProvider extends ChangeNotifier {
     ),
     const Place(
       id: 'p10',
-      name: 'Sahara Adventure (Tamanrasset)',
+      name: 'مغامرة الصحراء (تمنراست)',
       description:
-          'Desert expedition company offering tours into the Hoggar Mountains and Sahara landscapes.',
+          'شركة تنظيم رحلات صحراوية توفر جولات في جبال الهقار ومناظر الصحراء الطبيعية.',
       type: 'other',
-      location: 'Tamanrasset',
+      location: 'تمنراست',
       imageUrl: 'https://picsum.photos/seed/p10/600/400',
       rating: 4.6,
       phone: '+213 29 012 345',
@@ -176,6 +176,12 @@ class PlacesProvider extends ChangeNotifier {
     if (newIndex < 0 || newIndex >= _recommendedIds.length) return;
     final item = _recommendedIds.removeAt(oldIndex);
     _recommendedIds.insert(newIndex, item);
+    notifyListeners();
+  }
+
+  /// Delete a place by id (used by admin pages).
+  void deletePlace(String id) {
+    _all.removeWhere((p) => p.id == id);
     notifyListeners();
   }
 

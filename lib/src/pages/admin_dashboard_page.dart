@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:traditional_gems/src/l10n/app_localizations.dart';
 import '../providers/places_provider.dart';
 import '../theme/app_colors.dart';
 
@@ -11,6 +12,9 @@ class AdminDashboardPage extends StatelessWidget {
     final placesProv = context.watch<PlacesProvider>();
     final places = placesProv.allPlaces;
     final theme = Theme.of(context);
+    final loc = AppLocalizations(
+      Localizations.localeOf(context),
+    ); // Ensure loc is initialized
 
     // Calculate statistics
     final totalPlaces = places.length;
@@ -32,7 +36,7 @@ class AdminDashboardPage extends StatelessWidget {
           // Total places card
           _buildStatCard(
             context,
-            title: 'Total Places',
+            title: loc.translate('total_places'), // Localized
             value: totalPlaces.toString(),
             icon: Icons.place,
             color: AppColors.primary,
@@ -41,7 +45,7 @@ class AdminDashboardPage extends StatelessWidget {
 
           // Types breakdown (includes store and other)
           Text(
-            'By Type',
+            loc.translate('by_type'), // Localized
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -57,35 +61,35 @@ class AdminDashboardPage extends StatelessWidget {
             children: [
               _buildTypeCard(
                 context,
-                label: 'Hotels',
+                label: loc.translate('hotels'), // Localized
                 count: hotelCount,
                 icon: Icons.hotel,
                 color: Colors.blue,
               ),
               _buildTypeCard(
                 context,
-                label: 'Restaurants',
+                label: loc.translate('restaurants'), // Localized
                 count: restaurantCount,
                 icon: Icons.restaurant,
                 color: Colors.orange,
               ),
               _buildTypeCard(
                 context,
-                label: 'Attractions',
+                label: loc.translate('attractions'), // Localized
                 count: attractionCount,
                 icon: Icons.attractions,
                 color: Colors.green,
               ),
               _buildTypeCard(
                 context,
-                label: 'Stores',
+                label: loc.translate('stores'), // Localized
                 count: places.where((p) => p.type == 'store').length,
                 icon: Icons.store,
                 color: Colors.purple,
               ),
               _buildTypeCard(
                 context,
-                label: 'Other',
+                label: loc.translate('other'), // Localized
                 count: places.where((p) => p.type == 'other').length,
                 icon: Icons.more_horiz,
                 color: Colors.grey,
@@ -96,7 +100,7 @@ class AdminDashboardPage extends StatelessWidget {
 
           // Recommended management - simplified
           Text(
-            'Manage Recommended',
+            loc.translate('manage_recommended'), // Localized
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -137,7 +141,7 @@ class AdminDashboardPage extends StatelessWidget {
                                 ),
                               ),
                               title: Text(p.name),
-                              subtitle: Text(p.type),
+                              subtitle: Text("معالم سياحية"),
                               trailing: IconButton(
                                 icon: const Icon(Icons.delete_outline),
                                 onPressed: () => prov.removeRecommended(p.id),
@@ -156,7 +160,7 @@ class AdminDashboardPage extends StatelessWidget {
 
           // Locations breakdown
           Text(
-            'By Location',
+            loc.translate('by_location'), // Localized
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
             ),

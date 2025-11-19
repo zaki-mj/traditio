@@ -71,7 +71,13 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
         _descriptionController.text.isEmpty ||
         _locationController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all required fields')),
+        SnackBar(
+          content: Text(
+            AppLocalizations(
+              Localizations.localeOf(context),
+            ).translate('please_fill_required_fields'),
+          ),
+        ),
       );
       return;
     }
@@ -110,8 +116,12 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
       SnackBar(
         content: Text(
           widget.place == null
-              ? 'Place created successfully!'
-              : 'Place updated successfully!',
+              ? AppLocalizations(
+                  Localizations.localeOf(context),
+                ).translate('place_created_successfully')
+              : AppLocalizations(
+                  Localizations.localeOf(context),
+                ).translate('place_updated_successfully'),
         ),
       ),
     );
@@ -124,9 +134,14 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
     final loc = AppLocalizations(Localizations.localeOf(context));
     final theme = Theme.of(context);
     final isEditing = widget.place != null;
-
     return Scaffold(
-      appBar: AppBar(title: Text(isEditing ? 'Edit Place' : 'Create Place')),
+      appBar: AppBar(
+        title: Text(
+          isEditing
+              ? loc.translate('edit_place')
+              : loc.translate('create_place'),
+        ),
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
@@ -171,7 +186,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Basic Information',
+                    loc.translate('basic_information'),
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.primary,
@@ -181,7 +196,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                   TextField(
                     controller: _nameController,
                     decoration: InputDecoration(
-                      labelText: 'Name *',
+                      labelText: loc.translate('name_label'),
                       hintText: 'e.g., Old Town Hotel',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -193,7 +208,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                   TextField(
                     controller: _descriptionController,
                     decoration: InputDecoration(
-                      labelText: 'Description *',
+                      labelText: loc.translate('description_label'),
                       hintText: 'Describe the place...',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -206,7 +221,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                   DropdownButtonFormField<String>(
                     initialValue: _selectedType,
                     decoration: InputDecoration(
-                      labelText: 'Type *',
+                      labelText: loc.translate('type_label'),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
