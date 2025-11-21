@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:traditional_gems/src/l10n/app_localizations.dart';
+import 'package:traditional_gems/l10n/app_localizations.dart';
 import '../providers/places_provider.dart';
 import '../theme/app_colors.dart';
 

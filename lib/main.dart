@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'src/providers/theme_provider.dart';
-import 'src/providers/locale_provider.dart';
-import 'src/providers/places_provider.dart';
-import 'src/providers/favorites_provider.dart';
-import 'src/providers/admin_provider.dart';
-import 'src/theme/app_theme.dart';
-import 'src/l10n/app_localizations.dart';
-import 'src/pages/welcome_page.dart';
-import 'src/pages/discover_shell.dart';
-import 'src/pages/admin_login_page.dart';
-import 'src/pages/admin_shell.dart';
-import 'src/pages/settings_page.dart';
+import 'providers/theme_provider.dart';
+import 'providers/locale_provider.dart';
+import 'providers/places_provider.dart';
+import 'providers/favorites_provider.dart';
+import 'providers/admin_provider.dart';
+import 'theme/app_theme.dart';
+import 'l10n/app_localizations.dart';
+import 'pages/welcome_page.dart';
+import 'pages/discover_shell.dart';
+import 'pages/admin_login_page.dart';
+import 'pages/admin_shell.dart';
+import 'pages/settings_page.dart';
 
 void main() {
   runApp(const MainApp());
