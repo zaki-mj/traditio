@@ -13,8 +13,12 @@ import 'pages/discover_shell.dart';
 import 'pages/admin_login_page.dart';
 import 'pages/admin_shell.dart';
 import 'pages/settings_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MainApp());
 }
 
@@ -40,21 +44,10 @@ class MainApp extends StatelessWidget {
             darkTheme: AppTheme.darkTheme,
             themeMode: themeProv.mode,
             locale: localeProv.locale,
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
+            localizationsDelegates: const [AppLocalizations.delegate, GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate],
             supportedLocales: AppLocalizations.supportedLocales,
             initialRoute: '/',
-            routes: {
-              '/': (_) => const WelcomePage(),
-              '/discover': (_) => const DiscoverShell(),
-              '/admin': (_) => const AdminLoginPage(),
-              '/admin-dashboard': (_) => const AdminShell(),
-              '/settings': (_) => const SettingsPage(),
-            },
+            routes: {'/': (_) => const WelcomePage(), '/discover': (_) => const DiscoverShell(), '/admin': (_) => const AdminLoginPage(), '/admin-dashboard': (_) => const AdminShell(), '/settings': (_) => const SettingsPage()},
           );
         },
       ),

@@ -1,4 +1,6 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:traditional_gems/services/firebase_services.dart';
 import '../l10n/app_localizations.dart';
 import '../widgets/drawers/shared_menu_drawer.dart';
 import 'admin_dashboard_page.dart';
@@ -15,10 +17,11 @@ class AdminShell extends StatefulWidget {
 class _AdminShellState extends State<AdminShell> {
   int _index = 0;
 
-  static final List<Widget> _pages = [
-    const AdminDashboardPage(),
-    const AdminListPage(),
-  ];
+  FirebaseServices firebaseServices = FirebaseServices();
+
+  final Dummy dummy = Dummy(name: 'Sample Place', place: 'Sample Location', rating: 4.5);
+
+  static final List<Widget> _pages = [const AdminDashboardPage(), const AdminListPage()];
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +29,7 @@ class _AdminShellState extends State<AdminShell> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _index == 0 ? loc.translate('dashboard') : loc.translate('places'),
-        ),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(_index == 0 ? loc.translate('dashboard') : loc.translate('places')), centerTitle: true),
       drawer: SharedMenuDrawer(
         isAdmin: true,
         onLogout: () {
@@ -46,9 +44,8 @@ class _AdminShellState extends State<AdminShell> {
         height: 64,
         child: FloatingActionButton(
           onPressed: () {
-            Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (_) => const PlaceFormPage()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PlaceFormPage()));
+            firebaseServices.addDummyData(dummy);
           },
           shape: const CircleBorder(),
           child: const Icon(Icons.add, size: 28),
@@ -78,26 +75,9 @@ class _AdminShellState extends State<AdminShell> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.dashboard,
-                                color: _index == 0
-                                    ? theme.colorScheme.primary
-                                    : theme.colorScheme.onSurface.withValues(
-                                        alpha: 0.5,
-                                      ),
-                              ),
+                              Icon(Icons.dashboard, color: _index == 0 ? theme.colorScheme.primary : theme.colorScheme.onSurface.withValues(alpha: 0.5)),
                               const SizedBox(height: 4),
-                              Text(
-                                loc.translate('dashboard'),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: _index == 0
-                                      ? theme.colorScheme.primary
-                                      : theme.colorScheme.onSurface.withValues(
-                                          alpha: 0.6,
-                                        ),
-                                ),
-                              ),
+                              Text(loc.translate('dashboard'), style: TextStyle(fontSize: 12, color: _index == 0 ? theme.colorScheme.primary : theme.colorScheme.onSurface.withValues(alpha: 0.6))),
                             ],
                           ),
                         ),
@@ -114,26 +94,9 @@ class _AdminShellState extends State<AdminShell> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.list,
-                                color: _index == 1
-                                    ? theme.colorScheme.primary
-                                    : theme.colorScheme.onSurface.withValues(
-                                        alpha: 0.5,
-                                      ),
-                              ),
+                              Icon(Icons.list, color: _index == 1 ? theme.colorScheme.primary : theme.colorScheme.onSurface.withValues(alpha: 0.5)),
                               const SizedBox(height: 4),
-                              Text(
-                                loc.translate('places'),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: _index == 1
-                                      ? theme.colorScheme.primary
-                                      : theme.colorScheme.onSurface.withValues(
-                                          alpha: 0.6,
-                                        ),
-                                ),
-                              ),
+                              Text(loc.translate('places'), style: TextStyle(fontSize: 12, color: _index == 1 ? theme.colorScheme.primary : theme.colorScheme.onSurface.withValues(alpha: 0.6))),
                             ],
                           ),
                         ),

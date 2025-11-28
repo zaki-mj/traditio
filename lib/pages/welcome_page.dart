@@ -17,7 +17,8 @@ class WelcomePage extends StatelessWidget {
       body: SafeArea(
         child: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: isDark ? [const Color(0xFF1a1a1a), const Color(0xFF0d3b35)] : [AppColors.primary, AppColors.secondary]),
+            image: DecorationImage(image: AssetImage("assets/pictures/bg.png"), fit: BoxFit.cover, opacity: 10),
+            gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [AppColors.primary, AppColors.secondary]),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
@@ -81,18 +82,15 @@ class WelcomePage extends StatelessWidget {
           : null,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: isPrimary ? Colors.white : Colors.white.withAlpha(50),
-          foregroundColor: isPrimary ? AppColors.primary : Colors.white,
+          backgroundColor: isPrimary ? AppColors.primary : Colors.white.withAlpha(200),
+          foregroundColor: isPrimary ? const Color.fromARGB(255, 255, 255, 255) : Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: isPrimary ? BorderSide.none : BorderSide(color: Colors.white.withAlpha(200), width: 2),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
         onPressed: onPressed,
         child: Text(
           label,
-          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: isPrimary ? AppColors.primary : Colors.white),
+          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: isPrimary ? const Color.fromARGB(255, 255, 255, 255) : AppColors.primary),
         ),
       ),
     );
