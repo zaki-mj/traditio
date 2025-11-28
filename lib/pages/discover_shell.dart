@@ -15,41 +15,29 @@ class DiscoverShell extends StatefulWidget {
 class _DiscoverShellState extends State<DiscoverShell> {
   int _index = 0;
 
-  static final List<Widget> _pages = [
-    const HomePage(),
-    const CategoriesPage(),
-    const FavoritesPage(),
-  ];
+  static final List<Widget> _pages = [const HomePage(), const CategoriesPage(), const FavoritesPage()];
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations(Localizations.localeOf(context));
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loc.translate('discover_page')),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(loc.translate('discover_page')), centerTitle: true),
       drawer: const SharedMenuDrawer(isAdmin: false),
-      body: SafeArea(child: _pages[_index]),
+      body: SafeArea(
+        child: Container(
+          decoration: BoxDecoration(image: DecorationImage(image: AssetImage("assets/pictures/bg2.png"))),
+          child: _pages[_index],
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        
         currentIndex: _index,
         onTap: (i) => setState(() => _index = i),
         selectedItemColor: Theme.of(context).colorScheme.primary,
         items: [
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.home),
-            label: loc.translate('home'),
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.category),
-            label: loc.translate('categories'),
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.favorite),
-            label: loc.translate('favorites'),
-          ),
+          BottomNavigationBarItem(icon: const Icon(Icons.home), label: loc.translate('home')),
+          BottomNavigationBarItem(icon: const Icon(Icons.category), label: loc.translate('categories')),
+          BottomNavigationBarItem(icon: const Icon(Icons.favorite), label: loc.translate('favorites')),
         ],
       ),
     );

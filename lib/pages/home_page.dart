@@ -15,9 +15,7 @@ class HomePage extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: false,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       backgroundColor: theme.scaffoldBackgroundColor,
       builder: (ctx) {
         return SingleChildScrollView(
@@ -32,10 +30,7 @@ class HomePage extends StatelessWidget {
                   child: Container(
                     width: 40,
                     height: 4,
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.onSurface.withAlpha(100),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
+                    decoration: BoxDecoration(color: theme.colorScheme.onSurface.withAlpha(100), borderRadius: BorderRadius.circular(2)),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -47,15 +42,11 @@ class HomePage extends StatelessWidget {
                     hintText: 'Search places, cuisine, etc...',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: theme.colorScheme.primary.withAlpha(100),
-                      ),
+                      borderSide: BorderSide(color: theme.colorScheme.primary.withAlpha(100)),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: theme.colorScheme.primary.withAlpha(100),
-                      ),
+                      borderSide: BorderSide(color: theme.colorScheme.primary.withAlpha(100)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -83,28 +74,14 @@ class HomePage extends StatelessWidget {
                       onTap: () => prov.toggleType(t),
                       child: Container(
                         decoration: BoxDecoration(
-                          border: Border.all(
-                            color: isSelected
-                                ? theme.colorScheme.primary
-                                : theme.colorScheme.onSurface.withAlpha(50),
-                            width: isSelected ? 2 : 1,
-                          ),
+                          border: Border.all(color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface.withAlpha(50), width: isSelected ? 2 : 1),
                           borderRadius: BorderRadius.circular(10),
-                          color: isSelected
-                              ? theme.colorScheme.primary.withAlpha(30)
-                              : Colors.transparent,
+                          color: isSelected ? theme.colorScheme.primary.withAlpha(30) : Colors.transparent,
                         ),
                         child: Center(
                           child: Text(
                             t,
-                            style: TextStyle(
-                              fontWeight: isSelected
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                              color: isSelected
-                                  ? theme.colorScheme.primary
-                                  : theme.colorScheme.onSurface,
-                            ),
+                            style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal, color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface),
                           ),
                         ),
                       ),
@@ -117,9 +94,7 @@ class HomePage extends StatelessWidget {
                 const SizedBox(height: 12),
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: theme.colorScheme.primary.withAlpha(100),
-                    ),
+                    border: Border.all(color: theme.colorScheme.primary.withAlpha(100)),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -127,9 +102,7 @@ class HomePage extends StatelessWidget {
                     isExpanded: true,
                     underline: const SizedBox(),
                     value: prov.currentLocation,
-                    items: prov.availableLocations
-                        .map((l) => DropdownMenuItem(value: l, child: Text(l)))
-                        .toList(),
+                    items: prov.availableLocations.map((l) => DropdownMenuItem(value: l, child: Text(l))).toList(),
                     onChanged: (v) => prov.setLocation(v ?? 'All'),
                   ),
                 ),
@@ -150,9 +123,7 @@ class HomePage extends StatelessWidget {
                         },
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                         ),
                         child: const Text('Clear Filters'),
                       ),
@@ -165,9 +136,7 @@ class HomePage extends StatelessWidget {
                           foregroundColor: theme.colorScheme.surface,
                           backgroundColor: theme.colorScheme.primary,
                           padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                         ),
                         child: const Text('Search'),
                       ),
@@ -195,10 +164,7 @@ class HomePage extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  loc.translate('recommended'),
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text(loc.translate('recommended'), style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 12),
                 SizedBox(
                   height: 180,
@@ -214,11 +180,7 @@ class HomePage extends StatelessWidget {
                           child: PlaceCard(
                             place: p,
                             enableHero: false,
-                            onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => PlaceDetailPage(place: p),
-                              ),
-                            ),
+                            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => PlaceDetailPage(place: p))),
                           ),
                         ),
                       );
@@ -226,22 +188,14 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  loc.translate('all_places'),
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
+                Text(loc.translate('all_places'), style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 8),
                 Expanded(
                   child: ListView.builder(
                     itemCount: prov.allPlaces.length,
                     itemBuilder: (ctx, i) => PlaceCard(
                       place: prov.allPlaces[i],
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              PlaceDetailPage(place: prov.allPlaces[i]),
-                        ),
-                      ),
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => PlaceDetailPage(place: prov.allPlaces[i]))),
                     ),
                   ),
                 ),
@@ -250,10 +204,7 @@ class HomePage extends StatelessWidget {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.search),
-        onPressed: () => _openSearchFilters(context),
-      ),
+      floatingActionButton: FloatingActionButton(child: const Icon(Icons.search), onPressed: () => _openSearchFilters(context)),
     );
   }
 }

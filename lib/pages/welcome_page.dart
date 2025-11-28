@@ -17,7 +17,7 @@ class WelcomePage extends StatelessWidget {
       body: SafeArea(
         child: Container(
           decoration: BoxDecoration(
-            image: DecorationImage(image: AssetImage("assets/pictures/bg.png"), fit: BoxFit.cover, opacity: 10),
+            image: DecorationImage(image: AssetImage("assets/pictures/bg.png"), fit: BoxFit.cover, opacity: 0.5),
             gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [AppColors.primary, AppColors.secondary]),
           ),
           child: Padding(
