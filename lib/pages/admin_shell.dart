@@ -19,8 +19,6 @@ class _AdminShellState extends State<AdminShell> {
 
   FirebaseServices firebaseServices = FirebaseServices();
 
-  final Dummy dummy = Dummy(name: 'Sample Place', place: 'Sample Location', rating: 4.5);
-
   static final List<Widget> _pages = [const AdminDashboardPage(), const AdminListPage()];
 
   @override
@@ -45,7 +43,6 @@ class _AdminShellState extends State<AdminShell> {
         child: FloatingActionButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PlaceFormPage()));
-            firebaseServices.addDummyData(dummy);
           },
           shape: const CircleBorder(),
           child: const Icon(Icons.add, size: 28),
