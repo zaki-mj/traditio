@@ -16,14 +16,15 @@ class AdminDashboardPage extends StatelessWidget {
 
     // Calculate statistics
     final totalPlaces = places.length;
-    final hotelCount = places.where((p) => p.type == 'hotel').length;
-    final restaurantCount = places.where((p) => p.type == 'restaurant').length;
-    final attractionCount = places.where((p) => p.type == 'attraction').length;
+    final hotelCount = places.where((p) => p.category.name == 'hotel').length;
+    final restaurantCount = places.where((p) => p.category.name == 'restaurant').length;
+    final attractionCount = places.where((p) => p.category.name == 'attraction').length;
 
     // Group by location
     final locationCounts = <String, int>{};
     for (var p in places) {
-      locationCounts[p.location] = (locationCounts[p.location] ?? 0) + 1;
+      final city = p.cityNameFR;
+      locationCounts[city] = (locationCounts[city] ?? 0) + 1;
     }
 
     return SingleChildScrollView(
@@ -79,14 +80,14 @@ class AdminDashboardPage extends StatelessWidget {
               _buildTypeCard(
                 context,
                 label: loc.translate('stores'), // Localized
-                count: places.where((p) => p.type == 'store').length,
+                count: places.where((p) => p.category.name == 'store').length,
                 icon: Icons.store,
                 color: Colors.purple,
               ),
               _buildTypeCard(
                 context,
                 label: loc.translate('other'), // Localized
-                count: places.where((p) => p.type == 'other').length,
+                count: places.where((p) => p.category.name == 'other').length,
                 icon: Icons.more_horiz,
                 color: Colors.grey,
               ),
@@ -131,9 +132,9 @@ class AdminDashboardPage extends StatelessWidget {
                                   child: Image.network(p.imageUrl, fit: BoxFit.cover),
                                 ),
                               ),
-                              title: Text(p.name),
+                              title: Text(Localizations.localeOf(context).languageCode == 'ar' ? p.nameAR : p.nameFR),
                               subtitle: Text("معالم سياحية"),
-                              trailing: IconButton(icon: const Icon(Icons.delete_outline), onPressed: () => prov.removeRecommended(p.id)),
+                              trailing: IconButton(icon: const Icon(Icons.delete_outline), onPressed: p.id == null ? null : () => prov.removeRecommended(p.id!)),
                             );
                           },
                         ),
@@ -147,6 +148,19 @@ class AdminDashboardPage extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Locations breakdown
+          const SizedBox(height: 16),
+          Text(loc.translate('by_location'), style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 12),
+          Column(
+            children: locationCounts.entries
+                .map(
+                  (e) => Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: _buildLocationTile(context, location: e.key, count: e.value),
+                  ),
+                )
+                .toList(),
+          ),
         ],
       ),
     );

@@ -8,13 +8,13 @@ class AdminProvider extends ChangeNotifier {
   String _selectedType = '';
 
   // Editable place (for edit mode)
-  Place? _editingPlace;
+  PointOfInterest? _editingPlace;
 
   bool get editMode => _editMode;
   String get searchQuery => _searchQuery;
   String get selectedLocation => _selectedLocation;
   String get selectedType => _selectedType;
-  Place? get editingPlace => _editingPlace;
+  PointOfInterest? get editingPlace => _editingPlace;
 
   void toggleEditMode() {
     _editMode = !_editMode;
@@ -46,7 +46,7 @@ class AdminProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setEditingPlace(Place? place) {
+  void setEditingPlace(PointOfInterest? place) {
     _editingPlace = place;
     notifyListeners();
   }

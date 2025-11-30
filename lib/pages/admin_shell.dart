@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:traditional_gems/services/firebase_services.dart';
 import '../l10n/app_localizations.dart';
@@ -56,50 +55,46 @@ class _AdminShellState extends State<AdminShell> {
           children: [
             Positioned.fill(
               child: BottomAppBar(
-                color: Colors.transparent,
                 notchMargin: 10,
                 shape: const CircularNotchedRectangle(),
-                elevation: 0,
-                child: Container(
-                  color: Colors.transparent,
-                  child: Row(
-                    children: [
-                      // Dashboard item
-                      Expanded(
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () => setState(() => _index = 0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.dashboard, color: _index == 0 ? theme.colorScheme.primary : theme.colorScheme.onSurface.withValues(alpha: 0.5)),
-                              const SizedBox(height: 4),
-                              Text(loc.translate('dashboard'), style: TextStyle(fontSize: 12, color: _index == 0 ? theme.colorScheme.primary : theme.colorScheme.onSurface.withValues(alpha: 0.6))),
-                            ],
-                          ),
+                elevation: 8,
+                child: Row(
+                  children: [
+                    // Dashboard item
+                    Expanded(
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => setState(() => _index = 0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.dashboard, color: _index == 0 ? theme.colorScheme.primary : theme.colorScheme.onSurface.withAlpha(120)),
+                            const SizedBox(height: 4),
+                            Text(loc.translate('dashboard'), style: TextStyle(fontSize: 12, color: _index == 0 ? theme.colorScheme.primary : theme.colorScheme.onSurface.withAlpha(150))),
+                          ],
                         ),
                       ),
+                    ),
 
-                      // Spacer for FAB notch (center)
-                      const SizedBox(width: 8),
+                    // Spacer for FAB notch (center)
+                    const SizedBox(width: 8),
 
-                      // Places item
-                      Expanded(
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () => setState(() => _index = 1),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.list, color: _index == 1 ? theme.colorScheme.primary : theme.colorScheme.onSurface.withValues(alpha: 0.5)),
-                              const SizedBox(height: 4),
-                              Text(loc.translate('places'), style: TextStyle(fontSize: 12, color: _index == 1 ? theme.colorScheme.primary : theme.colorScheme.onSurface.withValues(alpha: 0.6))),
-                            ],
-                          ),
+                    // Places item
+                    Expanded(
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => setState(() => _index = 1),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.list, color: _index == 1 ? theme.colorScheme.primary : theme.colorScheme.onSurface.withAlpha(120)),
+                            const SizedBox(height: 4),
+                            Text(loc.translate('places'), style: TextStyle(fontSize: 12, color: _index == 1 ? theme.colorScheme.primary : theme.colorScheme.onSurface.withAlpha(150))),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

@@ -5,13 +5,15 @@ class AppTheme {
   static final ColorScheme _lightScheme = ColorScheme.light(
     primary: AppColors.primary,
     secondary: AppColors.secondary,
-    surface: AppColors.background,
+    // surface (cards/panels) should be visibly distinct from the scaffold background
+    surface: AppColors.surface,
   );
 
   static final ColorScheme _darkScheme = ColorScheme.dark(
     primary: AppColors.primary,
     secondary: AppColors.secondary,
-    surface: Colors.grey.shade900,
+    // darker surface for cards and panels
+    surface: AppColors.surfaceDark,
   );
 
   static ThemeData lightTheme = ThemeData(
@@ -19,6 +21,10 @@ class AppTheme {
     primaryColor: _lightScheme.primary,
     scaffoldBackgroundColor: _lightScheme.surface,
     appBarTheme: const AppBarTheme(elevation: 0, centerTitle: false),
+    // Make cards and popups visually separated from page background
+    cardTheme: CardThemeData(color: _lightScheme.surface, elevation: 2, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+    bottomAppBarTheme: const BottomAppBarThemeData(color: AppColors.bottomNavLight, elevation: 8),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: AppColors.bottomNavLight, selectedItemColor: _lightScheme.primary, unselectedItemColor: Colors.grey[600], elevation: 8),
     // Card styling handled locally in widgets for maximum compatibility across SDKs.
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -38,6 +44,9 @@ class AppTheme {
     primaryColor: _darkScheme.primary,
     scaffoldBackgroundColor: _darkScheme.surface,
     appBarTheme: const AppBarTheme(elevation: 0),
+    cardTheme: CardThemeData(color: _darkScheme.surface, elevation: 2, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+    bottomAppBarTheme: const BottomAppBarThemeData(color: AppColors.bottomNavDark, elevation: 8),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: AppColors.bottomNavDark, selectedItemColor: _darkScheme.primary, unselectedItemColor: Colors.grey[400], elevation: 8),
     // Card styling handled locally in widgets for maximum compatibility across SDKs.
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(

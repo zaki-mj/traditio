@@ -6,69 +6,34 @@ import '../providers/favorites_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PlaceDetailPage extends StatelessWidget {
-  final Place place;
+  final PointOfInterest place;
 
   const PlaceDetailPage({super.key, required this.place});
 
-  Future<void> _launchURL(
-    BuildContext context,
-    String? url, {
-    String? fallbackMessage,
-  }) async {
+  Future<void> _launchURL(BuildContext context, String? url, {String? fallbackMessage}) async {
     if (url == null || url.trim().isEmpty) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            fallbackMessage ??
-                AppLocalizations(
-                  Localizations.localeOf(context),
-                ).translate('link_not_available'),
-          ),
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(fallbackMessage ?? AppLocalizations(Localizations.localeOf(context)).translate('link_not_available'))));
       return;
     }
 
     final uri = Uri.tryParse(url);
     if (uri == null) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            fallbackMessage ??
-                AppLocalizations(
-                  Localizations.localeOf(context),
-                ).translate('invalid_link'),
-          ),
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(fallbackMessage ?? AppLocalizations(Localizations.localeOf(context)).translate('invalid_link'))));
       return;
     }
 
     try {
-      final launched = await launchUrl(
-        uri,
-        mode: LaunchMode.externalApplication,
-      );
+      final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
 
       if (!launched) {
         if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppLocalizations(
-                Localizations.localeOf(context),
-              ).translate('could_not_open_link'),
-            ),
-          ),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations(Localizations.localeOf(context)).translate('could_not_open_link'))));
       }
     } catch (e) {
       if (!context.mounted) return;
-      final msg = AppLocalizations(
-        Localizations.localeOf(context),
-      ).translate('failed_to_launch').replaceAll('{error}', e.toString());
+      final msg = AppLocalizations(Localizations.localeOf(context)).translate('failed_to_launch').replaceAll('{error}', e.toString());
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
     }
   }
@@ -80,17 +45,15 @@ class PlaceDetailPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(place.name),
+        title: Text(Localizations.localeOf(context).languageCode == 'ar' ? place.nameAR : place.nameFR),
         actions: [
           Consumer<FavoritesProvider>(
             builder: (ctx, favs, _) {
-              final isFav = favs.isFavorite(place.id);
+              final id = place.id;
+              final isFav = id != null && favs.isFavorite(id);
               return IconButton(
-                icon: Icon(
-                  isFav ? Icons.favorite : Icons.favorite_border,
-                  color: isFav ? Colors.red : null,
-                ),
-                onPressed: () => favs.toggle(place.id),
+                icon: Icon(isFav ? Icons.favorite : Icons.favorite_border, color: isFav ? Colors.red : null),
+                onPressed: id == null ? null : () => favs.toggle(id),
               );
             },
           ),
@@ -99,19 +62,12 @@ class PlaceDetailPage extends StatelessWidget {
       body: ListView(
         children: [
           ClipRRect(
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(32),
-              bottomRight: Radius.circular(32),
-            ),
+            borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(32), bottomRight: Radius.circular(32)),
             child: Image.network(
               place.imageUrl,
               height: 220,
               fit: BoxFit.cover,
-              errorBuilder: (c, e, s) => Container(
-                height: 220,
-                color: theme.colorScheme.surfaceContainerHighest,
-                child: const Icon(Icons.image, size: 80),
-              ),
+              errorBuilder: (c, e, s) => Container(height: 220, color: theme.colorScheme.surfaceContainerHighest, child: const Icon(Icons.image, size: 80)),
             ),
           ),
           Padding(
@@ -123,46 +79,30 @@ class PlaceDetailPage extends StatelessWidget {
                 Card(
                   color: theme.colorScheme.surface,
                   elevation: 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          place.name,
-                          style: theme.textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: theme.colorScheme.primary,
-                          ),
+                          Localizations.localeOf(context).languageCode == 'ar' ? place.nameAR : place.nameFR,
+                          style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                         ),
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            Icon(
-                              Icons.location_on,
-                              color: theme.colorScheme.primary,
-                            ),
+                            Icon(Icons.location_on, color: theme.colorScheme.primary),
                             const SizedBox(width: 6),
-                            Expanded(
-                              child: Text(
-                                place.location,
-                                style: theme.textTheme.bodyLarge,
-                              ),
-                            ),
+                            Expanded(child: Text(Localizations.localeOf(context).languageCode == 'ar' ? place.cityNameAR : place.cityNameFR, style: theme.textTheme.bodyLarge)),
                           ],
                         ),
                         const SizedBox(height: 12),
                         Row(
                           children: [
-                            Icon(
-                              Icons.category,
-                              color: theme.colorScheme.primary,
-                            ),
+                            Icon(Icons.category, color: theme.colorScheme.primary),
                             const SizedBox(width: 6),
-                            Text(place.type, style: theme.textTheme.bodyMedium),
+                            Text(AppLocalizations(Localizations.localeOf(context)).translate('type_${place.category.name}'), style: theme.textTheme.bodyMedium),
                           ],
                         ),
                         const SizedBox(height: 12),
@@ -170,10 +110,7 @@ class PlaceDetailPage extends StatelessWidget {
                           children: [
                             Icon(Icons.star, color: theme.colorScheme.primary),
                             const SizedBox(width: 6),
-                            Text(
-                              '${place.rating}',
-                              style: theme.textTheme.bodyMedium,
-                            ),
+                            Text('${place.rating}', style: theme.textTheme.bodyMedium),
                           ],
                         ),
                       ],
@@ -186,28 +123,18 @@ class PlaceDetailPage extends StatelessWidget {
                 Card(
                   color: theme.colorScheme.surface,
                   elevation: 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          AppLocalizations(
-                            Localizations.localeOf(context),
-                          ).translate('about'),
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: theme.colorScheme.primary,
-                          ),
+                          AppLocalizations(Localizations.localeOf(context)).translate('about'),
+                          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                         ),
                         const SizedBox(height: 12),
-                        Text(
-                          place.description,
-                          style: theme.textTheme.bodyMedium,
-                        ),
+                        Text(place.description ?? '', style: theme.textTheme.bodyMedium),
                       ],
                     ),
                   ),
@@ -215,13 +142,12 @@ class PlaceDetailPage extends StatelessWidget {
                 const SizedBox(height: 16),
 
                 // Contact Card
-                if (place.phone != null || place.email != null)
+                // phone/email are required in POI model, guard against empty strings instead
+                if ((place.phone.isNotEmpty) || (place.email.isNotEmpty))
                   Card(
                     color: theme.colorScheme.surface,
                     elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
@@ -229,62 +155,38 @@ class PlaceDetailPage extends StatelessWidget {
                         children: [
                           Text(
                             loc.translate('contact'),
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: theme.colorScheme.primary,
-                            ),
+                            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                           ),
                           const SizedBox(height: 12),
-                          if (place.phone != null)
+                          if (place.phone.isNotEmpty)
                             Column(
                               children: [
                                 Row(
                                   children: [
-                                    Icon(
-                                      Icons.phone,
-                                      color: theme.colorScheme.primary,
-                                    ),
+                                    Icon(Icons.phone, color: theme.colorScheme.primary),
                                     const SizedBox(width: 6),
                                     GestureDetector(
-                                      onTap: () => _launchURL(
-                                        context,
-                                        'tel:${place.phone}',
-                                      ),
+                                      onTap: () => _launchURL(context, 'tel:${place.phone}'),
                                       child: Text(
-                                        place.phone!,
-                                        style: theme.textTheme.bodyLarge
-                                            ?.copyWith(
-                                              color: theme.colorScheme.primary,
-                                              decoration:
-                                                  TextDecoration.underline,
-                                            ),
+                                        place.phone,
+                                        style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary, decoration: TextDecoration.underline),
                                       ),
                                     ),
                                   ],
                                 ),
-                                if (place.email != null)
-                                  const SizedBox(height: 12),
+                                if (place.email.isNotEmpty) const SizedBox(height: 12),
                               ],
                             ),
-                          if (place.email != null)
+                          if (place.email.isNotEmpty)
                             Row(
                               children: [
-                                Icon(
-                                  Icons.email,
-                                  color: theme.colorScheme.primary,
-                                ),
+                                Icon(Icons.email, color: theme.colorScheme.primary),
                                 const SizedBox(width: 6),
                                 GestureDetector(
-                                  onTap: () => _launchURL(
-                                    context,
-                                    'mailto:${place.email}',
-                                  ),
+                                  onTap: () => _launchURL(context, 'mailto:${place.email}'),
                                   child: Text(
-                                    place.email!,
-                                    style: theme.textTheme.bodyLarge?.copyWith(
-                                      color: theme.colorScheme.primary,
-                                      decoration: TextDecoration.underline,
-                                    ),
+                                    place.email,
+                                    style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary, decoration: TextDecoration.underline),
                                   ),
                                 ),
                               ],
@@ -296,13 +198,11 @@ class PlaceDetailPage extends StatelessWidget {
                 const SizedBox(height: 16),
 
                 // Address Card
-                if (place.address != null)
+                if (place.locationLink != null && place.locationLink!.isNotEmpty)
                   Card(
                     color: theme.colorScheme.surface,
                     elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
@@ -310,34 +210,20 @@ class PlaceDetailPage extends StatelessWidget {
                         children: [
                           Text(
                             loc.translate('address'),
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: theme.colorScheme.primary,
-                            ),
+                            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                           ),
                           const SizedBox(height: 12),
                           Center(
                             child: ElevatedButton.icon(
-                              icon: Icon(
-                                Icons.map,
-                                color: theme.colorScheme.onPrimary,
-                              ),
-                              label: Text(
-                                loc.translate('open_map'),
-                                style: TextStyle(
-                                  color: theme.colorScheme.onPrimary,
-                                ),
-                              ),
+                              icon: Icon(Icons.map, color: theme.colorScheme.onPrimary),
+                              label: Text(loc.translate('open_map'), style: TextStyle(color: theme.colorScheme.onPrimary)),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: theme.colorScheme.primary,
                                 foregroundColor: theme.colorScheme.onPrimary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                 elevation: 4,
                               ),
-                              onPressed: () =>
-                                  _launchURL(context, place.address),
+                              onPressed: () => _launchURL(context, place.locationLink),
                             ),
                           ),
                         ],

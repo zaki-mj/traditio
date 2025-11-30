@@ -11,6 +11,15 @@ class AppColors {
   // Backgrounds
   static const Color background = Color(0xFFF6F6F6);
 
+  // Surface / cards (distinct from page background)
+  static const Color surface = Color(0xFFFFFFFF);
+  // dark surface (for cards / panels in dark mode)
+  static const Color surfaceDark = Color(0xFF111218);
+
+  // Bottom navigation / app bars background (slightly elevated from scaffold)
+  static const Color bottomNavLight = Color(0xFFFFFFFF);
+  static const Color bottomNavDark = Color(0xFF0F1720);
+
   // Gradients
   static const LinearGradient cardGradient = LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF00796B), Color(0xFF26A69A)]);
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
-import '../providers/theme_provider.dart';
+// ThemeProvider not used in this page
 import '../theme/app_colors.dart';
 
 class WelcomePage extends StatelessWidget {
@@ -11,7 +10,7 @@ class WelcomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = AppLocalizations(Localizations.localeOf(context));
     final theme = Theme.of(context);
-    final isDark = context.watch<ThemeProvider>().isDark;
+    // theme provided by ThemeProvider if needed elsewhere
 
     return Scaffold(
       body: SafeArea(

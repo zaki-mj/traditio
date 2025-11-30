@@ -1,14 +1,13 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// removed unused import: flutter/services
+import '../services/firebase_services.dart';
 import 'package:traditional_gems/services/location_services.dart';
 import '../models/place.dart';
 import '../l10n/app_localizations.dart';
 
 class PlaceFormPage extends StatefulWidget {
-  final Place? place; // null if creating, non-null if editing
+  // Accept a PointOfInterest for editing, null when creating new
+  final PointOfInterest? place;
 
   const PlaceFormPage({super.key, this.place});
 
@@ -20,7 +19,6 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
   // Controllers for Place compatibility
   late TextEditingController _nameController;
   late TextEditingController _descriptionController;
-  late TextEditingController _locationController;
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
   late TextEditingController _addressController;
@@ -54,22 +52,22 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
     final place = widget.place;
 
     // Initialize Place controllers
-    _nameController = TextEditingController(text: place?.name ?? '');
+    _nameController = TextEditingController(text: place?.nameFR ?? '');
     _descriptionController = TextEditingController(text: place?.description ?? '');
-    _locationController = TextEditingController(text: place?.location ?? '');
+    // locationController was previously used for the old Place model; keep address controller mapped to POI.locationLink
     _phoneController = TextEditingController(text: place?.phone ?? '');
     _emailController = TextEditingController(text: place?.email ?? '');
-    _addressController = TextEditingController(text: place?.address ?? '');
-    _facebookController = TextEditingController(text: place?.facebookUrl ?? '');
-    _instagramController = TextEditingController(text: place?.instagramUrl ?? '');
-    _twitterController = TextEditingController(text: place?.twitterUrl ?? '');
+    _addressController = TextEditingController(text: place?.locationLink ?? '');
+    _facebookController = TextEditingController(text: place?.facebookLink ?? '');
+    _twitterController = TextEditingController(text: '');
+    _twitterController = TextEditingController(text: place?.tiktokLink ?? '');
     _imageUrlController = TextEditingController(text: place?.imageUrl ?? '');
     _ratingController = TextEditingController(text: place?.rating.toString() ?? '4.0');
-    _selectedType = place?.type ?? 'hotel';
+    _selectedType = place != null ? place.category.name : 'hotel';
 
     // Initialize PointOfInterest controllers
-    _nameARController = TextEditingController();
-    _nameFRController = TextEditingController();
+    _nameARController = TextEditingController(text: place?.nameAR ?? '');
+    _nameFRController = TextEditingController(text: place?.nameFR ?? '');
     _tiktokController = TextEditingController();
 
     _loadStates();
@@ -111,7 +109,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
-    _locationController.dispose();
+    // _locationController was removed (replaced by _addressController)
     _phoneController.dispose();
     _emailController.dispose();
     _addressController.dispose();
@@ -127,7 +125,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
   }
 
   Future<void> _savePlace() async {
-    final loc = AppLocalizations(Localizations.localeOf(context));
+    // localization object not required here
 
     // Validation: Check mandatory fields
     List<String> missingFields = [];
@@ -169,7 +167,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
         cityNameAR: selectedCityNameAR!,
         cityNameFR: selectedCityNameFR!,
         rating: rating,
-        category: POICategory.fromValue(['hotel', 'restaurant', 'amusement', 'store', 'other'].indexOf(_selectedType) + 1),
+        category: POICategory.fromValue(['hotel', 'restaurant', 'attraction', 'store', 'other'].indexOf(_selectedType) + 1),
         phone: _phoneController.text.trim(),
         email: _emailController.text.trim(),
         imageUrl: _imageUrlController.text.isNotEmpty ? _imageUrlController.text.trim() : 'https://picsum.photos/seed/${_nameFRController.text.replaceAll(' ', '_')}/600/400',
@@ -182,9 +180,37 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
         updatedAt: DateTime.now(),
       );
 
-      // Save to Firestore
-      final firestore = FirebaseFirestore.instance;
-      await firestore.collection('points_of_interest').add(poi.toMap());
+      // Save to Firestore using service
+      final svc = FirebaseServices();
+      if (widget.place?.id == null) {
+        await svc.createPOI(poi);
+      } else {
+        // Editing existing POI: make sure id is preserved
+        final updated = PointOfInterest(
+          id: widget.place!.id,
+          nameAR: poi.nameAR,
+          nameFR: poi.nameFR,
+          wilayaCode: poi.wilayaCode,
+          wilayaNameAR: poi.wilayaNameAR,
+          wilayaNameFR: poi.wilayaNameFR,
+          cityNameAR: poi.cityNameAR,
+          cityNameFR: poi.cityNameFR,
+          rating: poi.rating,
+          recommended: widget.place!.recommended,
+          category: poi.category,
+          phone: poi.phone,
+          email: poi.email,
+          imageUrl: poi.imageUrl,
+          description: poi.description,
+          locationLink: poi.locationLink,
+          facebookLink: poi.facebookLink,
+          instagramLink: poi.instagramLink,
+          tiktokLink: poi.tiktokLink,
+          createdAt: widget.place!.createdAt,
+          updatedAt: DateTime.now(),
+        );
+        await svc.updatePOI(updated);
+      }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Point of Interest created successfully!'), backgroundColor: Colors.green));
@@ -267,7 +293,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
 
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    value: _selectedType,
+                    initialValue: _selectedType,
                     decoration: InputDecoration(
                       labelText: loc.translate('type_label'),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -288,7 +314,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                             ? const Center(child: CircularProgressIndicator())
                             : DropdownButtonFormField<String>(
                                 isExpanded: true,
-                                value: selectedStateCode,
+                                initialValue: selectedStateCode,
                                 decoration: InputDecoration(
                                   labelText: currentLocale == 'ar' ? 'الولاية' : 'Wilaya',
                                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -300,7 +326,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                                 items: states.map((state) {
                                   return DropdownMenuItem<String>(
                                     value: state['code'],
-                                    child: currentLocale == 'ar' ? Text(state['code'] + ' ' + state['nameAR'], overflow: TextOverflow.ellipsis, maxLines: 1) : Text(state['code'] + ' ' + state['nameFR'], overflow: TextOverflow.ellipsis, maxLines: 1),
+                                    child: currentLocale == 'ar' ? Text('${state['code']} ${state['nameAR']}', overflow: TextOverflow.ellipsis, maxLines: 1) : Text('${state['code']} ${state['nameFR']}', overflow: TextOverflow.ellipsis, maxLines: 1),
                                   );
                                 }).toList(),
                                 onChanged: (value) {
@@ -320,7 +346,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                       Expanded(
                         child: DropdownButtonFormField<String>(
                           isExpanded: true,
-                          value: selectedCityName,
+                          initialValue: selectedCityName,
                           decoration: InputDecoration(
                             labelText: currentLocale == 'ar' ? 'البلدية' : 'Commune',
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),

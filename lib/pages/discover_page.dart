@@ -26,9 +26,7 @@ class DiscoverPage extends StatelessWidget {
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.search),
                     hintText: loc.translate('search_hint'),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                   ),
                   onChanged: prov.setSearchQuery,
                 ),
@@ -37,41 +35,22 @@ class DiscoverPage extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      FilterChip(
-                        label: Text(loc.translate('type_hotel')),
-                        selected: prov.isTypeSelected('hotel'),
-                        onSelected: (_) => prov.toggleType('hotel'),
-                      ),
+                      FilterChip(label: Text(loc.translate('type_hotel')), selected: prov.isTypeSelected('hotel'), onSelected: (_) => prov.toggleType('hotel')),
                       const SizedBox(width: 8),
-                      FilterChip(
-                        label: Text(loc.translate('type_restaurant')),
-                        selected: prov.isTypeSelected('restaurant'),
-                        onSelected: (_) => prov.toggleType('restaurant'),
-                      ),
+                      FilterChip(label: Text(loc.translate('type_restaurant')), selected: prov.isTypeSelected('restaurant'), onSelected: (_) => prov.toggleType('restaurant')),
                       const SizedBox(width: 8),
-                      FilterChip(
-                        label: Text(loc.translate('type_attraction')),
-                        selected: prov.isTypeSelected('attraction'),
-                        onSelected: (_) => prov.toggleType('attraction'),
-                      ),
+                      FilterChip(label: Text(loc.translate('type_attraction')), selected: prov.isTypeSelected('attraction'), onSelected: (_) => prov.toggleType('attraction')),
                       const SizedBox(width: 12),
                       DropdownButton<String>(
                         value: prov.currentLocation,
-                        items: prov.availableLocations
-                            .map(
-                              (l) => DropdownMenuItem(value: l, child: Text(l)),
-                            )
-                            .toList(),
+                        items: prov.availableLocations.map((l) => DropdownMenuItem(value: l, child: Text(l))).toList(),
                         onChanged: (v) => prov.setLocation(v ?? 'All'),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  loc.translate('recommended'),
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
+                Text(loc.translate('recommended'), style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 8),
                 SizedBox(
                   height: 180,
@@ -83,11 +62,7 @@ class DiscoverPage extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: GestureDetector(
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => PlaceDetailPage(place: p),
-                            ),
-                          ),
+                          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => PlaceDetailPage(place: p))),
                           child: Material(
                             elevation: 8,
                             borderRadius: BorderRadius.circular(12),
@@ -98,54 +73,25 @@ class DiscoverPage extends StatelessWidget {
                                 Image.network(
                                   p.imageUrl,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => Container(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.surface,
-                                  ),
+                                  errorBuilder: (_, __, ___) => Container(color: Theme.of(context).colorScheme.surface),
                                 ),
-                                Container(
-                                  decoration: const BoxDecoration(
-                                    gradient: AppColors.overlayGradient,
-                                  ),
-                                ),
+                                Container(decoration: const BoxDecoration(gradient: AppColors.overlayGradient)),
                                 Positioned(
                                   left: 12,
                                   bottom: 12,
                                   right: 12,
                                   child: Container(
                                     padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: Colors.black26,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
+                                    decoration: BoxDecoration(color: Colors.black26, borderRadius: BorderRadius.circular(8)),
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          p.name,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            shadows: [
-                                              Shadow(
-                                                blurRadius: 6,
-                                                color: Colors.black45,
-                                                offset: Offset(0, 2),
-                                              ),
-                                            ],
-                                          ),
+                                          Localizations.localeOf(context).languageCode == 'ar' ? p.nameAR : p.nameFR,
+                                          style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                                         ),
-                                        Text(
-                                          '${p.location} • ${p.type}',
-                                          style: const TextStyle(
-                                            color: Colors.white70,
-                                            fontSize: 12,
-                                          ),
-                                        ),
+                                        Text('${Localizations.localeOf(context).languageCode == 'ar' ? p.cityNameAR : p.cityNameFR} • ${loc.translate('type_${p.category.name}')}', style: const TextStyle(color: Colors.white70, fontSize: 12)),
                                       ],
                                     ),
                                   ),
@@ -159,10 +105,7 @@ class DiscoverPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  loc.translate('all_places'),
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
+                Text(loc.translate('all_places'), style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 8),
                 Expanded(
                   child: filtered.isEmpty
@@ -171,12 +114,7 @@ class DiscoverPage extends StatelessWidget {
                           itemCount: filtered.length,
                           itemBuilder: (ctx, i) => PlaceCard(
                             place: filtered[i],
-                            onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    PlaceDetailPage(place: filtered[i]),
-                              ),
-                            ),
+                            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => PlaceDetailPage(place: filtered[i]))),
                           ),
                         ),
                 ),
@@ -185,10 +123,7 @@ class DiscoverPage extends StatelessWidget {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.tune),
-        onPressed: () => Navigator.of(context).pushNamed('/settings'),
-      ),
+      floatingActionButton: FloatingActionButton(child: const Icon(Icons.tune), onPressed: () => Navigator.of(context).pushNamed('/settings')),
     );
   }
 }

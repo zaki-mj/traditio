@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:flutter/material.dart';
+// no flutter widgets required in this service
 
 class AlgeriaLocationService {
   static List<dynamic>? _states;

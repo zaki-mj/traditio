@@ -1,174 +1,96 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../models/place.dart';
+import '../services/firebase_services.dart';
 
 class PlacesProvider extends ChangeNotifier {
-  final List<Place> _all = [
-    const Place(
-      id: 'p1',
-      name: 'القصبة بالجزائر',
-      description:
-          'منطقة مدينة قديمة وموقع اليونسكو للتراث العالمي تتميز بأزقة ضيقة وقصور عثمانية وحياة محلية أصيلة.',
-      type: 'attraction',
-      location: 'الجزائر',
-      imageUrl: 'https://picsum.photos/seed/p1/600/400',
-      rating: 4.8,
-      phone: '+213 21 123 456',
-      email: 'info@casbah.dz',
-      address: 'https://maps.google.com/?q=Casbah+of+Algiers',
-    ),
-    const Place(
-      id: 'p2',
-      name: 'مقام الشهيد',
-      description:
-          'نصب تذكاري بخرسانة أيقونية يخلد استقلال الجزائر مع إطلالات بانورامية على المدينة.',
-      type: 'attraction',
-      location: 'الجزائر',
-      imageUrl: 'https://picsum.photos/seed/p2/600/400',
-      rating: 4.7,
-      phone: '+213 21 234 567',
-      email: 'visit@maqamechahid.dz',
-      address: 'https://maps.google.com/?q=Maqam+Echahid+Algiers',
-    ),
-    const Place(
-      id: 'p3',
-      name: 'حصن سانتا كروز',
-      description:
-          'حصن تاريخي بني من قبل الإسبان فوق وهران يوفر إطلالات شاملة على الخليج.',
-      type: 'attraction',
-      location: 'وهران',
-      imageUrl: 'https://picsum.photos/seed/p3/600/400',
-      rating: 4.6,
-      phone: '+213 41 345 678',
-      email: 'info@santacruzoran.dz',
-      address: 'https://maps.google.com/?q=Santa+Cruz+Fortress+Oran',
-    ),
-    const Place(
-      id: 'p4',
-      name: 'فندق الجزائر',
-      description:
-          'فندق علامة فارقة في قلب الجزائر يجمع بين الأناقة الاستعمارية والراحة الحديثة.',
-      type: 'hotel',
-      location: 'الجزائر',
-      imageUrl: 'https://picsum.photos/seed/p4/600/400',
-      rating: 4.4,
-      phone: '+213 21 456 789',
-      email: 'reservations@eldjazair.dz',
-      address: 'https://maps.google.com/?q=Hotel+El+Djazair+Algiers',
-    ),
-    const Place(
-      id: 'p5',
-      name: 'لو ميديتيرانيه',
-      description:
-          'أطباق المأكولات البحرية والبحر المتوسط المفضلة لدى السكان المحليين والزوار في وهران.',
-      type: 'restaurant',
-      location: 'وهران',
-      imageUrl: 'https://picsum.photos/seed/p5/600/400',
-      rating: 4.5,
-      phone: '+213 41 567 890',
-      email: 'contact@lemediterranee.dz',
-      address: 'https://maps.google.com/?q=Le+Mediterranee+Oran',
-    ),
-    const Place(
-      id: 'p6',
-      name: 'حديقة تيبازة الأثرية',
-      description:
-          'أطلال رومانية ساحلية ضد منحدرات البحر المتوسط وإطلالات ساحرة، موقع تراث عالمي لليونسكو.',
-      type: 'attraction',
-      location: 'تيبازة',
-      imageUrl: 'https://picsum.photos/seed/p6/600/400',
-      rating: 4.7,
-      phone: '+213 24 678 901',
-      email: 'info@tipasa.dz',
-      address: 'https://maps.google.com/?q=Tipasa+Archaeological+Park',
-    ),
-    const Place(
-      id: 'p7',
-      name: 'واد مزاب (غرداية)',
-      description:
-          'مدن محصنة فريدة في الصحراء بعمارة تقليدية وحافظة على تراث ثقافي حي في المنطقة.',
-      type: 'attraction',
-      location: 'غرداية',
-      imageUrl: 'https://picsum.photos/seed/p7/600/400',
-      rating: 4.8,
-      phone: '+213 29 789 012',
-      email: 'visit@mzab.dz',
-      address: 'https://maps.google.com/?q=MZAB+Valley+Ghardaia',
-    ),
-    const Place(
-      id: 'p8',
-      name: 'سوق الفلاح (بجاية)',
-      description:
-          'سوق تقليدي يقدم المحاصيل والحرف المحلية والسلع اليدوية القبائلية الأصيلة.',
-      type: 'store',
-      location: 'بجاية',
-      imageUrl: 'https://picsum.photos/seed/p8/600/400',
-      rating: 4.4,
-      phone: '+213 34 890 123',
-      email: 'info@soukelfellah.dz',
-      address: 'https://maps.google.com/?q=Souk+El+Fellah+Bejaia',
-    ),
-    const Place(
-      id: 'p9',
-      name: 'سوق الحرف بتيزي وزو',
-      description: 'سوق الحرف المحلية والنسيج في منطقة القبائل.',
-      type: 'store',
-      location: 'تيزي وزو',
-      imageUrl: 'https://picsum.photos/seed/p9/600/400',
-      rating: 4.3,
-      phone: '+213 26 901 234',
-      email: 'crafts@tiziouzou.dz',
-      address: 'https://maps.google.com/?q=Tizi+Ouzou+Crafts+Market',
-    ),
-    const Place(
-      id: 'p10',
-      name: 'مغامرة الصحراء (تمنراست)',
-      description:
-          'شركة تنظيم رحلات صحراوية توفر جولات في جبال الهقار ومناظر الصحراء الطبيعية.',
-      type: 'other',
-      location: 'تمنراست',
-      imageUrl: 'https://picsum.photos/seed/p10/600/400',
-      rating: 4.6,
-      phone: '+213 29 012 345',
-      email: 'bookings@saharaadventure.dz',
-      address: 'https://maps.google.com/?q=Tamanrasset+Sahara+Tours',
-    ),
-  ];
+  PlacesProvider() {
+    startListening();
+  }
+  final List<PointOfInterest> _all = [];
 
   String _query = '';
   final Set<String> _types = {}; // empty = all
   String _location = 'All';
 
-  List<Place> get allPlaces => List.unmodifiable(_all);
+  List<PointOfInterest> get allPlaces => List.unmodifiable(_all);
 
   // Managed, ordered list of recommended place ids for guests.
   // Initialize to top 3 by rating.
   final List<String> _recommendedIds = [];
 
-  List<Place> get recommended {
+  List<PointOfInterest> get recommended {
     // Build ordered list from ids. If empty, return top-rated defaults.
     if (_recommendedIds.isEmpty) {
-      final copy = List<Place>.from(_all);
+      final copy = List<PointOfInterest>.from(_all);
       copy.sort((a, b) => b.rating.compareTo(a.rating));
       return copy.take(3).toList();
     }
-    return _recommendedIds
-        .map((id) => _all.firstWhere((p) => p.id == id, orElse: () => _all[0]))
-        .toList();
+    return _recommendedIds.map((id) => _all.firstWhere((p) => p.id == id, orElse: () => _all[0])).toList();
   }
 
   bool isRecommended(String id) => _recommendedIds.contains(id);
 
-  void addRecommended(String id) {
-    if (!_recommendedIds.contains(id)) {
-      _recommendedIds.add(id);
-      notifyListeners();
-    }
+  void addRecommended(String id) async {
+    // Mark in Firestore (preferred) and local list will update via stream
+    try {
+      final poi = _all.firstWhere((p) => p.id == id);
+      final updated = PointOfInterest(
+        id: poi.id,
+        nameAR: poi.nameAR,
+        nameFR: poi.nameFR,
+        wilayaCode: poi.wilayaCode,
+        wilayaNameAR: poi.wilayaNameAR,
+        wilayaNameFR: poi.wilayaNameFR,
+        cityNameAR: poi.cityNameAR,
+        cityNameFR: poi.cityNameFR,
+        rating: poi.rating,
+        recommended: true,
+        category: poi.category,
+        phone: poi.phone,
+        email: poi.email,
+        imageUrl: poi.imageUrl,
+        description: poi.description,
+        locationLink: poi.locationLink,
+        facebookLink: poi.facebookLink,
+        instagramLink: poi.instagramLink,
+        tiktokLink: poi.tiktokLink,
+        createdAt: poi.createdAt,
+        updatedAt: DateTime.now(),
+      );
+      await FirebaseServices().updatePOI(updated);
+    } catch (_) {}
   }
 
-  void removeRecommended(String id) {
-    if (_recommendedIds.remove(id)) {
-      notifyListeners();
-    }
+  void removeRecommended(String id) async {
+    try {
+      final poi = _all.firstWhere((p) => p.id == id);
+      final updated = PointOfInterest(
+        id: poi.id,
+        nameAR: poi.nameAR,
+        nameFR: poi.nameFR,
+        wilayaCode: poi.wilayaCode,
+        wilayaNameAR: poi.wilayaNameAR,
+        wilayaNameFR: poi.wilayaNameFR,
+        cityNameAR: poi.cityNameAR,
+        cityNameFR: poi.cityNameFR,
+        rating: poi.rating,
+        recommended: false,
+        category: poi.category,
+        phone: poi.phone,
+        email: poi.email,
+        imageUrl: poi.imageUrl,
+        description: poi.description,
+        locationLink: poi.locationLink,
+        facebookLink: poi.facebookLink,
+        instagramLink: poi.instagramLink,
+        tiktokLink: poi.tiktokLink,
+        createdAt: poi.createdAt,
+        updatedAt: DateTime.now(),
+      );
+      await FirebaseServices().updatePOI(updated);
+    } catch (_) {}
   }
 
   void moveRecommended(int oldIndex, int newIndex) {
@@ -180,15 +102,14 @@ class PlacesProvider extends ChangeNotifier {
   }
 
   /// Delete a place by id (used by admin pages).
-  void deletePlace(String id) {
-    _all.removeWhere((p) => p.id == id);
-    notifyListeners();
+  Future<void> deletePlace(String id) async {
+    await FirebaseServices().deletePOI(id);
   }
 
   List<String> get availableLocations {
     final set = <String>{'All'};
     for (var p in _all) {
-      set.add(p.location);
+      set.add(p.cityNameFR);
     }
     return set.toList();
   }
@@ -216,20 +137,78 @@ class PlacesProvider extends ChangeNotifier {
 
   String get currentLocation => _location;
 
-  List<Place> get filteredPlaces {
+  List<PointOfInterest> get filteredPlaces {
     var list = _all.where((p) {
-      final matchesQuery =
-          _query.isEmpty ||
-          p.name.toLowerCase().contains(_query) ||
-          p.description.toLowerCase().contains(_query);
-      final matchesType = _types.isEmpty || _types.contains(p.type);
-      final matchesLocation = _location == 'All' || p.location == _location;
+      final matchesQuery = _query.isEmpty || p.nameFR.toLowerCase().contains(_query) || (p.description ?? '').toLowerCase().contains(_query);
+      final matchesType = _types.isEmpty || _types.contains(p.category.name);
+      final matchesLocation = _location == 'All' || p.cityNameFR == _location;
       return matchesQuery && matchesType && matchesLocation;
     }).toList();
     list.sort((a, b) => b.rating.compareTo(a.rating));
     return list;
   }
 
-  Place? byId(String id) =>
-      _all.firstWhere((p) => p.id == id, orElse: () => _all[0]);
+  PointOfInterest? byId(String id) {
+    try {
+      return _all.firstWhere((p) => p.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  // --- Firestore subscription
+  StreamSubscription<List<PointOfInterest>>? _subscription;
+
+  final FirebaseServices _svc = FirebaseServices();
+
+  void startListening() {
+    // If already listening, do nothing
+    if (_subscription != null) return;
+    _subscription = _svc.streamPOIs().listen((list) {
+      _all
+        ..clear()
+        ..addAll(list);
+      notifyListeners();
+    });
+  }
+
+  void stopListening() {
+    _subscription?.cancel();
+    _subscription = null;
+  }
+
+  @override
+  void dispose() {
+    stopListening();
+    super.dispose();
+  }
+
+  /// Toggle recommended status (update in Firestore).
+  Future<void> toggleRecommended(String id) async {
+    final poi = _all.firstWhere((p) => p.id == id, orElse: () => throw StateError('POI not found'));
+    final updated = PointOfInterest(
+      id: poi.id,
+      nameAR: poi.nameAR,
+      nameFR: poi.nameFR,
+      wilayaCode: poi.wilayaCode,
+      wilayaNameAR: poi.wilayaNameAR,
+      wilayaNameFR: poi.wilayaNameFR,
+      cityNameAR: poi.cityNameAR,
+      cityNameFR: poi.cityNameFR,
+      rating: poi.rating,
+      recommended: !poi.recommended,
+      category: poi.category,
+      phone: poi.phone,
+      email: poi.email,
+      imageUrl: poi.imageUrl,
+      description: poi.description,
+      locationLink: poi.locationLink,
+      facebookLink: poi.facebookLink,
+      instagramLink: poi.instagramLink,
+      tiktokLink: poi.tiktokLink,
+      createdAt: poi.createdAt,
+      updatedAt: DateTime.now(),
+    );
+    await _svc.updatePOI(updated);
+  }
 }

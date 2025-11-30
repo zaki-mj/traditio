@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/place.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/favorites_provider.dart';
 import '../../theme/app_colors.dart';
 
 class PlaceCard extends StatelessWidget {
-  final Place place;
+  final PointOfInterest place;
   final VoidCallback? onTap;
   final bool enableHero;
 
-  const PlaceCard({
-    super.key,
-    required this.place,
-    this.onTap,
-    this.enableHero = true,
-  });
+  const PlaceCard({super.key, required this.place, this.onTap, this.enableHero = true});
 
   @override
   Widget build(BuildContext context) {
@@ -41,34 +37,23 @@ class PlaceCard extends StatelessWidget {
                         child: Image.network(
                           place.imageUrl,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) =>
-                              Container(color: Colors.grey[300]),
+                          errorBuilder: (_, __, ___) => Container(color: Colors.grey[300]),
                         ),
                       )
                     else
                       Image.network(
                         place.imageUrl,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) =>
-                            Container(color: Colors.grey[300]),
+                        errorBuilder: (_, __, ___) => Container(color: Colors.grey[300]),
                       ),
-                    Container(
-                      decoration: const BoxDecoration(
-                        gradient: AppColors.overlayGradient,
-                      ),
-                    ),
+                    Container(decoration: const BoxDecoration(gradient: AppColors.overlayGradient)),
                     Positioned(
                       left: 12,
                       bottom: 12,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            '${place.location} • ${place.type}',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: Colors.white70,
-                            ),
-                          ),
+                          Text('${Localizations.localeOf(context).languageCode == 'ar' ? place.cityNameAR : place.cityNameFR} • ${AppLocalizations(Localizations.localeOf(context)).translate('type_${place.category.name}')}', style: theme.textTheme.bodySmall?.copyWith(color: Colors.white70)),
                         ],
                       ),
                     ),
@@ -77,31 +62,20 @@ class PlaceCard extends StatelessWidget {
                       right: 8,
                       child: Consumer<FavoritesProvider>(
                         builder: (ctx, favs, _) {
-                          final isFav = favs.isFavorite(place.id);
+                          final id = place.id;
+                          final isFav = id != null && favs.isFavorite(id);
                           return Material(
                             color: Colors.black26,
                             shape: const CircleBorder(),
                             child: InkWell(
                               customBorder: const CircleBorder(),
-                              onTap: () => favs.toggle(place.id),
+                              onTap: id == null ? null : () => favs.toggle(id),
                               child: Padding(
                                 padding: const EdgeInsets.all(6.0),
                                 child: AnimatedSwitcher(
                                   duration: const Duration(milliseconds: 300),
-                                  transitionBuilder: (child, anim) =>
-                                      ScaleTransition(
-                                        scale: anim,
-                                        child: child,
-                                      ),
-                                  child: Icon(
-                                    isFav
-                                        ? Icons.favorite
-                                        : Icons.favorite_border,
-                                    key: ValueKey<bool>(isFav),
-                                    color: isFav
-                                        ? theme.colorScheme.secondary
-                                        : Colors.white,
-                                  ),
+                                  transitionBuilder: (child, anim) => ScaleTransition(scale: anim, child: child),
+                                  child: Icon(isFav ? Icons.favorite : Icons.favorite_border, key: ValueKey<bool>(isFav), color: isFav ? theme.colorScheme.secondary : Colors.white),
                                 ),
                               ),
                             ),
@@ -119,24 +93,15 @@ class PlaceCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(place.name, style: theme.textTheme.titleMedium),
+                      Text(Localizations.localeOf(context).languageCode == 'ar' ? place.nameAR : place.nameFR, style: theme.textTheme.titleMedium),
                       const SizedBox(height: 6),
 
-                      Expanded(
-                        child: Text(
-                          place.description,
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
+                      Expanded(child: Text(place.description ?? '', maxLines: 3, overflow: TextOverflow.ellipsis)),
                       const SizedBox(height: 8),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Chip(
-                            label: Text(place.rating.toString()),
-                            backgroundColor: theme.colorScheme.onPrimaryFixedVariant,
-                          ),
+                          Chip(label: Text(place.rating.toString()), backgroundColor: theme.colorScheme.onPrimaryFixedVariant),
                           Icon(Icons.chevron_right, color: theme.hintColor),
                         ],
                       ),

@@ -6,6 +6,7 @@ class Place {
   final String location; // city or area
   final String imageUrl;
   final double rating;
+  final bool recommended;
   final String? phone;
   final String? email;
   final String? address;
@@ -13,13 +14,13 @@ class Place {
   final String? instagramUrl;
   final String? twitterUrl;
 
-  const Place({required this.id, required this.name, required this.description, required this.type, required this.location, required this.imageUrl, required this.rating, this.phone, this.email, this.address, this.facebookUrl, this.instagramUrl, this.twitterUrl});
+  const Place({required this.id, required this.name, required this.description, required this.type, required this.location, required this.imageUrl, required this.rating, this.recommended = false, this.phone, this.email, this.address, this.facebookUrl, this.instagramUrl, this.twitterUrl});
 }
 
 enum POICategory {
   hotel(1, 'hotel'),
   restaurant(2, 'restaurant'),
-  amusement(3, 'amusement'),
+  attraction(3, 'attraction'),
   store(4, 'store'),
   other(5, 'other');
 
@@ -48,6 +49,7 @@ class PointOfInterest {
 
   // Basic info
   final double rating;
+  final bool recommended;
   final POICategory category;
   final String? description;
 
@@ -78,6 +80,7 @@ class PointOfInterest {
     required this.cityNameAR,
     required this.cityNameFR,
     required this.rating,
+    this.recommended = false,
     required this.category,
     required this.phone,
     required this.email,
@@ -113,6 +116,7 @@ class PointOfInterest {
       'image_url': imageUrl,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
+      'recommended': recommended,
     };
   }
 
@@ -128,6 +132,7 @@ class PointOfInterest {
       cityNameAR: map['city_name_ar'] as String,
       cityNameFR: map['city_name_fr'] as String,
       rating: (map['rating'] as num).toDouble(),
+      recommended: map['recommended'] == null ? false : (map['recommended'] as bool),
       category: POICategory.fromValue(map['category'] as int),
       phone: map['phone'] as String,
       email: map['email'] as String,
