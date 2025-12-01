@@ -66,8 +66,7 @@ class AppLocalizations {
       'about': 'About',
       'slogan': 'Discover traditional places in Algeria',
       'about_title': 'About Traditional Gems',
-      'about_description':
-          'Traditional Gems is an app dedicated to discovering and exploring traditional and cultural places across Algeria. Our mission is to help you find authentic experiences and preserve cultural heritage.',
+      'about_description': 'Traditional Gems is an app dedicated to discovering and exploring traditional and cultural places across Algeria. Our mission is to help you find authentic experiences and preserve cultural heritage.',
       'technical_details': 'Technical Details',
       'app_version': 'Version',
       'app_version_number': '0.4.1',
@@ -80,14 +79,14 @@ class AppLocalizations {
       'login_title': 'Admin Login',
       'password': 'Password',
       'login_button': 'Login',
-      'welcome_description':
-          'Discover traditional touristic places: hotels, restaurants and more.',
+      'welcome_description': 'Discover traditional touristic places: hotels, restaurants and more.',
       'forgot_password': 'Forgot password?',
       'contact_developer': 'Please contact the developer',
       'switch_to_light_mode': 'Switch to light mode',
       'switch_to_dark_mode': 'Switch to dark mode',
-      'reset_filters_description':
-          'Reset all search filters and preferences to default.',
+      'reset_filters_description': 'Reset all search filters and preferences to default.',
+      'clear_favorites_description': 'Remove all saved favorites from the app. This action cannot be undone.',
+      'confirm_clear_favorites': 'Are you sure you want to clear all favorites?',
       'filters_cleared_successfully': 'Filters cleared successfully',
       'please_fill_required_fields': 'Please fill in all required fields',
       'place_created_successfully': 'Place created successfully!',
@@ -115,11 +114,8 @@ class AppLocalizations {
       'total': 'Total',
       'recommended_list': 'Recommended List',
       'drag_to_reorder': 'Drag to reorder',
-
-
     },
     'ar': {
-
       'app_title': 'جواهر تقليدية',
       'welcome': 'مرحبًا بك في جواهر تقليدية',
       'start_discovering': 'ابدأ الاكتشاف',
@@ -177,8 +173,7 @@ class AppLocalizations {
       'about': 'حول',
       'slogan': 'اكتشف الأماكن التقليدية في الجزائر',
       'about_title': 'حول جواهر تقليدية',
-      'about_description':
-          'جواهر تقليدية هو تطبيق مخصص لاكتشاف واستكشاف الأماكن التقليدية والثقافية عبر الجزائر. مهمتنا هي مساعدتك في العثور على تجارب أصلية والحفاظ على التراث الثقافي.',
+      'about_description': 'جواهر تقليدية هو تطبيق مخصص لاكتشاف واستكشاف الأماكن التقليدية والثقافية عبر الجزائر. مهمتنا هي مساعدتك في العثور على تجارب أصلية والحفاظ على التراث الثقافي.',
       'technical_details': 'التفاصيل التقنية',
       'app_version': 'الإصدار',
       'app_version_number': '0.4.1',
@@ -191,14 +186,14 @@ class AppLocalizations {
       'login_title': 'دخول المسؤول',
       'password': 'كلمة المرور',
       'login_button': 'دخول',
-      'welcome_description':
-          'اكتشف أماكن سياحية تقليدية: فنادق، مطاعم والمزيد.',
+      'welcome_description': 'اكتشف أماكن سياحية تقليدية: فنادق، مطاعم والمزيد.',
       'forgot_password': 'هل نسيت كلمة المرور؟',
       'contact_developer': 'يرجى الاتصال بالمطور',
       'switch_to_light_mode': 'التبديل إلى الوضع النهاري',
       'switch_to_dark_mode': 'التبديل إلى الوضع الليلي',
-      'reset_filters_description':
-          'إعادة جميع مرشحات البحث والتفضيلات إلى الافتراضي.',
+      'reset_filters_description': 'إعادة جميع مرشحات البحث والتفضيلات إلى الافتراضي.',
+      'clear_favorites_description': 'إزالة جميع المفضلات المحفوظة من التطبيق. هذا الإجراء لا يمكن التراجع عنه.',
+      'confirm_clear_favorites': 'هل أنت متأكد أنك تريد مسح جميع المفضلات؟',
       'filters_cleared_successfully': 'تم مسح عوامل التصفية بنجاح',
       'please_fill_required_fields': 'يرجى ملء جميع الحقول المطلوبة',
       'place_created_successfully': 'تم إنشاء المكان بنجاح!',
@@ -220,15 +215,13 @@ class AppLocalizations {
       'confirm_delete_place': 'هل أنت متأكد أنك تريد حذف "{name}"؟',
       'place_deleted': 'تم حذف {name}',
       'manage_recommended': 'إدارة الأماكن الموصى بها',
-  
+
       'stores': 'متاجر',
       'other': 'أخرى',
-      
+
       'location': 'الموقع',
       'recommended_list': 'قائمة الموصى بهم',
       'drag_to_reorder': 'اسحب لإعادة الترتيب',
-
-      
     },
     'fr': {
       'app_title': 'Trésors Traditionnels',
@@ -284,8 +277,7 @@ class AppLocalizations {
       'about': 'À Propos',
       'slogan': 'Découvrez des lieux traditionnels en Algérie',
       'about_title': 'À Propos de Trésors Traditionnels',
-      'about_description':
-          'Trésors Traditionnels est une application dédiée à la découverte et l\'exploration des lieux traditionnels et culturels en Algérie. Notre mission est de vous aider à trouver des expériences authentiques et de préserver le patrimoine culturel.',
+      'about_description': 'Trésors Traditionnels est une application dédiée à la découverte et l\'exploration des lieux traditionnels et culturels en Algérie. Notre mission est de vous aider à trouver des expériences authentiques et de préserver le patrimoine culturel.',
       'technical_details': 'Détails Techniques',
       'app_version': 'Version',
       'app_version_number': '0.4.1',
@@ -298,14 +290,14 @@ class AppLocalizations {
       'login_title': 'Connexion Admin',
       'password': 'Mot de Passe',
       'login_button': 'Connexion',
-      'welcome_description':
-          'Découvrez des lieux touristiques traditionnels : hôtels, restaurants et plus.',
+      'welcome_description': 'Découvrez des lieux touristiques traditionnels : hôtels, restaurants et plus.',
       'forgot_password': 'Mot de passe oublié ?',
       'contact_developer': 'Veuillez contacter le développeur',
       'switch_to_light_mode': 'Basculer en mode clair',
       'switch_to_dark_mode': 'Basculer en mode sombre',
-      'reset_filters_description':
-          'Réinitialiser tous les filtres de recherche et préférences par défaut.',
+      'reset_filters_description': 'Réinitialiser tous les filtres de recherche et préférences par défaut.',
+      'clear_favorites_description': 'Supprimer tous les favoris enregistrés dans l\'application. Cette action est irréversible.',
+      'confirm_clear_favorites': 'Êtes-vous sûr de vouloir supprimer tous les favoris ?',
       'filters_cleared_successfully': 'Filtres effacés avec succès',
       'please_fill_required_fields': 'Veuillez remplir tous les champs requis',
       'place_created_successfully': 'Lieu créé avec succès !',
@@ -330,28 +322,19 @@ class AppLocalizations {
   };
 
   String translate(String key) {
-    return _translations[locale.languageCode]?[key] ??
-        _translations['ar']?[key] ??
-        key;
+    return _translations[locale.languageCode]?[key] ?? _translations['ar']?[key] ?? key;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
-  static List<Locale> get supportedLocales => const [
-    Locale('ar'),
-    Locale('en'),
-    Locale('fr'),
-  ];
+  static List<Locale> get supportedLocales => const [Locale('ar'), Locale('en'), Locale('fr')];
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
-  bool isSupported(Locale locale) =>
-      ['en', 'ar', 'fr'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => ['en', 'ar', 'fr'].contains(locale.languageCode);
 
   @override
   Future<AppLocalizations> load(Locale locale) {
@@ -360,6 +343,5 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool shouldReload(covariant LocalizationsDelegate<AppLocalizations> old) =>
-      false;
+  bool shouldReload(covariant LocalizationsDelegate<AppLocalizations> old) => false;
 }

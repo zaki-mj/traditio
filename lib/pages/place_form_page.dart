@@ -59,7 +59,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
     _emailController = TextEditingController(text: place?.email ?? '');
     _addressController = TextEditingController(text: place?.locationLink ?? '');
     _facebookController = TextEditingController(text: place?.facebookLink ?? '');
-    _twitterController = TextEditingController(text: '');
+    _instagramController = TextEditingController(text: place?.instagramLink ?? '');
     _twitterController = TextEditingController(text: place?.tiktokLink ?? '');
     _imageUrlController = TextEditingController(text: place?.imageUrl ?? '');
     _ratingController = TextEditingController(text: place?.rating.toString() ?? '4.0');

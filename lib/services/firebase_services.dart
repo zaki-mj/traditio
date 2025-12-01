@@ -31,6 +31,13 @@ class FirebaseServices {
     });
   }
 
+  /// Stream only POIs that are marked as recommended.
+  Stream<List<PointOfInterest>> streamRecommendedPOIs() {
+    return _firestore.collection(poiCollection).where('recommended', isEqualTo: true).snapshots().map((snap) {
+      return snap.docs.map((d) => PointOfInterest.fromMap(d.data(), d.id)).toList();
+    });
+  }
+
   /// Get a single POI stream by id
   Stream<PointOfInterest?> streamPOIById(String id) {
     return _firestore.collection(poiCollection).doc(id).snapshots().map((doc) {

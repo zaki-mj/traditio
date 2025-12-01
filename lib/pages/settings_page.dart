@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../providers/theme_provider.dart';
 import '../providers/locale_provider.dart';
-import '../providers/places_provider.dart';
+import '../providers/favorites_provider.dart';
 import '../theme/app_colors.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -15,10 +15,7 @@ class SettingsPage extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loc.translate('settings_title')),
-        elevation: 0,
-      ),
+      appBar: AppBar(title: Text(loc.translate('settings_title')), elevation: 0),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(16.0),
@@ -26,9 +23,7 @@ class SettingsPage extends StatelessWidget {
             // Theme Settings Section
             Card(
               elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -37,28 +32,9 @@ class SettingsPage extends StatelessWidget {
                     // Theme Toggle
                     Consumer<ThemeProvider>(
                       builder: (context, themeProvider, _) => SwitchListTile(
-                        secondary: Icon(
-                          themeProvider.isDark
-                              ? Icons.dark_mode
-                              : Icons.light_mode,
-                          color: AppColors.primary,
-                        ),
-                        title: Text(
-                          themeProvider.isDark
-                              ? loc.translate('dark_mode')
-                              : loc.translate('light_mode'),
-                          style: theme.textTheme.bodyLarge,
-                        ),
-                        subtitle: Text(
-                          themeProvider.isDark
-                              ? loc.translate('switch_to_light_mode')
-                              : loc.translate('switch_to_dark_mode'),
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurface.withValues(
-                              alpha: 0.6,
-                            ),
-                          ),
-                        ),
+                        secondary: Icon(themeProvider.isDark ? Icons.dark_mode : Icons.light_mode, color: AppColors.primary),
+                        title: Text(themeProvider.isDark ? loc.translate('dark_mode') : loc.translate('light_mode'), style: theme.textTheme.bodyLarge),
+                        subtitle: Text(themeProvider.isDark ? loc.translate('switch_to_light_mode') : loc.translate('switch_to_dark_mode'), style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
                         value: themeProvider.isDark,
                         onChanged: (_) => themeProvider.toggleTheme(),
                       ),
@@ -70,25 +46,9 @@ class SettingsPage extends StatelessWidget {
                     Consumer<LocaleProvider>(
                       builder: (context, localeProvider, _) => ListTile(
                         leading: Icon(Icons.language, color: AppColors.primary),
-                        title: Text(
-                          _getLanguageName(localeProvider.locale.languageCode),
-                          style: theme.textTheme.bodyLarge,
-                        ),
-                        subtitle: Text(
-                          loc.translate('change_language'),
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurface.withValues(
-                              alpha: 0.6,
-                            ),
-                          ),
-                        ),
-                        trailing: Icon(
-                          Icons.arrow_forward_ios,
-                          color: theme.colorScheme.onSurface.withValues(
-                            alpha: 0.5,
-                          ),
-                          size: 16,
-                        ),
+                        title: Text(_getLanguageName(localeProvider.locale.languageCode), style: theme.textTheme.bodyLarge),
+                        subtitle: Text(loc.translate('change_language'), style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
+                        trailing: Icon(Icons.arrow_forward_ios, color: theme.colorScheme.onSurface.withValues(alpha: 0.5), size: 16),
                         onTap: () {
                           _showLanguageDialog(context, localeProvider, loc);
                         },
@@ -100,57 +60,50 @@ class SettingsPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // Clear Filters Section
+            // Clear all favorites Section
             Card(
               elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      loc.translate('clear_filters'),
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      loc.translate('clear_all_favorites'),
+                      style: theme.textTheme.titleLarge?.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 12),
-                    Text(
-                      loc.translate('reset_filters_description'),
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(
-                          alpha: 0.7,
-                        ),
-                      ),
-                    ),
+                    Text(loc.translate('clear_favorites_description'), style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.7))),
                     const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
-                        onPressed: () {
-                          final placesProv = context.read<PlacesProvider>();
-                          // Reset filters
-                          placesProv.setLocation('All');
-                          // Remove all types
-                          for (var t in ['hotel', 'restaurant', 'attraction']) {
-                            if (placesProv.isTypeSelected(t)) {
-                              placesProv.toggleType(t);
-                            }
-                          }
-                          placesProv.setSearchQuery('');
+                        onPressed: () async {
+                          final favProv = context.read<FavoritesProvider>();
+                          final messenger = ScaffoldMessenger.of(context);
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                loc.translate('filters_cleared_successfully'),
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: Colors.white,
+                          final confirmed =
+                              await showDialog<bool>(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: Text(loc.translate('clear_all_favorites')),
+                                  content: Text(loc.translate('confirm_clear_favorites')),
+                                  actions: [
+                                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(loc.translate('cancel'))),
+                                    FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(loc.translate('clear_all_favorites'))),
+                                  ],
                                 ),
-                              ),
+                              ) ??
+                              false;
+
+                          if (!confirmed) return;
+
+                          favProv.clearAll();
+
+                          messenger.showSnackBar(
+                            SnackBar(
+                              content: Text(loc.translate('favorites_cleared'), style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white)),
                               backgroundColor: Colors.green.shade600,
                               duration: const Duration(seconds: 2),
                             ),
@@ -160,12 +113,10 @@ class SettingsPage extends StatelessWidget {
                           backgroundColor: Colors.orange,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                         ),
                         icon: const Icon(Icons.clear_all),
-                        label: Text(loc.translate('clear_filters')),
+                        label: Text(loc.translate('clear_all_favorites')),
                       ),
                     ),
                   ],
@@ -180,19 +131,13 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  void _showLanguageDialog(
-    BuildContext context,
-    LocaleProvider localeProvider,
-    AppLocalizations loc,
-  ) {
+  void _showLanguageDialog(BuildContext context, LocaleProvider localeProvider, AppLocalizations loc) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(loc.translate('change_language')),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[

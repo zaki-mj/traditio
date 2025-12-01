@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../providers/places_provider.dart';
 import '../providers/admin_provider.dart';
-import '../providers/favorites_provider.dart';
 import '../theme/app_colors.dart';
 import '../l10n/app_localizations.dart';
 import 'place_form_page.dart';
@@ -16,7 +15,7 @@ class AdminListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final adminProv = context.watch<AdminProvider>();
     final placesProv = context.watch<PlacesProvider>();
-    final favsProv = context.watch<FavoritesProvider>();
+    // admin does not need the favorites provider here
     final theme = Theme.of(context);
     final loc = AppLocalizations(Localizations.localeOf(context));
 
@@ -165,8 +164,9 @@ class AdminListPage extends StatelessWidget {
                                       IconButton(
                                         padding: EdgeInsets.zero,
                                         constraints: const BoxConstraints(),
-                                        icon: Icon(p.id != null && favsProv.isFavorite(p.id!) ? Icons.star : Icons.star_border, color: p.id != null && favsProv.isFavorite(p.id!) ? Colors.amber : Colors.grey.shade600),
-                                        onPressed: p.id == null ? null : () => favsProv.toggle(p.id!),
+                                        // Admin toggles the recommended flag on the POI
+                                        icon: Icon(p.id != null && placesProv.isRecommended(p.id!) ? Icons.star : Icons.star_border, color: p.id != null && placesProv.isRecommended(p.id!) ? Colors.amber : Colors.grey.shade600),
+                                        onPressed: p.id == null ? null : () => placesProv.toggleRecommended(p.id!),
                                       ),
                                     ],
                                   ),

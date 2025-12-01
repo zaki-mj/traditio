@@ -16,21 +16,21 @@ class PlacesProvider extends ChangeNotifier {
 
   List<PointOfInterest> get allPlaces => List.unmodifiable(_all);
 
-  // Managed, ordered list of recommended place ids for guests.
-  // Initialize to top 3 by rating.
-  final List<String> _recommendedIds = [];
-
+  // Recommended places are those where the POI has its `recommended` flag set.
   List<PointOfInterest> get recommended {
-    // Build ordered list from ids. If empty, return top-rated defaults.
-    if (_recommendedIds.isEmpty) {
+    final rec = _all.where((p) => p.recommended).toList();
+    if (rec.isEmpty) {
+      // If there are no explicit recommended flags, return the top 3 by rating as a fallback
       final copy = List<PointOfInterest>.from(_all);
       copy.sort((a, b) => b.rating.compareTo(a.rating));
       return copy.take(3).toList();
     }
-    return _recommendedIds.map((id) => _all.firstWhere((p) => p.id == id, orElse: () => _all[0])).toList();
+    // sort recommended by rating desc (you can change ordering if needed)
+    rec.sort((a, b) => b.rating.compareTo(a.rating));
+    return rec;
   }
 
-  bool isRecommended(String id) => _recommendedIds.contains(id);
+  bool isRecommended(String id) => _all.any((p) => p.id == id && p.recommended);
 
   void addRecommended(String id) async {
     // Mark in Firestore (preferred) and local list will update via stream
@@ -93,13 +93,8 @@ class PlacesProvider extends ChangeNotifier {
     } catch (_) {}
   }
 
-  void moveRecommended(int oldIndex, int newIndex) {
-    if (oldIndex < 0 || oldIndex >= _recommendedIds.length) return;
-    if (newIndex < 0 || newIndex >= _recommendedIds.length) return;
-    final item = _recommendedIds.removeAt(oldIndex);
-    _recommendedIds.insert(newIndex, item);
-    notifyListeners();
-  }
+  // moveRecommended isn't meaningful when recommendations are stored as flags;
+  // ordering should be handled explicitly in Firestore or by a separate ordering field if needed.
 
   /// Delete a place by id (used by admin pages).
   Future<void> deletePlace(String id) async {

@@ -41,6 +41,8 @@
     "search": "بحث",
     "dark_mode": "الوضع الليلي",
     "clear_all_favorites": "مسح جميع المفضلات",
+    "clear_favorites_description": "إزالة جميع المفضلات المحفوظة من التطبيق. هذا الإجراء لا يمكن التراجع عنه.",
+    "confirm_clear_favorites": "هل أنت متأكد أنك تريد مسح جميع المفضلات؟",
     "light_mode": "الوضع النهاري",
     "cancel": "إلغاء"
 }

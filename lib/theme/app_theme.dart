@@ -19,10 +19,15 @@ class AppTheme {
   static ThemeData lightTheme = ThemeData(
     colorScheme: _lightScheme,
     primaryColor: _lightScheme.primary,
-    scaffoldBackgroundColor: _lightScheme.surface,
+    // scaffold is a soft background, keep surface for cards and panels
+    scaffoldBackgroundColor: AppColors.background,
     appBarTheme: const AppBarTheme(elevation: 0, centerTitle: false),
     // Make cards and popups visually separated from page background
-    cardTheme: CardThemeData(color: _lightScheme.surface, elevation: 2, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+    cardTheme: CardThemeData(
+      color: _lightScheme.surface,
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
     bottomAppBarTheme: const BottomAppBarThemeData(color: AppColors.bottomNavLight, elevation: 8),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: AppColors.bottomNavLight, selectedItemColor: _lightScheme.primary, unselectedItemColor: Colors.grey[600], elevation: 8),
     // Card styling handled locally in widgets for maximum compatibility across SDKs.
@@ -42,9 +47,14 @@ class AppTheme {
   static ThemeData darkTheme = ThemeData(
     colorScheme: _darkScheme,
     primaryColor: _darkScheme.primary,
-    scaffoldBackgroundColor: _darkScheme.surface,
+    // dark scaffold background is darker than the elevated surfaces
+    scaffoldBackgroundColor: AppColors.backgroundDark,
     appBarTheme: const AppBarTheme(elevation: 0),
-    cardTheme: CardThemeData(color: _darkScheme.surface, elevation: 2, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+    cardTheme: CardThemeData(
+      color: _darkScheme.surface,
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
     bottomAppBarTheme: const BottomAppBarThemeData(color: AppColors.bottomNavDark, elevation: 8),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: AppColors.bottomNavDark, selectedItemColor: _darkScheme.primary, unselectedItemColor: Colors.grey[400], elevation: 8),
     // Card styling handled locally in widgets for maximum compatibility across SDKs.

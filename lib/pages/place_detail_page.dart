@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/place.dart';
+import '../widgets/category_image.dart';
 import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../providers/favorites_provider.dart';
@@ -63,12 +64,7 @@ class PlaceDetailPage extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(32), bottomRight: Radius.circular(32)),
-            child: Image.network(
-              place.imageUrl,
-              height: 220,
-              fit: BoxFit.cover,
-              errorBuilder: (c, e, s) => Container(height: 220, color: theme.colorScheme.surfaceContainerHighest, child: const Icon(Icons.image, size: 80)),
-            ),
+            child: CategoryImage(imageUrl: place.imageUrl, category: place.category, height: 220, fit: BoxFit.cover, enableHero: true, heroTag: 'place_image_${place.id}'),
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -231,9 +227,83 @@ class PlaceDetailPage extends StatelessWidget {
                     ),
                   ),
                 const SizedBox(height: 16),
+
+                // Social links card (Facebook, Instagram, TikTok)
+                Card(
+                  color: theme.colorScheme.surface,
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          loc.translate('social'),
+                          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            // Facebook
+                            _SocialIconButton(
+                              assetPath: 'assets/pictures/facebook.png',
+                              tooltip: 'Facebook',
+                              enabled: place.facebookLink != null && place.facebookLink!.isNotEmpty,
+                              onTap: () => _launchURL(context, place.facebookLink, fallbackMessage: loc.translate('link_not_available')),
+                            ),
+
+                            // Instagram
+                            _SocialIconButton(
+                              assetPath: 'assets/pictures/instagram.png',
+                              tooltip: 'Instagram',
+                              enabled: place.instagramLink != null && place.instagramLink!.isNotEmpty,
+                              onTap: () => _launchURL(context, place.instagramLink, fallbackMessage: loc.translate('link_not_available')),
+                            ),
+
+                            // TikTok
+                            _SocialIconButton(
+                              assetPath: 'assets/pictures/tiktok.png',
+                              tooltip: 'TikTok',
+                              enabled: place.tiktokLink != null && place.tiktokLink!.isNotEmpty,
+                              onTap: () => _launchURL(context, place.tiktokLink, fallbackMessage: loc.translate('link_not_available')),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SocialIconButton extends StatelessWidget {
+  final String assetPath;
+  final String tooltip;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  const _SocialIconButton({super.key, required this.assetPath, required this.tooltip, required this.enabled, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations(Localizations.localeOf(context));
+    return InkWell(
+      onTap: enabled ? onTap : () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.translate('link_not_available')))),
+      borderRadius: BorderRadius.circular(8),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset(assetPath, width: 48, height: 48, color: enabled ? null : Colors.grey.withAlpha(120)),
+          const SizedBox(height: 6),
+          Text(tooltip, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: enabled ? null : Colors.grey)),
         ],
       ),
     );

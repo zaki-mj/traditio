@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/place.dart';
 import '../../l10n/app_localizations.dart';
+import '../category_image.dart';
 import '../../providers/favorites_provider.dart';
 import '../../theme/app_colors.dart';
 
@@ -31,21 +32,7 @@ class PlaceCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    if (enableHero)
-                      Hero(
-                        tag: 'place_image_${place.id}',
-                        child: Image.network(
-                          place.imageUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(color: Colors.grey[300]),
-                        ),
-                      )
-                    else
-                      Image.network(
-                        place.imageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(color: Colors.grey[300]),
-                      ),
+                    CategoryImage(imageUrl: place.imageUrl, category: place.category, enableHero: enableHero, heroTag: enableHero ? 'place_image_${place.id}' : null, fit: BoxFit.cover),
                     Container(decoration: const BoxDecoration(gradient: AppColors.overlayGradient)),
                     Positioned(
                       left: 12,

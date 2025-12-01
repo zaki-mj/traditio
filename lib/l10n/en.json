@@ -41,6 +41,8 @@
     "search": "Search",
     "dark_mode": "Dark Mode",
     "clear_all_favorites": "Clear All Favorites",
+    "clear_favorites_description": "Remove all saved favorites from the app. This action cannot be undone.",
+    "confirm_clear_favorites": "Are you sure you want to clear all favorites?",
     "light_mode": "Light Mode",
     "cancel": "Cancel"
 }

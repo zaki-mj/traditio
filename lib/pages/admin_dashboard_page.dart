@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:traditional_gems/l10n/app_localizations.dart';
+import '../services/firebase_services.dart';
+import '../models/place.dart';
+import '../widgets/category_image.dart';
 import '../providers/places_provider.dart';
 import '../theme/app_colors.dart';
 
@@ -103,45 +106,50 @@ class AdminDashboardPage extends StatelessWidget {
           const SizedBox(height: 12),
           Consumer<PlacesProvider>(
             builder: (ctx, prov, _) {
-              final rec = prov.recommended;
+              return StreamBuilder<List<PointOfInterest>>(
+                stream: FirebaseServices().streamRecommendedPOIs(),
+                builder: (sctx, snap) {
+                  final rec = snap.hasData ? snap.data! : prov.recommended;
 
-              return Card(
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      SizedBox(
-                        height: 220,
-                        child: ReorderableListView.builder(
-                          onReorder: (oldIndex, newIndex) {
-                            if (newIndex > oldIndex) newIndex -= 1;
-                            prov.moveRecommended(oldIndex, newIndex);
-                          },
-                          itemCount: rec.length,
-                          buildDefaultDragHandles: true,
-                          itemBuilder: (context, index) {
-                            final p = rec[index];
-                            return ListTile(
-                              key: ValueKey(p.id),
-                              leading: SizedBox(
-                                width: 56,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.network(p.imageUrl, fit: BoxFit.cover),
+                  return Card(
+                    elevation: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: rec.isEmpty
+                            ? [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 24.0),
+                                  child: Center(child: Text(loc.translate('no_places_found'))),
                                 ),
-                              ),
-                              title: Text(Localizations.localeOf(context).languageCode == 'ar' ? p.nameAR : p.nameFR),
-                              subtitle: Text("معالم سياحية"),
-                              trailing: IconButton(icon: const Icon(Icons.delete_outline), onPressed: p.id == null ? null : () => prov.removeRecommended(p.id!)),
-                            );
-                          },
-                        ),
+                              ]
+                            : rec.map((p) {
+                                final title = Localizations.localeOf(context).languageCode == 'ar' ? p.nameAR : p.nameFR;
+                                return Padding(
+                                  key: ValueKey(p.id),
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Row(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: SizedBox(
+                                          width: 72,
+                                          height: 72,
+                                          child: CategoryImage(imageUrl: p.imageUrl, category: p.category, fit: BoxFit.cover),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(child: Text(title, style: theme.textTheme.titleMedium)),
+                                      IconButton(icon: const Icon(Icons.delete_outline), onPressed: p.id == null ? null : () => prov.removeRecommended(p.id!)),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               );
             },
           ),
