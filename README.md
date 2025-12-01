@@ -48,7 +48,7 @@ Supported languages:
 ---
 ## Documentation
 
-- [Presentation Slides](docs/presentation.pptx)
+- [Technical sheet(outdated)](docs/technical_sheet(outdated).pdf)
 
 ---
 
@@ -60,4 +60,4 @@ Built with 💙 by [Zaki MJ](https://github.com/zaki-mj)
 
 ## License
 
-All rights reserved — see the [LICENSE](./LICENSE) file for terms.
+All rights reserved, see the [LICENSE](./LICENSE) file for terms.
