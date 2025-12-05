@@ -4,7 +4,7 @@ import '../models/place.dart';
 /// Shows either a network image (when an URL is provided) or a simple
 /// category icon placeholder when no image link is available.
 class CategoryImage extends StatelessWidget {
-  final String imageUrl;
+  final String? imageUrl;
   final POICategory category;
   final double? width;
   final double? height;
@@ -16,9 +16,8 @@ class CategoryImage extends StatelessWidget {
   const CategoryImage({super.key, required this.imageUrl, required this.category, this.width, this.height, this.fit = BoxFit.cover, this.borderRadius, this.enableHero = false, this.heroTag});
 
   // Consider the image present only when a non-empty URL is provided.
-  // We intentionally do NOT treat placeholder URLs (e.g. picsum) as "missing" here —
-  // the fallback should only happen when the stored link is empty.
-  bool get _hasImage => imageUrl.trim().isNotEmpty;
+  // Null or empty strings will show the fallback icon.
+  bool get _hasImage => imageUrl != null && imageUrl!.trim().isNotEmpty;
 
   IconData _iconForCategory() {
     switch (category) {
@@ -43,7 +42,7 @@ class CategoryImage extends StatelessWidget {
     Widget child;
 
     if (_hasImage) {
-      child = Image.network(imageUrl, width: width, height: height, fit: fit, errorBuilder: (c, e, s) => _buildFallback(theme));
+      child = Image.network(imageUrl!, width: width, height: height, fit: fit, errorBuilder: (c, e, s) => _buildFallback(theme));
     } else {
       child = _buildFallback(theme);
     }

@@ -64,7 +64,7 @@ class PointOfInterest {
   final String? tiktokLink;
 
   // Media
-  final String imageUrl;
+  final String? imageUrl;
 
   // Timestamps (useful for sorting/filtering)
   final DateTime? createdAt;
@@ -84,7 +84,7 @@ class PointOfInterest {
     required this.category,
     required this.phone,
     required this.email,
-    required this.imageUrl,
+    this.imageUrl,
     this.description,
     this.locationLink,
     this.facebookLink,
@@ -136,7 +136,7 @@ class PointOfInterest {
       category: POICategory.fromValue(map['category'] as int),
       phone: map['phone'] as String,
       email: map['email'] as String,
-      imageUrl: map['image_url'] as String,
+      imageUrl: map['image_url'] as String?,
       description: map['description'] as String?,
       locationLink: map['location_link'] as String?,
       facebookLink: map['facebook_link'] as String?,

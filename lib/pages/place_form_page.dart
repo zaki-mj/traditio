@@ -61,7 +61,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
     _facebookController = TextEditingController(text: place?.facebookLink ?? '');
     _instagramController = TextEditingController(text: place?.instagramLink ?? '');
     _twitterController = TextEditingController(text: place?.tiktokLink ?? '');
-    _imageUrlController = TextEditingController(text: place?.imageUrl ?? '');
+    _imageUrlController = TextEditingController(text: place?.imageUrl?.isNotEmpty ?? false ? place!.imageUrl : '');
     _ratingController = TextEditingController(text: place?.rating.toString() ?? '4.0');
     _selectedType = place != null ? place.category.name : 'hotel';
 
@@ -170,7 +170,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
         category: POICategory.fromValue(['hotel', 'restaurant', 'attraction', 'store', 'other'].indexOf(_selectedType) + 1),
         phone: _phoneController.text.trim(),
         email: _emailController.text.trim(),
-        imageUrl: _imageUrlController.text.isNotEmpty ? _imageUrlController.text.trim() : 'https://picsum.photos/seed/${_nameFRController.text.replaceAll(' ', '_')}/600/400',
+        imageUrl: _imageUrlController.text.isNotEmpty ? _imageUrlController.text.trim() : null,
         description: _descriptionController.text.trim().isNotEmpty ? _descriptionController.text.trim() : null,
         locationLink: _addressController.text.trim().isNotEmpty ? _addressController.text.trim() : null,
         facebookLink: _facebookController.text.trim().isNotEmpty ? _facebookController.text.trim() : null,

@@ -90,7 +90,7 @@ class PlaceDetailPage extends StatelessWidget {
                           children: [
                             Icon(Icons.location_on, color: theme.colorScheme.primary),
                             const SizedBox(width: 6),
-                            Expanded(child: Text(Localizations.localeOf(context).languageCode == 'ar' ? place.cityNameAR : place.cityNameFR, style: theme.textTheme.bodyLarge)),
+                            Expanded(child: Text(Localizations.localeOf(context).languageCode == 'ar' ? (place.cityNameAR + '، ' + place.wilayaNameAR) : (place.cityNameFR + ', ' + place.wilayaNameFR), style: theme.textTheme.bodyLarge)),
                           ],
                         ),
                         const SizedBox(height: 12),

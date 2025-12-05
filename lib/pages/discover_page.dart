@@ -85,11 +85,17 @@ class DiscoverPage extends StatelessWidget {
                                 child: Stack(
                                   fit: StackFit.expand,
                                   children: [
-                                    Image.network(
-                                      p.imageUrl,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) => Container(color: Theme.of(context).colorScheme.surface),
-                                    ),
+                                    p.imageUrl != null && p.imageUrl!.isNotEmpty
+                                        ? Image.network(
+                                            p.imageUrl!,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (_, __, ___) => Container(color: Theme.of(context).colorScheme.surface),
+                                          )
+                                        : Container(
+                                            color: _categoryColor(p.category).withAlpha(30),
+                                            alignment: Alignment.center,
+                                            child: Icon(_categoryIcon(p.category), size: 48, color: _categoryColor(p.category)),
+                                          ),
                                     Container(decoration: const BoxDecoration(gradient: AppColors.overlayGradient)),
                                     Positioned(
                                       left: 12,
@@ -142,5 +148,35 @@ class DiscoverPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(child: const Icon(Icons.tune), onPressed: () => Navigator.of(context).pushNamed('/settings')),
     );
+  }
+
+  IconData _categoryIcon(POICategory category) {
+    switch (category) {
+      case POICategory.hotel:
+        return Icons.hotel;
+      case POICategory.restaurant:
+        return Icons.restaurant;
+      case POICategory.attraction:
+        return Icons.attractions;
+      case POICategory.store:
+        return Icons.store;
+      case POICategory.other:
+        return Icons.more_horiz;
+    }
+  }
+
+  Color _categoryColor(POICategory category) {
+    switch (category) {
+      case POICategory.hotel:
+        return Colors.blue;
+      case POICategory.restaurant:
+        return Colors.orange;
+      case POICategory.attraction:
+        return Colors.green;
+      case POICategory.store:
+        return Colors.purple;
+      case POICategory.other:
+        return Colors.grey;
+    }
   }
 }

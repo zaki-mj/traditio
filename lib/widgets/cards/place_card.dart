@@ -40,7 +40,7 @@ class PlaceCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('${Localizations.localeOf(context).languageCode == 'ar' ? place.cityNameAR : place.cityNameFR} • ${AppLocalizations(Localizations.localeOf(context)).translate('type_${place.category.name}')}', style: theme.textTheme.bodySmall?.copyWith(color: Colors.white70)),
+                          Text('${Localizations.localeOf(context).languageCode == 'ar' ? place.wilayaNameAR : place.wilayaNameFR} • ${AppLocalizations(Localizations.localeOf(context)).translate('type_${place.category.name}')}', style: theme.textTheme.bodySmall?.copyWith(color: Colors.white70)),
                         ],
                       ),
                     ),

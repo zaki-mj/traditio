@@ -106,7 +106,7 @@ class AboutPage extends StatelessWidget {
                   ListTile(
                     leading: Icon(Icons.lightbulb_outline, color: Theme.of(context).colorScheme.primary),
                     title: Text(loc.translate('idea_by')),
-                    subtitle: Text(loc.translate('medjdoub_hadjirat')),
+                    subtitle: Text(loc.translate('benaissa_ikram')),
                   ),
                   ListTile(
                     leading: Icon(Icons.person_outline, color: Theme.of(context).colorScheme.primary),
