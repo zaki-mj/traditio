@@ -44,5 +44,14 @@
     "clear_favorites_description": "Remove all saved favorites from the app. This action cannot be undone.",
     "confirm_clear_favorites": "Are you sure you want to clear all favorites?",
     "light_mode": "Light Mode",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "search_filter": "Search & Filter",
+    "filter_results": "Filter Results",
+    "search_by_name": "Search by name or description",
+    "select_location": "Select Location",
+    "select_type": "Select Type",
+    "active_filters": "Active Filters",
+    "no_filters_applied": "No filters applied",
+    "results_found": "Results found",
+    "showing_results": "Showing {count} results"
 }

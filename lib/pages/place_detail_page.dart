@@ -290,7 +290,7 @@ class _SocialIconButton extends StatelessWidget {
   final bool enabled;
   final VoidCallback onTap;
 
-  const _SocialIconButton({super.key, required this.assetPath, required this.tooltip, required this.enabled, required this.onTap});
+  const _SocialIconButton({required this.assetPath, required this.tooltip, required this.enabled, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

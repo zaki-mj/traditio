@@ -10,141 +10,170 @@ class HomePage extends StatelessWidget {
 
   void _openSearchFilters(BuildContext context) {
     final prov = context.read<PlacesProvider>();
-    final types = ['hotel', 'restaurant', 'attraction', 'store', 'other'];
     final theme = Theme.of(context);
+    final loc = AppLocalizations(Localizations.localeOf(context));
+
     showModalBottomSheet(
       context: context,
-      isScrollControlled: false,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       backgroundColor: theme.scaffoldBackgroundColor,
       builder: (ctx) {
-        return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Handle bar
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(color: theme.colorScheme.onSurface.withAlpha(100), borderRadius: BorderRadius.circular(2)),
+        return StatefulBuilder(
+          builder: (context, setModalState) => SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 20, right: 20, top: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Handle bar
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(color: theme.colorScheme.onSurface.withAlpha(100), borderRadius: BorderRadius.circular(2)),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-                // Search field
-                TextField(
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search),
-                    hintText: 'Search places, cuisine, etc...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: theme.colorScheme.primary.withAlpha(100)),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: theme.colorScheme.primary.withAlpha(100)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: theme.colorScheme.primary),
-                    ),
-                    filled: true,
-                    fillColor: theme.colorScheme.surface,
+                  // Title
+                  Text(
+                    loc.translate('search_filter'),
+                    style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                   ),
-                  onChanged: (v) => prov.setSearchQuery(v),
-                ),
-                const SizedBox(height: 24),
-                // Type filters
-                Text('Category', style: theme.textTheme.titleMedium),
-                const SizedBox(height: 12),
-                GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
-                  childAspectRatio: 2.5,
-                  children: types.map((t) {
-                    final isSelected = prov.isTypeSelected(t);
-                    return GestureDetector(
-                      onTap: () => prov.toggleType(t),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface.withAlpha(50), width: isSelected ? 2 : 1),
-                          borderRadius: BorderRadius.circular(10),
-                          color: isSelected ? theme.colorScheme.primary.withAlpha(30) : Colors.transparent,
+                  const SizedBox(height: 24),
+
+                  // Search field
+                  TextField(
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.search),
+                      hintText: loc.translate('search_by_name'),
+                      suffixIcon: prov.searchQuery.isNotEmpty
+                          ? GestureDetector(
+                              onTap: () {
+                                prov.setSearchQuery('');
+                                setModalState(() {});
+                              },
+                              child: Icon(Icons.close, color: theme.colorScheme.primary),
+                            )
+                          : null,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: theme.colorScheme.primary.withAlpha(50)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: theme.colorScheme.primary.withAlpha(50)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
+                      ),
+                      filled: true,
+                      fillColor: theme.colorScheme.surface,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    ),
+                    onChanged: (v) {
+                      prov.setSearchQuery(v);
+                      setModalState(() {});
+                    },
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Location section
+                  Text(loc.translate('select_location'), style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.5)),
+                  const SizedBox(height: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: prov.currentLocation != 'All' ? theme.colorScheme.primary : theme.colorScheme.primary.withAlpha(50), width: prov.currentLocation != 'All' ? 2 : 1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      underline: const SizedBox(),
+                      value: prov.currentLocation,
+                      items: prov.availableLocations
+                          .map(
+                            (l) => DropdownMenuItem(
+                              value: l,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                child: Text(prov.getWilayaName(l, Localizations.localeOf(context).languageCode), style: theme.textTheme.bodyMedium),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (v) {
+                        if (v != null) {
+                          prov.setLocation(v);
+                          setModalState(() {});
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Active filters badge
+                  if (prov.hasActiveFilters)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary.withAlpha(15),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: theme.colorScheme.primary.withAlpha(50)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.filter_alt, size: 18, color: theme.colorScheme.primary),
+                          const SizedBox(width: 8),
+                          Text(
+                            loc.translate('active_filters'),
+                            style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700, color: theme.colorScheme.primary),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  const SizedBox(height: 24),
+
+                  // Action buttons
+                  Row(
+                    children: [
+                      if (prov.hasActiveFilters)
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () {
+                              prov.clearFilters();
+                              setModalState(() {});
+                            },
+                            icon: const Icon(Icons.clear),
+                            label: Text(loc.translate('clear_filters')),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                          ),
                         ),
-                        child: Center(
-                          child: Text(
-                            t,
-                            style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal, color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface),
+                      if (prov.hasActiveFilters) const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () => Navigator.pop(ctx),
+                          icon: const Icon(Icons.search),
+                          label: Text(loc.translate('search')),
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: theme.colorScheme.primary,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           ),
                         ),
                       ),
-                    );
-                  }).toList(),
-                ),
-                const SizedBox(height: 24),
-                // Location filter
-                Text('Location', style: theme.textTheme.titleMedium),
-                const SizedBox(height: 12),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: theme.colorScheme.primary.withAlpha(100)),
-                    borderRadius: BorderRadius.circular(10),
+                    ],
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: DropdownButton<String>(
-                    isExpanded: true,
-                    underline: const SizedBox(),
-                    value: prov.currentLocation,
-                    items: prov.availableLocations.map((l) => DropdownMenuItem(value: l, child: Text(l))).toList(),
-                    onChanged: (v) => prov.setLocation(v ?? 'All'),
-                  ),
-                ),
-                const SizedBox(height: 32),
-                // Action buttons
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          prov.setSearchQuery('');
-                          for (var t in types) {
-                            if (prov.isTypeSelected(t)) {
-                              prov.toggleType(t);
-                            }
-                          }
-                          prov.setLocation('All');
-                        },
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        ),
-                        child: const Text('Clear Filters'),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.pop(ctx),
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: theme.colorScheme.surface,
-                          backgroundColor: theme.colorScheme.primary,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        ),
-                        child: const Text('Search'),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-              ],
+                  const SizedBox(height: 16),
+                ],
+              ),
             ),
           ),
         );
@@ -188,14 +217,20 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Text(loc.translate('all_places'), style: Theme.of(context).textTheme.titleMedium),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(prov.hasActiveFilters ? loc.translate('search_results') : loc.translate('all_places'), style: Theme.of(context).textTheme.titleMedium),
+                    if (prov.hasActiveFilters) TextButton.icon(onPressed: () => prov.clearFilters(), icon: const Icon(Icons.close, size: 18), label: Text(loc.translate('clear_filters'))),
+                  ],
+                ),
                 const SizedBox(height: 8),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: prov.allPlaces.length,
+                    itemCount: prov.filteredPlaces.length,
                     itemBuilder: (ctx, i) => PlaceCard(
-                      place: prov.allPlaces[i],
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => PlaceDetailPage(place: prov.allPlaces[i]))),
+                      place: prov.filteredPlaces[i],
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => PlaceDetailPage(place: prov.filteredPlaces[i]))),
                     ),
                   ),
                 ),

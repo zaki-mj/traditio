@@ -44,5 +44,14 @@
     "clear_favorites_description": "إزالة جميع المفضلات المحفوظة من التطبيق. هذا الإجراء لا يمكن التراجع عنه.",
     "confirm_clear_favorites": "هل أنت متأكد أنك تريد مسح جميع المفضلات؟",
     "light_mode": "الوضع النهاري",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "search_filter": "البحث والتصفية",
+    "filter_results": "تصفية النتائج",
+    "search_by_name": "ابحث بالاسم أو الوصف",
+    "select_location": "اختر الموقع",
+    "select_type": "اختر النوع",
+    "active_filters": "المرشحات النشطة",
+    "no_filters_applied": "لم يتم تطبيق مرشحات",
+    "results_found": "تم العثور على نتائج",
+    "showing_results": "عرض {count} النتائج"
 }

@@ -104,9 +104,22 @@ class PlacesProvider extends ChangeNotifier {
   List<String> get availableLocations {
     final set = <String>{'All'};
     for (var p in _all) {
-      set.add(p.cityNameFR);
+      set.add(p.wilayaNameFR);
     }
-    return set.toList();
+    return set.toList()..sort();
+  }
+
+  // Get wilaya name in the specified language
+  String getWilayaName(String wilayaNameFR, String languageCode) {
+    if (languageCode == 'ar') {
+      try {
+        final poi = _all.firstWhere((p) => p.wilayaNameFR == wilayaNameFR);
+        return poi.wilayaNameAR;
+      } catch (_) {
+        return wilayaNameFR;
+      }
+    }
+    return wilayaNameFR;
   }
 
   void setSearchQuery(String q) {
@@ -125,6 +138,8 @@ class PlacesProvider extends ChangeNotifier {
 
   bool isTypeSelected(String type) => _types.contains(type);
 
+  Set<String> get types => _types;
+
   void setLocation(String loc) {
     _location = loc;
     notifyListeners();
@@ -132,11 +147,28 @@ class PlacesProvider extends ChangeNotifier {
 
   String get currentLocation => _location;
 
+  String get searchQuery => _query;
+
+  bool get hasActiveFilters => _query.isNotEmpty || _types.isNotEmpty || _location != 'All';
+
+  void clearFilters() {
+    _query = '';
+    _types.clear();
+    _location = 'All';
+    notifyListeners();
+  }
+
   List<PointOfInterest> get filteredPlaces {
     var list = _all.where((p) {
-      final matchesQuery = _query.isEmpty || p.nameFR.toLowerCase().contains(_query) || (p.description ?? '').toLowerCase().contains(_query);
+      // Search query matches either name (AR or FR) or description
+      final matchesQuery = _query.isEmpty || p.nameFR.toLowerCase().contains(_query) || p.nameAR.toLowerCase().contains(_query) || (p.description ?? '').toLowerCase().contains(_query);
+
+      // Type filter
       final matchesType = _types.isEmpty || _types.contains(p.category.name);
-      final matchesLocation = _location == 'All' || p.cityNameFR == _location;
+
+      // Location filter by wilaya (not city)
+      final matchesLocation = _location == 'All' || p.wilayaNameFR == _location;
+
       return matchesQuery && matchesType && matchesLocation;
     }).toList();
     list.sort((a, b) => b.rating.compareTo(a.rating));

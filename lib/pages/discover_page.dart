@@ -11,51 +11,278 @@ import 'place_detail_page.dart';
 class DiscoverPage extends StatelessWidget {
   const DiscoverPage({super.key});
 
-  @override
-  Widget build(BuildContext context) {
+  void _openSearchFilters(BuildContext context) {
+    final prov = context.read<PlacesProvider>();
     final loc = AppLocalizations(Localizations.localeOf(context));
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Consumer<PlacesProvider>(
-          builder: (context, prov, _) {
-            // Prefer a filtered Firestore stream for recommended items (less data over the wire)
-            // Fall back to provider.recommended if no stream snapshot available.
+    final theme = Theme.of(context);
 
-            // We'll build the recommended section with a StreamBuilder below.
-            final filtered = prov.filteredPlaces;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextField(
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search),
-                    hintText: loc.translate('search_hint'),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setModalState) => DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.75,
+          minChildSize: 0.5,
+          maxChildSize: 0.95,
+          builder: (context, scrollController) => SingleChildScrollView(
+            controller: scrollController,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 20, right: 20, top: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Header with handle bar
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(color: theme.colorScheme.onSurface.withAlpha(100), borderRadius: BorderRadius.circular(2)),
+                    ),
                   ),
-                  onChanged: prov.setSearchQuery,
-                ),
-                const SizedBox(height: 10),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
+                  const SizedBox(height: 20),
+
+                  // Title
+                  Text(
+                    loc.translate('search_filter'),
+                    style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Search TextField with enhanced styling
+                  TextField(
+                    decoration: InputDecoration(
+                      hintText: loc.translate('search_by_name'),
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: prov.searchQuery.isNotEmpty
+                          ? GestureDetector(
+                              onTap: () {
+                                prov.setSearchQuery('');
+                                setModalState(() {});
+                              },
+                              child: Icon(Icons.close, color: theme.colorScheme.primary),
+                            )
+                          : null,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: theme.colorScheme.primary.withAlpha(50)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: theme.colorScheme.primary.withAlpha(50)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
+                      ),
+                      filled: true,
+                      fillColor: theme.colorScheme.surface,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    ),
+                    onChanged: (v) {
+                      prov.setSearchQuery(v);
+                      setModalState(() {});
+                    },
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Location Filter
+                  Text(loc.translate('select_location'), style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.5)),
+                  const SizedBox(height: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: prov.currentLocation != 'All' ? theme.colorScheme.primary : theme.colorScheme.primary.withAlpha(50), width: prov.currentLocation != 'All' ? 2 : 1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      underline: const SizedBox.shrink(),
+                      value: prov.currentLocation,
+
+                      items: prov.availableLocations
+                          .map(
+                            (l) => DropdownMenuItem(
+                              value: l,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                child: Text(prov.getWilayaName(l, Localizations.localeOf(context).languageCode), style: theme.textTheme.bodyMedium),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (v) {
+                        if (v != null) {
+                          prov.setLocation(v);
+                          setModalState(() {});
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Type Filter
+                  Text(loc.translate('select_type'), style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.5)),
+                  const SizedBox(height: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: prov.types.isNotEmpty ? theme.colorScheme.primary : theme.colorScheme.primary.withAlpha(50), width: prov.types.isNotEmpty ? 2 : 1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      underline: const SizedBox.shrink(),
+                      value: prov.types.isEmpty ? '' : prov.types.first,
+                      items: [
+                        DropdownMenuItem(
+                          value: '',
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            child: Text(loc.translate('all_types'), style: theme.textTheme.bodyMedium),
+                          ),
+                        ),
+                        ...['hotel', 'restaurant', 'attraction', 'store', 'other'].map(
+                          (t) => DropdownMenuItem(
+                            value: t,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              child: Text(loc.translate('type_$t'), style: theme.textTheme.bodyMedium),
+                            ),
+                          ),
+                        ),
+                      ],
+                      onChanged: (v) {
+                        if (v != null) {
+                          prov.types.clear();
+                          if (v.isNotEmpty) prov.types.add(v);
+                          setModalState(() {});
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+
+                  // Active Filters Display
+                  if (prov.hasActiveFilters) ...[
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary.withAlpha(15),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: theme.colorScheme.primary.withAlpha(50)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            loc.translate('active_filters'),
+                            style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700, color: theme.colorScheme.primary),
+                          ),
+                          const SizedBox(height: 8),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [
+                              if (prov.searchQuery.isNotEmpty)
+                                Chip(
+                                  label: Text(prov.searchQuery, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+                                  deleteIcon: const Icon(Icons.close, size: 18),
+                                  onDeleted: () {
+                                    prov.setSearchQuery('');
+                                    setModalState(() {});
+                                  },
+                                  backgroundColor: theme.colorScheme.primary.withAlpha(30),
+                                ),
+                              if (prov.currentLocation != 'All')
+                                Chip(
+                                  label: Text(prov.currentLocation, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+                                  deleteIcon: const Icon(Icons.close, size: 18),
+                                  onDeleted: () {
+                                    prov.setLocation('All');
+                                    setModalState(() {});
+                                  },
+                                  backgroundColor: theme.colorScheme.primary.withAlpha(30),
+                                ),
+                              if (prov.types.isNotEmpty)
+                                Chip(
+                                  label: Text(loc.translate('type_${prov.types.first}'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+                                  deleteIcon: const Icon(Icons.close, size: 18),
+                                  onDeleted: () {
+                                    prov.types.clear();
+                                    setModalState(() {});
+                                  },
+                                  backgroundColor: theme.colorScheme.primary.withAlpha(30),
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
+                  // Action Buttons
+                  Row(
                     children: [
-                      FilterChip(label: Text(loc.translate('type_hotel')), selected: prov.isTypeSelected('hotel'), onSelected: (_) => prov.toggleType('hotel')),
-                      const SizedBox(width: 8),
-                      FilterChip(label: Text(loc.translate('type_restaurant')), selected: prov.isTypeSelected('restaurant'), onSelected: (_) => prov.toggleType('restaurant')),
-                      const SizedBox(width: 8),
-                      FilterChip(label: Text(loc.translate('type_attraction')), selected: prov.isTypeSelected('attraction'), onSelected: (_) => prov.toggleType('attraction')),
-                      const SizedBox(width: 12),
-                      DropdownButton<String>(
-                        value: prov.currentLocation,
-                        items: prov.availableLocations.map((l) => DropdownMenuItem(value: l, child: Text(l))).toList(),
-                        onChanged: (v) => prov.setLocation(v ?? 'All'),
+                      if (prov.hasActiveFilters)
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () {
+                              prov.clearFilters();
+                              setModalState(() {});
+                            },
+                            icon: const Icon(Icons.clear),
+                            label: Text(loc.translate('clear_filters')),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                          ),
+                        ),
+                      if (prov.hasActiveFilters) const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.search),
+                          label: Text(loc.translate('search')),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: theme.colorScheme.primary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 12),
-                Text(loc.translate('recommended'), style: Theme.of(context).textTheme.titleMedium),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations(Localizations.localeOf(context));
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      body: Consumer<PlacesProvider>(
+        builder: (context, prov, _) {
+          // Use the provider's filtered places
+          final filtered = prov.filteredPlaces;
+
+          return Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Recommended Carousel
+                Text(loc.translate('recommended'), style: theme.textTheme.titleMedium),
                 const SizedBox(height: 8),
                 SizedBox(
                   height: 180,
@@ -89,7 +316,7 @@ class DiscoverPage extends StatelessWidget {
                                         ? Image.network(
                                             p.imageUrl!,
                                             fit: BoxFit.cover,
-                                            errorBuilder: (_, __, ___) => Container(color: Theme.of(context).colorScheme.surface),
+                                            errorBuilder: (_, __, ___) => Container(color: theme.colorScheme.surface),
                                           )
                                         : Container(
                                             color: _categoryColor(p.category).withAlpha(30),
@@ -112,7 +339,7 @@ class DiscoverPage extends StatelessWidget {
                                               Localizations.localeOf(context).languageCode == 'ar' ? p.nameAR : p.nameFR,
                                               style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                                             ),
-                                            Text('${Localizations.localeOf(context).languageCode == 'ar' ? p.cityNameAR : p.cityNameFR} • ${loc.translate('type_${p.category.name}')}', style: const TextStyle(color: Colors.white70, fontSize: 12)),
+                                            Text('${Localizations.localeOf(context).languageCode == 'ar' ? p.wilayaNameAR : p.wilayaNameFR} • ${loc.translate('type_${p.category.name}')}', style: const TextStyle(color: Colors.white70, fontSize: 12)),
                                           ],
                                         ),
                                       ),
@@ -128,11 +355,30 @@ class DiscoverPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Text(loc.translate('all_places'), style: Theme.of(context).textTheme.titleMedium),
+
+                // Results Heading
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(prov.hasActiveFilters ? loc.translate('search_results') : loc.translate('all_places'), style: theme.textTheme.titleMedium),
+                    if (prov.hasActiveFilters)
+                      TextButton.icon(
+                        onPressed: () {
+                          prov.clearFilters();
+                        },
+                        icon: const Icon(Icons.close, size: 18),
+                        label: Text(loc.translate('clear_filters')),
+                      ),
+                  ],
+                ),
                 const SizedBox(height: 8),
+
+                // Results List
                 Expanded(
                   child: filtered.isEmpty
-                      ? Center(child: Text(loc.translate('no_results')))
+                      ? Center(
+                          child: Text(loc.translate('no_places_found'), style: theme.textTheme.bodyLarge?.copyWith(color: Colors.grey)),
+                        )
                       : ListView.builder(
                           itemCount: filtered.length,
                           itemBuilder: (ctx, i) => PlaceCard(
@@ -142,11 +388,11 @@ class DiscoverPage extends StatelessWidget {
                         ),
                 ),
               ],
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
-      floatingActionButton: FloatingActionButton(child: const Icon(Icons.tune), onPressed: () => Navigator.of(context).pushNamed('/settings')),
+      floatingActionButton: FloatingActionButton(child: const Icon(Icons.search), onPressed: () => _openSearchFilters(context)),
     );
   }
 

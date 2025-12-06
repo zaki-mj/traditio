@@ -43,6 +43,15 @@
     "clear_all_favorites": "Effacer Tous les Favoris",
     "clear_favorites_description": "Supprimer tous les favoris enregistrés dans l'application. Cette action est irréversible.",
     "confirm_clear_favorites": "Êtes-vous sûr de vouloir supprimer tous les favoris ?",
-    "light_mode": "Mode Clair",
-    "cancel": "Annuler"
+    "light_mode": "Mode clair",
+    "cancel": "Annuler",
+    "search_filter": "Recherche et filtre",
+    "filter_results": "Filtrer les résultats",
+    "search_by_name": "Rechercher par nom ou description",
+    "select_location": "Sélectionner l'emplacement",
+    "select_type": "Sélectionner le type",
+    "active_filters": "Filtres actifs",
+    "no_filters_applied": "Aucun filtre appliqué",
+    "results_found": "Résultats trouvés",
+    "showing_results": "Affichage de {count} résultats"
 }
