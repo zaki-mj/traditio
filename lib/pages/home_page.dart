@@ -99,7 +99,7 @@ class HomePage extends StatelessWidget {
                               value: l,
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                child: Text(prov.getWilayaName(l, Localizations.localeOf(context).languageCode), style: theme.textTheme.bodyMedium),
+                                child: Text(l == 'All' ? loc.translate('all_locations') : prov.getWilayaName(l, Localizations.localeOf(context).languageCode), style: theme.textTheme.bodyMedium),
                               ),
                             ),
                           )
@@ -115,26 +115,6 @@ class HomePage extends StatelessWidget {
                   const SizedBox(height: 24),
 
                   // Active filters badge
-                  if (prov.hasActiveFilters)
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primary.withAlpha(15),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: theme.colorScheme.primary.withAlpha(50)),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.filter_alt, size: 18, color: theme.colorScheme.primary),
-                          const SizedBox(width: 8),
-                          Text(
-                            loc.translate('active_filters'),
-                            style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700, color: theme.colorScheme.primary),
-                          ),
-                        ],
-                      ),
-                    ),
-
                   const SizedBox(height: 24),
 
                   // Action buttons

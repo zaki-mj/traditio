@@ -53,5 +53,6 @@
     "active_filters": "المرشحات النشطة",
     "no_filters_applied": "لم يتم تطبيق مرشحات",
     "results_found": "تم العثور على نتائج",
-    "showing_results": "عرض {count} النتائج"
+    "showing_results": "عرض {count} النتائج",
+    "all_locations": "جميع المواقع"
 }

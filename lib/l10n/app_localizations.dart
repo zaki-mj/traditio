@@ -125,6 +125,7 @@ class AppLocalizations {
       "no_filters_applied": "No filters applied",
       "results_found": "Results found",
       "showing_results": "Showing {count} results",
+      "all_locations": "All Locations",
     },
     'ar': {
       'app_title': 'جواهر تقليدية',
@@ -244,6 +245,7 @@ class AppLocalizations {
       "no_filters_applied": "لم يتم تطبيق مرشحات",
       "results_found": "تم العثور على نتائج",
       "showing_results": "عرض {count} النتائج",
+      "all_locations": "جميع المواقع",
     },
     'fr': {
       'app_title': 'Trésors Traditionnels',
@@ -351,6 +353,7 @@ class AppLocalizations {
       "no_filters_applied": "Aucun filtre appliqué",
       "results_found": "Résultats trouvés",
       "showing_results": "Affichage de {count} résultats",
+      "all_locations": "Tous les emplacements",
     },
   };
 

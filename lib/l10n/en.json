@@ -53,5 +53,6 @@
     "active_filters": "Active Filters",
     "no_filters_applied": "No filters applied",
     "results_found": "Results found",
-    "showing_results": "Showing {count} results"
+    "showing_results": "Showing {count} results",
+    "all_locations": "All Locations"
 }

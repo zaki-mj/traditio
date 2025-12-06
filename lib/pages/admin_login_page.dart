@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'admin_shell.dart';
 
 class AdminLoginPage extends StatefulWidget {
@@ -57,38 +58,16 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                         Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                theme.colorScheme.primary,
-                                theme.hintColor,
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
+                            gradient: LinearGradient(colors: [theme.colorScheme.primary, theme.hintColor], begin: Alignment.topLeft, end: Alignment.bottomRight),
                             borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: theme.colorScheme.primary.withValues(
-                                  alpha: 0.3,
-                                ),
-                                blurRadius: 20,
-                                offset: const Offset(0, 10),
-                              ),
-                            ],
+                            boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 10))],
                           ),
-                          child: Icon(
-                            Icons.admin_panel_settings,
-                            size: 48,
-                            color: theme.colorScheme.onPrimary,
-                          ),
+                          child: Icon(Icons.admin_panel_settings, size: 48, color: theme.colorScheme.onPrimary),
                         ),
                         const SizedBox(height: 24),
                         Text(
                           loc.translate('login_title'),
-                          style: theme.textTheme.headlineMedium?.copyWith(
-                            color: theme.colorScheme.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: theme.textTheme.headlineMedium?.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -99,24 +78,13 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                   // Login Card
                   Card(
                     elevation: 8,
-                    shadowColor: theme.colorScheme.primary.withValues(
-                      alpha: 0.2,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+                    shadowColor: theme.colorScheme.primary.withValues(alpha: 0.2),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                     child: Container(
                       padding: const EdgeInsets.all(32.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            theme.colorScheme.surface,
-                            theme.colorScheme.surface.withValues(alpha: 0.9),
-                          ],
-                        ),
+                        gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [theme.colorScheme.surface, theme.colorScheme.surface.withValues(alpha: 0.9)]),
                       ),
                       child: Form(
                         key: _formKey,
@@ -128,27 +96,15 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                               controller: _emailController,
                               decoration: InputDecoration(
                                 labelText: loc.translate('email'),
-                                prefixIcon: Icon(
-                                  Icons.email_outlined,
-                                  color: theme.colorScheme.primary,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
+                                prefixIcon: Icon(Icons.email_outlined, color: theme.colorScheme.primary),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: theme.colorScheme.outline.withValues(
-                                      alpha: 0.5,
-                                    ),
-                                  ),
+                                  borderSide: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.5)),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: theme.colorScheme.primary,
-                                    width: 2,
-                                  ),
+                                  borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
                                 ),
                                 filled: true,
                                 fillColor: theme.colorScheme.surface,
@@ -164,40 +120,23 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                               obscureText: !_isPasswordVisible,
                               decoration: InputDecoration(
                                 labelText: loc.translate('password'),
-                                prefixIcon: Icon(
-                                  Icons.lock_outline,
-                                  color: theme.colorScheme.primary,
-                                ),
+                                prefixIcon: Icon(Icons.lock_outline, color: theme.colorScheme.primary),
                                 suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _isPasswordVisible
-                                        ? Icons.visibility_off
-                                        : Icons.visibility,
-                                    color: theme.colorScheme.primary,
-                                  ),
+                                  icon: Icon(_isPasswordVisible ? Icons.visibility_off : Icons.visibility, color: theme.colorScheme.primary),
                                   onPressed: () {
                                     setState(() {
                                       _isPasswordVisible = !_isPasswordVisible;
                                     });
                                   },
                                 ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: theme.colorScheme.outline.withValues(
-                                      alpha: 0.5,
-                                    ),
-                                  ),
+                                  borderSide: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.5)),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: theme.colorScheme.primary,
-                                    width: 2,
-                                  ),
+                                  borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
                                 ),
                                 filled: true,
                                 fillColor: theme.colorScheme.surface,
@@ -210,75 +149,45 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                             Container(
                               height: 56,
                               decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    theme.colorScheme.primary,
-                                    theme.hintColor,
-                                  ],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                ),
+                                gradient: LinearGradient(colors: [theme.colorScheme.primary, theme.hintColor], begin: Alignment.centerLeft, end: Alignment.centerRight),
                                 borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: theme.colorScheme.primary.withValues(
-                                      alpha: 0.3,
-                                    ),
-                                    blurRadius: 12,
-                                    offset: const Offset(0, 6),
-                                  ),
-                                ],
+                                boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 6))],
                               ),
                               child: ElevatedButton(
                                 onPressed: _isLoading
                                     ? null
-                                    : () {
+                                    : () async {
                                         setState(() {
                                           _isLoading = true;
                                         });
-                                        // For prototyping: skip validation and navigate directly
-                                        final nav = Navigator.of(context);
-                                        Future.delayed(
-                                          const Duration(milliseconds: 500),
-                                          () {
+
+                                        try {
+                                          final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailController.text, password: _passwordController.text);
+                                          Future.delayed(const Duration(milliseconds: 500), () {
                                             if (mounted) {
-                                              nav.pushReplacement(
-                                                MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      const AdminShell(),
-                                                ),
-                                              );
+                                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AdminShell()));
                                             }
-                                          },
-                                        );
+                                          });
+                                        } on FirebaseAuthException catch (e) {
+                                          if (e.code == 'user-not-found') {
+                                            print('No user found for that email.');
+                                          } else if (e.code == 'wrong-password') {
+                                            print('Wrong password provided for that user.');
+                                          }
+                                        } catch (e) {
+                                          print(e);
+                                        }
                                       },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,
                                   shadowColor: Colors.transparent,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                                 ),
                                 child: _isLoading
-                                    ? SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                theme.colorScheme.onPrimary,
-                                              ),
-                                        ),
-                                      )
+                                    ? SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.onPrimary)))
                                     : Text(
                                         loc.translate('login_button'),
-                                        style: theme.textTheme.titleMedium
-                                            ?.copyWith(
-                                              color:
-                                                  theme.colorScheme.onPrimary,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                        style: theme.textTheme.titleMedium?.copyWith(color: theme.colorScheme.onPrimary, fontWeight: FontWeight.bold),
                                       ),
                               ),
                             ),
@@ -295,12 +204,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                     onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(
-                            loc.translate('contact_developer'),
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onPrimary,
-                            ),
-                          ),
+                          content: Text(loc.translate('contact_developer'), style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onPrimary)),
                           backgroundColor: theme.colorScheme.primary,
                           duration: const Duration(seconds: 3),
                         ),
@@ -308,11 +212,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                     },
                     child: Text(
                       loc.translate('forgot_password'),
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w500,
-                        decoration: TextDecoration.underline,
-                      ),
+                      style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w500, decoration: TextDecoration.underline),
                     ),
                   ),
 

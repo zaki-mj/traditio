@@ -106,7 +106,7 @@ class DiscoverPage extends StatelessWidget {
                               value: l,
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                child: Text(prov.getWilayaName(l, Localizations.localeOf(context).languageCode), style: theme.textTheme.bodyMedium),
+                                child: Text(l == 'All' ? loc.translate('all_locations') : prov.getWilayaName(l, Localizations.localeOf(context).languageCode), style: theme.textTheme.bodyMedium),
                               ),
                             ),
                           )
@@ -161,65 +161,6 @@ class DiscoverPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 28),
-
-                  // Active Filters Display
-                  if (prov.hasActiveFilters) ...[
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primary.withAlpha(15),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: theme.colorScheme.primary.withAlpha(50)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            loc.translate('active_filters'),
-                            style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700, color: theme.colorScheme.primary),
-                          ),
-                          const SizedBox(height: 8),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: [
-                              if (prov.searchQuery.isNotEmpty)
-                                Chip(
-                                  label: Text(prov.searchQuery, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
-                                  deleteIcon: const Icon(Icons.close, size: 18),
-                                  onDeleted: () {
-                                    prov.setSearchQuery('');
-                                    setModalState(() {});
-                                  },
-                                  backgroundColor: theme.colorScheme.primary.withAlpha(30),
-                                ),
-                              if (prov.currentLocation != 'All')
-                                Chip(
-                                  label: Text(prov.currentLocation, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
-                                  deleteIcon: const Icon(Icons.close, size: 18),
-                                  onDeleted: () {
-                                    prov.setLocation('All');
-                                    setModalState(() {});
-                                  },
-                                  backgroundColor: theme.colorScheme.primary.withAlpha(30),
-                                ),
-                              if (prov.types.isNotEmpty)
-                                Chip(
-                                  label: Text(loc.translate('type_${prov.types.first}'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
-                                  deleteIcon: const Icon(Icons.close, size: 18),
-                                  onDeleted: () {
-                                    prov.types.clear();
-                                    setModalState(() {});
-                                  },
-                                  backgroundColor: theme.colorScheme.primary.withAlpha(30),
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
 
                   // Action Buttons
                   Row(
