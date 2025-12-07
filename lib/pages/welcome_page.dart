@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
-// ThemeProvider not used in this page
+import 'package:firebase_auth/firebase_auth.dart';
 import '../theme/app_colors.dart';
 
 class WelcomePage extends StatelessWidget {
@@ -61,7 +61,19 @@ class WelcomePage extends StatelessWidget {
                 // Buttons
                 _buildButton(context, label: loc.translate('start_discovering'), onPressed: () => Navigator.of(context).pushNamed('/discover'), isPrimary: true),
                 const SizedBox(height: 12),
-                _buildButton(context, label: loc.translate('admin_login'), onPressed: () => Navigator.of(context).pushNamed('/admin'), isPrimary: false),
+                _buildButton(
+                  context,
+                  label: loc.translate('admin_login'),
+                  onPressed: () {
+                    if (FirebaseAuth.instance.currentUser == null) {
+                      Navigator.of(context).pushNamed('/admin');
+                    } else {
+                      Navigator.of(context).pushNamed('/admin-dashboard');
+                    }
+                  },
+                  isPrimary: false,
+                ),
+
                 const SizedBox(height: 32),
               ],
             ),

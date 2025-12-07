@@ -153,22 +153,6 @@ class AdminDashboardPage extends StatelessWidget {
               );
             },
           ),
-          const SizedBox(height: 24),
-
-          // Locations breakdown
-          const SizedBox(height: 16),
-          Text(loc.translate('by_location'), style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 12),
-          Column(
-            children: locationCounts.entries
-                .map(
-                  (e) => Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: _buildLocationTile(context, location: e.key, count: e.value),
-                  ),
-                )
-                .toList(),
-          ),
         ],
       ),
     );
@@ -220,37 +204,6 @@ class AdminDashboardPage extends StatelessWidget {
             Text(count.toString(), style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildLocationTile(BuildContext context, {required String location, required int count}) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              const Icon(Icons.location_on, color: AppColors.primary),
-              const SizedBox(width: 12),
-              Text(location, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-            ],
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(color: AppColors.primary.withAlpha(50), borderRadius: BorderRadius.circular(20)),
-            child: Text(
-              count.toString(),
-              style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, color: AppColors.primary),
-            ),
-          ),
-        ],
       ),
     );
   }

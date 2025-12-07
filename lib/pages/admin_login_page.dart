@@ -17,6 +17,112 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
   bool _isPasswordVisible = false;
   bool _isLoading = false;
 
+  // Email validation regex
+  bool _isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
+    return emailRegex.hasMatch(email);
+  }
+
+  // Show error notification (red)
+  void _showErrorNotification(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white)),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 4),
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+      ),
+    );
+  }
+
+  // Show success notification (primary color)
+  void _showSuccessNotification(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white)),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+      ),
+    );
+  }
+
+  // Validate inputs before calling Firebase
+  bool _validateInputs(AppLocalizations loc) {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    // Check email
+    if (email.isEmpty) {
+      _showErrorNotification('${loc.translate('email')} ${loc.translate('is_required').toLowerCase()}');
+      return false;
+    }
+
+    if (!_isValidEmail(email)) {
+      _showErrorNotification(loc.translate('invalid_email'));
+      return false;
+    }
+
+    // Check password
+    if (password.isEmpty) {
+      _showErrorNotification('${loc.translate('password')} ${loc.translate('is_required').toLowerCase()}');
+      return false;
+    }
+
+    if (password.length < 6) {
+      _showErrorNotification(loc.translate('password_too_short'));
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<void> _handleLogin() async {
+    final loc = AppLocalizations(Localizations.localeOf(context));
+
+    // Validate inputs
+    if (!_validateInputs(loc)) {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final _ = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailController.text.trim(), password: _passwordController.text);
+
+      _showSuccessNotification('Login successful');
+
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted) {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AdminShell()));
+        }
+      });
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        _showErrorNotification(loc.translate('user_not_found'));
+      } else if (e.code == 'wrong-password') {
+        _showErrorNotification(loc.translate('wrong_password'));
+      } else {
+        _showErrorNotification(loc.translate('login_error'));
+      }
+    } catch (e) {
+      _showErrorNotification(loc.translate('login_error'));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -154,30 +260,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                                 boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 6))],
                               ),
                               child: ElevatedButton(
-                                onPressed: _isLoading
-                                    ? null
-                                    : () async {
-                                        setState(() {
-                                          _isLoading = true;
-                                        });
-
-                                        try {
-                                          final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailController.text, password: _passwordController.text);
-                                          Future.delayed(const Duration(milliseconds: 500), () {
-                                            if (mounted) {
-                                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AdminShell()));
-                                            }
-                                          });
-                                        } on FirebaseAuthException catch (e) {
-                                          if (e.code == 'user-not-found') {
-                                            print('No user found for that email.');
-                                          } else if (e.code == 'wrong-password') {
-                                            print('Wrong password provided for that user.');
-                                          }
-                                        } catch (e) {
-                                          print(e);
-                                        }
-                                      },
+                                onPressed: _isLoading ? null : _handleLogin,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,
                                   shadowColor: Colors.transparent,

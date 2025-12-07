@@ -126,6 +126,12 @@ class AppLocalizations {
       "results_found": "Results found",
       "showing_results": "Showing {count} results",
       "all_locations": "All Locations",
+
+      "invalid_email": "Please enter a valid email address",
+      "password_too_short": "Password must be at least 6 characters",
+      "user_not_found": "User not found. Please check your email.",
+      "wrong_password": "Wrong password. Please try again.",
+      "login_error": "Login failed. Please try again.",
     },
     'ar': {
       'app_title': 'جواهر تقليدية',
@@ -246,6 +252,12 @@ class AppLocalizations {
       "results_found": "تم العثور على نتائج",
       "showing_results": "عرض {count} النتائج",
       "all_locations": "جميع المواقع",
+
+      "invalid_email": "يرجى إدخال عنوان بريد إلكتروني صحيح",
+      "password_too_short": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
+      "user_not_found": "لم يتم العثور على المستخدم. يرجى التحقق من بريدك الإلكتروني.",
+      "wrong_password": "كلمة مرور خاطئة. يرجى المحاولة مرة أخرى.",
+      "login_error": "فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.",
     },
     'fr': {
       'app_title': 'Trésors Traditionnels',
@@ -354,6 +366,14 @@ class AppLocalizations {
       "results_found": "Résultats trouvés",
       "showing_results": "Affichage de {count} résultats",
       "all_locations": "Tous les emplacements",
+
+      "invalid_email": "Veuillez entrer une adresse e-mail valide",
+      "password_too_short": "Le mot de passe doit contenir au moins 6 caractères",
+      "user_not_found": "Utilisateur non trouvé. Veuillez vérifier votre adresse e-mail.",
+      "wrong_password": "Mot de passe incorrect. Veuillez réessayer.",
+      "login_error": "Échec de la connexion. Veuillez réessayer.",
+      "is_required": "est requis",
+      "login_successful": "Connexion réussie",
     },
   };
 

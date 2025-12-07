@@ -60,225 +60,230 @@ class PlaceDetailPage extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView(
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(32), bottomRight: Radius.circular(32)),
-            child: CategoryImage(imageUrl: place.imageUrl, category: place.category, height: 220, fit: BoxFit.cover, enableHero: true, heroTag: 'place_image_${place.id}'),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Info Card
-                Card(
-                  color: theme.colorScheme.surface,
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          Localizations.localeOf(context).languageCode == 'ar' ? place.nameAR : place.nameFR,
-                          style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Icon(Icons.location_on, color: theme.colorScheme.primary),
-                            const SizedBox(width: 6),
-                            Expanded(child: Text(Localizations.localeOf(context).languageCode == 'ar' ? (place.cityNameAR + '، ' + place.wilayaNameAR) : (place.cityNameFR + ', ' + place.wilayaNameFR), style: theme.textTheme.bodyLarge)),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Icon(Icons.category, color: theme.colorScheme.primary),
-                            const SizedBox(width: 6),
-                            Text(AppLocalizations(Localizations.localeOf(context)).translate('type_${place.category.name}'), style: theme.textTheme.bodyMedium),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Icon(Icons.star, color: theme.colorScheme.primary),
-                            const SizedBox(width: 6),
-                            Text('${place.rating}', style: theme.textTheme.bodyMedium),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Description Card
-                Card(
-                  color: theme.colorScheme.surface,
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppLocalizations(Localizations.localeOf(context)).translate('about'),
-                          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(place.description ?? '', style: theme.textTheme.bodyMedium),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Contact Card
-                // phone/email are required in POI model, guard against empty strings instead
-                if ((place.phone.isNotEmpty) || (place.email.isNotEmpty))
-                  Card(
-                    color: theme.colorScheme.surface,
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            loc.translate('contact'),
-                            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
-                          ),
-                          const SizedBox(height: 12),
-                          if (place.phone.isNotEmpty)
-                            Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.phone, color: theme.colorScheme.primary),
-                                    const SizedBox(width: 6),
-                                    GestureDetector(
-                                      onTap: () => _launchURL(context, 'tel:${place.phone}'),
-                                      child: Text(
-                                        place.phone,
-                                        style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary, decoration: TextDecoration.underline),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                if (place.email.isNotEmpty) const SizedBox(height: 12),
-                              ],
-                            ),
-                          if (place.email.isNotEmpty)
-                            Row(
-                              children: [
-                                Icon(Icons.email, color: theme.colorScheme.primary),
-                                const SizedBox(width: 6),
-                                GestureDetector(
-                                  onTap: () => _launchURL(context, 'mailto:${place.email}'),
-                                  child: Text(
-                                    place.email,
-                                    style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary, decoration: TextDecoration.underline),
-                                  ),
-                                ),
-                              ],
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                const SizedBox(height: 16),
-
-                // Address Card
-                if (place.locationLink != null && place.locationLink!.isNotEmpty)
-                  Card(
-                    color: theme.colorScheme.surface,
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            loc.translate('address'),
-                            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
-                          ),
-                          const SizedBox(height: 12),
-                          Center(
-                            child: ElevatedButton.icon(
-                              icon: Icon(Icons.map, color: theme.colorScheme.onPrimary),
-                              label: Text(loc.translate('open_map'), style: TextStyle(color: theme.colorScheme.onPrimary)),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: theme.colorScheme.primary,
-                                foregroundColor: theme.colorScheme.onPrimary,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                elevation: 4,
-                              ),
-                              onPressed: () => _launchURL(context, place.locationLink),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                const SizedBox(height: 16),
-
-                // Social links card (Facebook, Instagram, TikTok)
-                Card(
-                  color: theme.colorScheme.surface,
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          loc.translate('social'),
-                          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            // Facebook
-                            _SocialIconButton(
-                              assetPath: 'assets/pictures/facebook.png',
-                              tooltip: 'Facebook',
-                              enabled: place.facebookLink != null && place.facebookLink!.isNotEmpty,
-                              onTap: () => _launchURL(context, place.facebookLink, fallbackMessage: loc.translate('link_not_available')),
-                            ),
-
-                            // Instagram
-                            _SocialIconButton(
-                              assetPath: 'assets/pictures/instagram.png',
-                              tooltip: 'Instagram',
-                              enabled: place.instagramLink != null && place.instagramLink!.isNotEmpty,
-                              onTap: () => _launchURL(context, place.instagramLink, fallbackMessage: loc.translate('link_not_available')),
-                            ),
-
-                            // TikTok
-                            _SocialIconButton(
-                              assetPath: 'assets/pictures/tiktok.png',
-                              tooltip: 'TikTok',
-                              enabled: place.tiktokLink != null && place.tiktokLink!.isNotEmpty,
-                              onTap: () => _launchURL(context, place.tiktokLink, fallbackMessage: loc.translate('link_not_available')),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage("assets/pictures/bg2.png"), fit: BoxFit.cover, opacity: 0.2),
+        ),
+        child: ListView(
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(32), bottomRight: Radius.circular(32)),
+              child: CategoryImage(imageUrl: place.imageUrl, category: place.category, height: 220, fit: BoxFit.cover, enableHero: true, heroTag: 'place_image_${place.id}'),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Info Card
+                  Card(
+                    color: theme.colorScheme.surface,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            Localizations.localeOf(context).languageCode == 'ar' ? place.nameAR : place.nameFR,
+                            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Icon(Icons.location_on, color: theme.colorScheme.primary),
+                              const SizedBox(width: 6),
+                              Expanded(child: Text(Localizations.localeOf(context).languageCode == 'ar' ? (place.cityNameAR + '، ' + place.wilayaNameAR) : (place.cityNameFR + ', ' + place.wilayaNameFR), style: theme.textTheme.bodyLarge)),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Icon(Icons.category, color: theme.colorScheme.primary),
+                              const SizedBox(width: 6),
+                              Text(AppLocalizations(Localizations.localeOf(context)).translate('type_${place.category.name}'), style: theme.textTheme.bodyMedium),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Icon(Icons.star, color: theme.colorScheme.primary),
+                              const SizedBox(width: 6),
+                              Text('${place.rating}', style: theme.textTheme.bodyMedium),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Description Card
+                  Card(
+                    color: theme.colorScheme.surface,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppLocalizations(Localizations.localeOf(context)).translate('about'),
+                            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(place.description ?? '', style: theme.textTheme.bodyMedium),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Contact Card
+                  // phone/email are required in POI model, guard against empty strings instead
+                  if ((place.phone.isNotEmpty) || (place.email.isNotEmpty))
+                    Card(
+                      color: theme.colorScheme.surface,
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              loc.translate('contact'),
+                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
+                            ),
+                            const SizedBox(height: 12),
+                            if (place.phone.isNotEmpty)
+                              Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(Icons.phone, color: theme.colorScheme.primary),
+                                      const SizedBox(width: 6),
+                                      GestureDetector(
+                                        onTap: () => _launchURL(context, 'tel:${place.phone}'),
+                                        child: Text(
+                                          place.phone,
+                                          style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary, decoration: TextDecoration.underline),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if (place.email.isNotEmpty) const SizedBox(height: 12),
+                                ],
+                              ),
+                            if (place.email.isNotEmpty)
+                              Row(
+                                children: [
+                                  Icon(Icons.email, color: theme.colorScheme.primary),
+                                  const SizedBox(width: 6),
+                                  GestureDetector(
+                                    onTap: () => _launchURL(context, 'mailto:${place.email}'),
+                                    child: Text(
+                                      place.email,
+                                      style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary, decoration: TextDecoration.underline),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 16),
+
+                  // Address Card
+                  if (place.locationLink != null && place.locationLink!.isNotEmpty)
+                    Card(
+                      color: theme.colorScheme.surface,
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              loc.translate('address'),
+                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
+                            ),
+                            const SizedBox(height: 12),
+                            Center(
+                              child: ElevatedButton.icon(
+                                icon: Icon(Icons.map, color: theme.colorScheme.onPrimary),
+                                label: Text(loc.translate('open_map'), style: TextStyle(color: theme.colorScheme.onPrimary)),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: theme.colorScheme.primary,
+                                  foregroundColor: theme.colorScheme.onPrimary,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  elevation: 4,
+                                ),
+                                onPressed: () => _launchURL(context, place.locationLink),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 16),
+
+                  // Social links card (Facebook, Instagram, TikTok)
+                  Card(
+                    color: theme.colorScheme.surface,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            loc.translate('social'),
+                            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              // Facebook
+                              _SocialIconButton(
+                                assetPath: 'assets/pictures/facebook.png',
+                                tooltip: 'Facebook',
+                                enabled: place.facebookLink != null && place.facebookLink!.isNotEmpty,
+                                onTap: () => _launchURL(context, place.facebookLink, fallbackMessage: loc.translate('link_not_available')),
+                              ),
+
+                              // Instagram
+                              _SocialIconButton(
+                                assetPath: 'assets/pictures/instagram.png',
+                                tooltip: 'Instagram',
+                                enabled: place.instagramLink != null && place.instagramLink!.isNotEmpty,
+                                onTap: () => _launchURL(context, place.instagramLink, fallbackMessage: loc.translate('link_not_available')),
+                              ),
+
+                              // TikTok
+                              _SocialIconButton(
+                                assetPath: 'assets/pictures/tiktok.png',
+                                tooltip: 'TikTok',
+                                enabled: place.tiktokLink != null && place.tiktokLink!.isNotEmpty,
+                                onTap: () => _launchURL(context, place.tiktokLink, fallbackMessage: loc.translate('link_not_available')),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

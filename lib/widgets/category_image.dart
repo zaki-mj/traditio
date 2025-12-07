@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:traditional_gems/theme/app_colors.dart';
 import '../models/place.dart';
 
 /// Shows either a network image (when an URL is provided) or a simple
@@ -65,10 +66,9 @@ class CategoryImage extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      // subtle tint using the category color, keeps contrast in light/dark
-      color: catColor.withAlpha(30),
+      color: catColor,
       alignment: Alignment.center,
-      child: Icon(_iconForCategory(), size: (height != null ? (height! * 0.4) : 48), color: catColor),
+      child: Icon(_iconForCategory(), size: (height != null ? (height! * 0.4) : 48), color: Colors.white),
     );
   }
 

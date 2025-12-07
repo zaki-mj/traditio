@@ -54,5 +54,18 @@
     "no_filters_applied": "No filters applied",
     "results_found": "Results found",
     "showing_results": "Showing {count} results",
-    "all_locations": "All Locations"
+    "all_locations": "All Locations",
+    "login_title": "Admin Login",
+    "email": "Email",
+    "password": "Password",
+    "login_button": "Login",
+    "forgot_password": "Forgot Password?",
+    "contact_developer": "Please contact the developer for password reset",
+    "invalid_email": "Please enter a valid email address",
+    "password_too_short": "Password must be at least 6 characters",
+    "user_not_found": "User not found. Please check your email.",
+    "wrong_password": "Wrong password. Please try again.",
+    "login_error": "Login failed. Please try again.",
+    "is_required": "is required",
+    "login_successful": "Login successful"
 }

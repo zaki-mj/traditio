@@ -54,5 +54,18 @@
     "no_filters_applied": "Aucun filtre appliqué",
     "results_found": "Résultats trouvés",
     "showing_results": "Affichage de {count} résultats",
-    "all_locations": "Tous les emplacements"
+    "all_locations": "Tous les emplacements",
+    "login_title": "Connexion Admin",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "login_button": "Connexion",
+    "forgot_password": "Mot de passe oublié?",
+    "contact_developer": "Veuillez contacter le développeur pour réinitialiser le mot de passe",
+    "invalid_email": "Veuillez entrer une adresse e-mail valide",
+    "password_too_short": "Le mot de passe doit contenir au moins 6 caractères",
+    "user_not_found": "Utilisateur non trouvé. Veuillez vérifier votre adresse e-mail.",
+    "wrong_password": "Mot de passe incorrect. Veuillez réessayer.",
+    "login_error": "Échec de la connexion. Veuillez réessayer.",
+    "is_required": "est requis",
+    "login_successful": "Connexion réussie"
 }
