@@ -165,6 +165,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = AppLocalizations(Localizations.localeOf(context));
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Consumer<PlacesProvider>(

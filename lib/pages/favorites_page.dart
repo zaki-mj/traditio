@@ -27,6 +27,7 @@ class FavoritesPage extends StatelessWidget {
         .toList();
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: favPlaces.isEmpty
           ? Center(
               child: Text(

@@ -24,11 +24,12 @@ class _DiscoverShellState extends State<DiscoverShell> {
     return Scaffold(
       appBar: AppBar(title: Text(loc.translate('discover_page')), centerTitle: true),
       drawer: const SharedMenuDrawer(isAdmin: false),
-      body: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(image: DecorationImage(image: AssetImage("assets/pictures/bg2.png"))),
-          child: _pages[_index],
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage("assets/pictures/bg2.png"), fit: BoxFit.cover, opacity: 0.2),
         ),
+        constraints: BoxConstraints.expand(),
+        child: SafeArea(child: _pages[_index]),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _index,

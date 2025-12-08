@@ -29,6 +29,7 @@ class CategoriesPage extends StatelessWidget {
     };
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: GridView.count(

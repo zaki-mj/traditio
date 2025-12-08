@@ -34,13 +34,12 @@ class _AdminShellState extends State<AdminShell> {
           Navigator.of(context).pushReplacementNamed('/'); // Return to welcome
         },
       ),
-      body: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(image: AssetImage("assets/pictures/bg2.png"), fit: BoxFit.cover, opacity: 0.2),
-          ),
-          child: _pages[_index],
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage("assets/pictures/bg2.png"), fit: BoxFit.cover, opacity: 0.2),
         ),
+        constraints: BoxConstraints.expand(),
+        child: _pages[_index],
       ),
       // Use a sized FAB so the notch matches its diameter
       floatingActionButton: SizedBox(
