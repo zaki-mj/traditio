@@ -1,132 +1,59 @@
 import 'package:flutter/material.dart';
+import '../models/place.dart';
+import '../widgets/category_image.dart';
+import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import '../providers/favorites_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../l10n/app_localizations.dart';
-import '../models/place.dart';
-import '../providers/favorites_provider.dart';
-import '../widgets/category_image.dart';
-
-class PlaceDetailPage extends StatefulWidget {
+class PlaceDetailPage extends StatelessWidget {
   final PointOfInterest place;
 
   const PlaceDetailPage({super.key, required this.place});
 
-  @override
-  State<PlaceDetailPage> createState() => _PlaceDetailPageState();
-}
-
-class _PlaceDetailPageState extends State<PlaceDetailPage> {
-  int _currentImageIndex = 0;
-
   Future<void> _launchURL(BuildContext context, String? url, {String? fallbackMessage}) async {
-    final loc = AppLocalizations(Localizations.localeOf(context));
     if (url == null || url.trim().isEmpty) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(fallbackMessage ?? loc.translate('link_not_available'))));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(fallbackMessage ?? AppLocalizations(Localizations.localeOf(context)).translate('link_not_available'))));
       return;
     }
 
     final uri = Uri.tryParse(url);
     if (uri == null) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.translate('invalid_link'))));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(fallbackMessage ?? AppLocalizations(Localizations.localeOf(context)).translate('invalid_link'))));
       return;
     }
 
     try {
       final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
-      if (!launched && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.translate('could_not_open_link'))));
+
+      if (!launched) {
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations(Localizations.localeOf(context)).translate('could_not_open_link'))));
       }
     } catch (e) {
       if (!context.mounted) return;
-      final msg = loc.translate('failed_to_launch').replaceAll('{error}', e.toString());
+      final msg = AppLocalizations(Localizations.localeOf(context)).translate('failed_to_launch').replaceAll('{error}', e.toString());
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
     }
-  }
-
-  Widget _buildImageCarousel(ThemeData theme) {
-    final heroTag = 'place_image_${widget.place.id}_0';
-
-    if (widget.place.imageUrls.isEmpty) {
-      return CategoryImage(
-        category: widget.place.category,
-        height: 250,
-        fit: BoxFit.cover,
-        enableHero: true,
-        heroTag: heroTag,
-        imageUrl: null,
-      );
-    }
-
-    return Stack(
-      children: [
-        SizedBox(
-          height: 250,
-          child: PageView.builder(
-            itemCount: widget.place.imageUrls.length,
-            onPageChanged: (index) {
-              setState(() {
-                _currentImageIndex = index;
-              });
-            },
-            itemBuilder: (context, index) {
-              final imageWidget = Image.network(
-                widget.place.imageUrls[index],
-                fit: BoxFit.cover,
-                errorBuilder: (c, e, s) => CategoryImage(category: widget.place.category, height: 250, fit: BoxFit.cover, imageUrl: null),
-              );
-
-              // Only the first image participates in the Hero animation
-              if (index == 0) {
-                return Hero(tag: heroTag, child: imageWidget);
-              }
-              return imageWidget;
-            },
-          ),
-        ),
-        if (widget.place.imageUrls.length > 1)
-          Positioned(
-            bottom: 10,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(widget.place.imageUrls.length, (index) {
-                return Container(
-                  width: 8.0,
-                  height: 8.0,
-                  margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _currentImageIndex == index ? theme.colorScheme.primary : Colors.white70,
-                  ),
-                );
-              }),
-            ),
-          ),
-      ],
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations(Localizations.localeOf(context));
     final theme = Theme.of(context);
-    final place = widget.place;
-    final langCode = Localizations.localeOf(context).languageCode;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(langCode == 'ar' ? place.nameAR : place.nameFR),
+        title: Text(Localizations.localeOf(context).languageCode == 'ar' ? place.nameAR : place.nameFR),
         actions: [
           Consumer<FavoritesProvider>(
             builder: (ctx, favs, _) {
               final id = place.id;
               final isFav = id != null && favs.isFavorite(id);
               return IconButton(
-                icon: Icon(isFav ? Icons.favorite : Icons.favorite_border, color: isFav ? theme.colorScheme.error : null),
+                icon: Icon(isFav ? Icons.favorite : Icons.favorite_border, color: isFav ? Colors.red : null),
                 onPressed: id == null ? null : () => favs.toggle(id),
               );
             },
@@ -134,14 +61,14 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
         ],
       ),
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           image: DecorationImage(image: AssetImage("assets/pictures/bg2.png"), fit: BoxFit.cover, opacity: 0.2),
         ),
         child: ListView(
           children: [
             ClipRRect(
               borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(32), bottomRight: Radius.circular(32)),
-              child: _buildImageCarousel(theme),
+              child: CategoryImage(imageUrl: place.imageUrl, category: place.category, height: 220, fit: BoxFit.cover, enableHero: true, heroTag: 'place_image_${place.id}'),
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -159,7 +86,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            langCode == 'ar' ? place.nameAR : place.nameFR,
+                            Localizations.localeOf(context).languageCode == 'ar' ? place.nameAR : place.nameFR,
                             style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                           ),
                           const SizedBox(height: 8),
@@ -167,9 +94,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                             children: [
                               Icon(Icons.location_on, color: theme.colorScheme.primary),
                               const SizedBox(width: 6),
-                              Expanded(
-                                child: Text(langCode == 'ar' ? ('${place.cityNameAR}, ${place.wilayaNameAR}') : ('${place.cityNameFR}, ${place.wilayaNameFR}'), style: theme.textTheme.bodyLarge),
-                              ),
+                              Expanded(child: Text(Localizations.localeOf(context).languageCode == 'ar' ? (place.cityNameAR + '، ' + place.wilayaNameAR) : (place.cityNameFR + ', ' + place.wilayaNameFR), style: theme.textTheme.bodyLarge)),
                             ],
                           ),
                           const SizedBox(height: 12),
@@ -177,7 +102,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                             children: [
                               Icon(Icons.category, color: theme.colorScheme.primary),
                               const SizedBox(width: 6),
-                              Text(loc.translate('type_${place.category.name}'), style: theme.textTheme.bodyMedium),
+                              Text(AppLocalizations(Localizations.localeOf(context)).translate('type_${place.category.name}'), style: theme.textTheme.bodyMedium),
                             ],
                           ),
                           const SizedBox(height: 12),
@@ -195,30 +120,30 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                   const SizedBox(height: 16),
 
                   // Description Card
-                  if (place.description?.isNotEmpty ?? false)
-                    Card(
-                      color: theme.colorScheme.surface,
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              loc.translate('about'),
-                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
-                            ),
-                            const SizedBox(height: 12),
-                            Text(place.description!, style: theme.textTheme.bodyMedium),
-                          ],
-                        ),
+                  Card(
+                    color: theme.colorScheme.surface,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppLocalizations(Localizations.localeOf(context)).translate('about'),
+                            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(place.description ?? '', style: theme.textTheme.bodyMedium),
+                        ],
                       ),
                     ),
+                  ),
                   const SizedBox(height: 16),
 
                   // Contact Card
-                  if (place.phone.isNotEmpty || place.email.isNotEmpty)
+                  // phone/email are required in POI model, guard against empty strings instead
+                  if ((place.phone.isNotEmpty) || (place.email.isNotEmpty))
                     Card(
                       color: theme.colorScheme.surface,
                       elevation: 2,
@@ -232,29 +157,32 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                               loc.translate('contact'),
                               style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                             ),
-                            if (place.phone.isNotEmpty) ...[
-                              const SizedBox(height: 12),
-                              Row(
+                            const SizedBox(height: 12),
+                            if (place.phone.isNotEmpty)
+                              Column(
                                 children: [
-                                  Icon(Icons.phone, color: theme.colorScheme.primary),
-                                  const SizedBox(width: 6),
-                                  InkWell(
-                                    onTap: () => _launchURL(context, 'tel:${place.phone}'),
-                                    child: Text(
-                                      place.phone,
-                                      style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary, decoration: TextDecoration.underline),
-                                    ),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.phone, color: theme.colorScheme.primary),
+                                      const SizedBox(width: 6),
+                                      GestureDetector(
+                                        onTap: () => _launchURL(context, 'tel:${place.phone}'),
+                                        child: Text(
+                                          place.phone,
+                                          style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary, decoration: TextDecoration.underline),
+                                        ),
+                                      ),
+                                    ],
                                   ),
+                                  if (place.email.isNotEmpty) const SizedBox(height: 12),
                                 ],
                               ),
-                            ],
-                            if (place.email.isNotEmpty) ...[
-                              const SizedBox(height: 12),
+                            if (place.email.isNotEmpty)
                               Row(
                                 children: [
                                   Icon(Icons.email, color: theme.colorScheme.primary),
                                   const SizedBox(width: 6),
-                                  InkWell(
+                                  GestureDetector(
                                     onTap: () => _launchURL(context, 'mailto:${place.email}'),
                                     child: Text(
                                       place.email,
@@ -263,7 +191,6 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                                   ),
                                 ],
                               ),
-                            ],
                           ],
                         ),
                       ),
@@ -271,7 +198,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                   const SizedBox(height: 16),
 
                   // Address Card
-                  if (place.locationLink?.isNotEmpty ?? false)
+                  if (place.locationLink != null && place.locationLink!.isNotEmpty)
                     Card(
                       color: theme.colorScheme.surface,
                       elevation: 2,
@@ -288,12 +215,13 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                             const SizedBox(height: 12),
                             Center(
                               child: ElevatedButton.icon(
-                                icon: const Icon(Icons.map),
-                                label: Text(loc.translate('open_map')),
+                                icon: Icon(Icons.map, color: theme.colorScheme.onPrimary),
+                                label: Text(loc.translate('open_map'), style: TextStyle(color: theme.colorScheme.onPrimary)),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: theme.colorScheme.primary,
                                   foregroundColor: theme.colorScheme.onPrimary,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  elevation: 4,
                                 ),
                                 onPressed: () => _launchURL(context, place.locationLink),
                               ),
@@ -304,7 +232,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                     ),
                   const SizedBox(height: 16),
 
-                  // Social links card
+                  // Social links card (Facebook, Instagram, TikTok)
                   Card(
                     color: theme.colorScheme.surface,
                     elevation: 2,
@@ -322,23 +250,28 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
+                              // Facebook
                               _SocialIconButton(
                                 assetPath: 'assets/pictures/facebook.png',
                                 tooltip: 'Facebook',
-                                enabled: place.facebookLink?.isNotEmpty ?? false,
-                                onTap: () => _launchURL(context, place.facebookLink),
+                                enabled: place.facebookLink != null && place.facebookLink!.isNotEmpty,
+                                onTap: () => _launchURL(context, place.facebookLink, fallbackMessage: loc.translate('link_not_available')),
                               ),
+
+                              // Instagram
                               _SocialIconButton(
                                 assetPath: 'assets/pictures/instagram.png',
                                 tooltip: 'Instagram',
-                                enabled: place.instagramLink?.isNotEmpty ?? false,
-                                onTap: () => _launchURL(context, place.instagramLink),
+                                enabled: place.instagramLink != null && place.instagramLink!.isNotEmpty,
+                                onTap: () => _launchURL(context, place.instagramLink, fallbackMessage: loc.translate('link_not_available')),
                               ),
+
+                              // TikTok
                               _SocialIconButton(
                                 assetPath: 'assets/pictures/tiktok.png',
                                 tooltip: 'TikTok',
-                                enabled: place.tiktokLink?.isNotEmpty ?? false,
-                                onTap: () => _launchURL(context, place.tiktokLink),
+                                enabled: place.tiktokLink != null && place.tiktokLink!.isNotEmpty,
+                                onTap: () => _launchURL(context, place.tiktokLink, fallbackMessage: loc.translate('link_not_available')),
                               ),
                             ],
                           ),
@@ -373,7 +306,7 @@ class _SocialIconButton extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset(assetPath, width: 48, height: 48, color: enabled ? null : Colors.grey.withAlpha(120), colorBlendMode: BlendMode.srcATop),
+          Image.asset(assetPath, width: 48, height: 48, color: enabled ? null : Colors.grey.withAlpha(120)),
           const SizedBox(height: 6),
           Text(tooltip, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: enabled ? null : Colors.grey)),
         ],
