@@ -36,29 +36,7 @@ class PlacesProvider extends ChangeNotifier {
     // Mark in Firestore (preferred) and local list will update via stream
     try {
       final poi = _all.firstWhere((p) => p.id == id);
-      final updated = PointOfInterest(
-        id: poi.id,
-        nameAR: poi.nameAR,
-        nameFR: poi.nameFR,
-        wilayaCode: poi.wilayaCode,
-        wilayaNameAR: poi.wilayaNameAR,
-        wilayaNameFR: poi.wilayaNameFR,
-        cityNameAR: poi.cityNameAR,
-        cityNameFR: poi.cityNameFR,
-        rating: poi.rating,
-        recommended: true,
-        category: poi.category,
-        phone: poi.phone,
-        email: poi.email,
-        imageUrl: poi.imageUrl,
-        description: poi.description,
-        locationLink: poi.locationLink,
-        facebookLink: poi.facebookLink,
-        instagramLink: poi.instagramLink,
-        tiktokLink: poi.tiktokLink,
-        createdAt: poi.createdAt,
-        updatedAt: DateTime.now(),
-      );
+      final updated = poi.copyWith(recommended: true, updatedAt: DateTime.now());
       await FirebaseServices().updatePOI(updated);
     } catch (_) {}
   }
@@ -66,39 +44,20 @@ class PlacesProvider extends ChangeNotifier {
   void removeRecommended(String id) async {
     try {
       final poi = _all.firstWhere((p) => p.id == id);
-      final updated = PointOfInterest(
-        id: poi.id,
-        nameAR: poi.nameAR,
-        nameFR: poi.nameFR,
-        wilayaCode: poi.wilayaCode,
-        wilayaNameAR: poi.wilayaNameAR,
-        wilayaNameFR: poi.wilayaNameFR,
-        cityNameAR: poi.cityNameAR,
-        cityNameFR: poi.cityNameFR,
-        rating: poi.rating,
-        recommended: false,
-        category: poi.category,
-        phone: poi.phone,
-        email: poi.email,
-        imageUrl: poi.imageUrl,
-        description: poi.description,
-        locationLink: poi.locationLink,
-        facebookLink: poi.facebookLink,
-        instagramLink: poi.instagramLink,
-        tiktokLink: poi.tiktokLink,
-        createdAt: poi.createdAt,
-        updatedAt: DateTime.now(),
-      );
+      final updated = poi.copyWith(recommended: false, updatedAt: DateTime.now());
       await FirebaseServices().updatePOI(updated);
     } catch (_) {}
   }
 
-  // moveRecommended isn't meaningful when recommendations are stored as flags;
-  // ordering should be handled explicitly in Firestore or by a separate ordering field if needed.
-
   /// Delete a place by id (used by admin pages).
   Future<void> deletePlace(String id) async {
-    await FirebaseServices().deletePOI(id);
+    try {
+      final poi = _all.firstWhere((p) => p.id == id);
+      await FirebaseServices().deletePOI(poi);
+    } catch (e) {
+      // Handle case where POI is not found, though it shouldn't happen if called from UI
+      debugPrint('Error deleting place: $e');
+    }
   }
 
   List<String> get availableLocations {
@@ -213,29 +172,7 @@ class PlacesProvider extends ChangeNotifier {
   /// Toggle recommended status (update in Firestore).
   Future<void> toggleRecommended(String id) async {
     final poi = _all.firstWhere((p) => p.id == id, orElse: () => throw StateError('POI not found'));
-    final updated = PointOfInterest(
-      id: poi.id,
-      nameAR: poi.nameAR,
-      nameFR: poi.nameFR,
-      wilayaCode: poi.wilayaCode,
-      wilayaNameAR: poi.wilayaNameAR,
-      wilayaNameFR: poi.wilayaNameFR,
-      cityNameAR: poi.cityNameAR,
-      cityNameFR: poi.cityNameFR,
-      rating: poi.rating,
-      recommended: !poi.recommended,
-      category: poi.category,
-      phone: poi.phone,
-      email: poi.email,
-      imageUrl: poi.imageUrl,
-      description: poi.description,
-      locationLink: poi.locationLink,
-      facebookLink: poi.facebookLink,
-      instagramLink: poi.instagramLink,
-      tiktokLink: poi.tiktokLink,
-      createdAt: poi.createdAt,
-      updatedAt: DateTime.now(),
-    );
+    final updated = poi.copyWith(recommended: !poi.recommended, updatedAt: DateTime.now());
     await _svc.updatePOI(updated);
   }
 }

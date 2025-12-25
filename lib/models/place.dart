@@ -64,7 +64,7 @@ class PointOfInterest {
   final String? tiktokLink;
 
   // Media
-  final String? imageUrl;
+  final List<String> imageUrls;
 
   // Timestamps (useful for sorting/filtering)
   final DateTime? createdAt;
@@ -84,7 +84,7 @@ class PointOfInterest {
     required this.category,
     required this.phone,
     required this.email,
-    this.imageUrl,
+    this.imageUrls = const [],
     this.description,
     this.locationLink,
     this.facebookLink,
@@ -93,6 +93,54 @@ class PointOfInterest {
     this.createdAt,
     this.updatedAt,
   });
+
+  PointOfInterest copyWith({
+    String? id,
+    String? nameAR,
+    String? nameFR,
+    String? wilayaCode,
+    String? wilayaNameAR,
+    String? wilayaNameFR,
+    String? cityNameAR,
+    String? cityNameFR,
+    double? rating,
+    bool? recommended,
+    POICategory? category,
+    String? phone,
+    String? email,
+    List<String>? imageUrls,
+    String? description,
+    String? locationLink,
+    String? facebookLink,
+    String? instagramLink,
+    String? tiktokLink,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return PointOfInterest(
+      id: id ?? this.id,
+      nameAR: nameAR ?? this.nameAR,
+      nameFR: nameFR ?? this.nameFR,
+      wilayaCode: wilayaCode ?? this.wilayaCode,
+      wilayaNameAR: wilayaNameAR ?? this.wilayaNameAR,
+      wilayaNameFR: wilayaNameFR ?? this.wilayaNameFR,
+      cityNameAR: cityNameAR ?? this.cityNameAR,
+      cityNameFR: cityNameFR ?? this.cityNameFR,
+      rating: rating ?? this.rating,
+      recommended: recommended ?? this.recommended,
+      category: category ?? this.category,
+      phone: phone ?? this.phone,
+      email: email ?? this.email,
+      imageUrls: imageUrls ?? this.imageUrls,
+      description: description ?? this.description,
+      locationLink: locationLink ?? this.locationLink,
+      facebookLink: facebookLink ?? this.facebookLink,
+      instagramLink: instagramLink ?? this.instagramLink,
+      tiktokLink: tiktokLink ?? this.tiktokLink,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 
   // Convert to Map for Firestore
   Map<String, dynamic> toMap() {
@@ -113,7 +161,7 @@ class PointOfInterest {
       'facebook_link': facebookLink,
       'instagram_link': instagramLink,
       'tiktok_link': tiktokLink,
-      'image_url': imageUrl,
+      'image_urls': imageUrls,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
       'recommended': recommended,
@@ -122,6 +170,13 @@ class PointOfInterest {
 
   // Create from Firestore Map
   factory PointOfInterest.fromMap(Map<String, dynamic> map, String docId) {
+    List<String> images = [];
+    if (map['image_urls'] != null && map['image_urls'] is List) {
+      images = List<String>.from(map['image_urls']);
+    } else if (map['image_url'] != null && map['image_url'] is String) {
+      images = [map['image_url']];
+    }
+
     return PointOfInterest(
       id: docId, // Get ID from document reference
       nameAR: map['name_ar'] as String,
@@ -132,11 +187,11 @@ class PointOfInterest {
       cityNameAR: map['city_name_ar'] as String,
       cityNameFR: map['city_name_fr'] as String,
       rating: (map['rating'] as num).toDouble(),
-      recommended: map['recommended'] == null ? false : (map['recommended'] as bool),
+      recommended: map['recommended'] as bool? ?? false,
       category: POICategory.fromValue(map['category'] as int),
       phone: map['phone'] as String,
       email: map['email'] as String,
-      imageUrl: map['image_url'] as String?,
+      imageUrls: images,
       description: map['description'] as String?,
       locationLink: map['location_link'] as String?,
       facebookLink: map['facebook_link'] as String?,
