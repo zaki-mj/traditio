@@ -65,6 +65,7 @@ class PointOfInterest {
 
   // Media
   final String? imageUrl;
+  final List<String>? imageUrls;
 
   // Timestamps (useful for sorting/filtering)
   final DateTime? createdAt;
@@ -85,6 +86,7 @@ class PointOfInterest {
     required this.phone,
     required this.email,
     this.imageUrl,
+    this.imageUrls,
     this.description,
     this.locationLink,
     this.facebookLink,
@@ -114,6 +116,7 @@ class PointOfInterest {
       'instagram_link': instagramLink,
       'tiktok_link': tiktokLink,
       'image_url': imageUrl,
+      'image_urls': imageUrls,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
       'recommended': recommended,
@@ -137,6 +140,7 @@ class PointOfInterest {
       phone: map['phone'] as String,
       email: map['email'] as String,
       imageUrl: map['image_url'] as String?,
+      imageUrls: map['image_urls'] != null ? List<String>.from(map['image_urls']) : null,
       description: map['description'] as String?,
       locationLink: map['location_link'] as String?,
       facebookLink: map['facebook_link'] as String?,

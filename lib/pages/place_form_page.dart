@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-// removed unused import: flutter/services
 import '../services/firebase_services.dart';
 import 'package:traditional_gems/services/location_services.dart';
 import '../models/place.dart';
 import '../l10n/app_localizations.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class PlaceFormPage extends StatefulWidget {
   // Accept a PointOfInterest for editing, null when creating new
@@ -46,6 +47,9 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
   List<Map<String, dynamic>> cities = [];
   bool isLoadingStates = true;
 
+  final ImagePicker _imagePicker = ImagePicker();
+  List<File> _selectedImages = [];
+
   @override
   void initState() {
     super.initState();
@@ -71,6 +75,16 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
     _tiktokController = TextEditingController();
 
     _loadStates();
+  }
+
+  Future<void> _pickImages() async {
+    final List<XFile> pickedFiles = await _imagePicker.pickMultiImage(imageQuality: 85);
+
+    if (pickedFiles.isEmpty) return;
+
+    setState(() {
+      _selectedImages = pickedFiles.take(3).map((xfile) => File(xfile.path)).toList();
+    });
   }
 
   Future<void> _loadStates() async {
@@ -235,23 +249,119 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          // Image Preview
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Photos', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 190,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    // Existing selected images
+                    ..._selectedImages.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final file = entry.value;
+
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 12),
+                        child: Stack(
+                          children: [
+                            Container(
+                              width: 160,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(18),
+                                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 8, offset: const Offset(0, 4))],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(18),
+                                child: Image.file(file, fit: BoxFit.cover, height: 190),
+                              ),
+                            ),
+
+                            // Remove button
+                            Positioned(
+                              top: 8,
+                              right: 8,
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _selectedImages.removeAt(index);
+                                  });
+                                },
+                                borderRadius: BorderRadius.circular(20),
+                                child: Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(color: Colors.black.withOpacity(0.65), shape: BoxShape.circle),
+                                  child: const Icon(Icons.close, size: 18, color: Colors.white),
+                                ),
+                              ),
+                            ),
+
+                            // Main image badge
+                            if (index == 0)
+                              Positioned(
+                                bottom: 8,
+                                left: 8,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                  decoration: BoxDecoration(color: theme.colorScheme.primary, borderRadius: BorderRadius.circular(20)),
+                                  child: Text(
+                                    'Main',
+                                    style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onPrimary, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    }),
+
+                    // Add image card (only if < 3)
+                    if (_selectedImages.length < 3)
+                      GestureDetector(
+                        onTap: _pickImages,
+                        child: Container(
+                          width: 160,
+                          margin: const EdgeInsets.only(right: 12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(color: theme.dividerColor, width: 1.2),
+                            color: theme.colorScheme.surfaceContainerHighest,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.add_a_photo_outlined, size: 36, color: theme.colorScheme.primary),
+                              const SizedBox(height: 8),
+                              Text('Add photo', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+                              const SizedBox(height: 4),
+                              Text('${_selectedImages.length}/3', style: theme.textTheme.bodySmall),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          // Legacy Image URL Preview (COMPATIBILITY)
           if (_imageUrlController.text.isNotEmpty)
             ClipRRect(
-              borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16)),
+              borderRadius: BorderRadius.circular(16),
               child: Image.network(
                 _imageUrlController.text,
-                height: 200,
+                height: 160,
                 fit: BoxFit.cover,
-                errorBuilder: (c, e, s) => Container(height: 200, color: theme.colorScheme.surfaceContainerHighest, child: const Icon(Icons.image, size: 80)),
+                errorBuilder: (c, e, s) => Container(height: 160, color: theme.colorScheme.surfaceContainerHighest, child: const Icon(Icons.image, size: 64)),
               ),
-            )
-          else
-            Container(
-              height: 200,
-              decoration: BoxDecoration(color: theme.colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(16)),
-              child: const Icon(Icons.image, size: 80),
             ),
+          const SizedBox(height: 24),
+
           const SizedBox(height: 24),
 
           // Basic Info Card
