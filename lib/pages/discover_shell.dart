@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:traditional_gems/pages/dummy.dart';
 import '../l10n/app_localizations.dart';
 import '../widgets/drawers/shared_menu_drawer.dart';
 import 'home_page.dart';
@@ -15,7 +16,7 @@ class DiscoverShell extends StatefulWidget {
 class _DiscoverShellState extends State<DiscoverShell> {
   int _index = 0;
 
-  static final List<Widget> _pages = [const HomePage(), const CategoriesPage(), const FavoritesPage()];
+  static final List<Widget> _pages = [const DiscoverTraditionalPlacesScreen(), const CategoriesPage(), const FavoritesPage()];
 
   @override
   Widget build(BuildContext context) {
