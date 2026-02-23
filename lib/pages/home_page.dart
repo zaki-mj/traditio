@@ -1,226 +1,149 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/places_provider.dart';
-import '../widgets/cards/place_card.dart';
-import '../l10n/app_localizations.dart';
-import 'place_detail_page.dart';
+import 'package:traditional_gems/l10n/app_localizations.dart';
+import 'package:traditional_gems/pages/discover_page.dart';
+import '../widgets/home_page_card.dart';
+import 'categories_page.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+HomePageCard _homePageCard = HomePageCard();
 
-  void _openSearchFilters(BuildContext context) {
-    final prov = context.read<PlacesProvider>();
-    final theme = Theme.of(context);
-    final loc = AppLocalizations(Localizations.localeOf(context));
+class DiscoverTraditionalPlacesScreen extends StatefulWidget {
+  const DiscoverTraditionalPlacesScreen({super.key});
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-      backgroundColor: theme.scaffoldBackgroundColor,
-      builder: (ctx) {
-        return StatefulBuilder(
-          builder: (context, setModalState) => SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 20, right: 20, top: 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Handle bar
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(color: theme.colorScheme.onSurface.withAlpha(100), borderRadius: BorderRadius.circular(2)),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+  @override
+  State<DiscoverTraditionalPlacesScreen> createState() => _DiscoverTraditionalPlacesScreenState();
+}
 
-                  // Title
-                  Text(
-                    loc.translate('search_filter'),
-                    style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Search field
-                  TextField(
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.search),
-                      hintText: loc.translate('search_by_name'),
-                      suffixIcon: prov.searchQuery.isNotEmpty
-                          ? GestureDetector(
-                              onTap: () {
-                                prov.setSearchQuery('');
-                                setModalState(() {});
-                              },
-                              child: Icon(Icons.close, color: theme.colorScheme.primary),
-                            )
-                          : null,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: theme.colorScheme.primary.withAlpha(50)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: theme.colorScheme.primary.withAlpha(50)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
-                      ),
-                      filled: true,
-                      fillColor: theme.colorScheme.surface,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    ),
-                    onChanged: (v) {
-                      prov.setSearchQuery(v);
-                      setModalState(() {});
-                    },
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Location section
-                  Text(loc.translate('select_location'), style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.5)),
-                  const SizedBox(height: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: prov.currentLocation != 'All' ? theme.colorScheme.primary : theme.colorScheme.primary.withAlpha(50), width: prov.currentLocation != 'All' ? 2 : 1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: DropdownButton<String>(
-                      isExpanded: true,
-                      underline: const SizedBox(),
-                      value: prov.currentLocation,
-                      items: prov.availableLocations
-                          .map(
-                            (l) => DropdownMenuItem(
-                              value: l,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                child: Text(l == 'All' ? loc.translate('all_locations') : prov.getWilayaName(l, Localizations.localeOf(context).languageCode), style: theme.textTheme.bodyMedium),
-                              ),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (v) {
-                        if (v != null) {
-                          prov.setLocation(v);
-                          setModalState(() {});
-                        }
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Active filters badge
-                  const SizedBox(height: 24),
-
-                  // Action buttons
-                  Row(
-                    children: [
-                      if (prov.hasActiveFilters)
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: () {
-                              prov.clearFilters();
-                              setModalState(() {});
-                            },
-                            icon: const Icon(Icons.clear),
-                            label: Text(loc.translate('clear_filters')),
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            ),
-                          ),
-                        ),
-                      if (prov.hasActiveFilters) const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () => Navigator.pop(ctx),
-                          icon: const Icon(Icons.search),
-                          label: Text(loc.translate('search')),
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor: theme.colorScheme.primary,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
+class _DiscoverTraditionalPlacesScreenState extends State<DiscoverTraditionalPlacesScreen> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations(Localizations.localeOf(context));
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Consumer<PlacesProvider>(
-          builder: (context, prov, _) {
-            final rec = prov.recommended.take(6).toList();
-            return Column(
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 1. Big banner header
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              // Background image (replace with your own traditional place image)
+              Container(
+                width: double.infinity,
+                height: 280, // Adjust height as needed
+                decoration: BoxDecoration(
+                  image: const DecorationImage(
+                    image: NetworkImage(
+                      'https://images.unsplash.com/photo-1549877452-8b0a4d8f3c1e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80', // Example: traditional architecture
+                    ),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              // Semi-transparent overlay for better text readability
+              Container(width: double.infinity, height: 280, color: Colors.black.withOpacity(0.45)),
+              // Text overlay
+              const Text(
+                'Discover Traditional Places',
+                style: TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  letterSpacing: 1.2,
+                  shadows: [Shadow(blurRadius: 10.0, color: Colors.black87, offset: Offset(2, 2))],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 32),
+
+          // 2. Featured Artists section
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(loc.translate('recommended'), style: Theme.of(context).textTheme.titleLarge),
-                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Featured Artists', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DiscoverPage())),
+                      child: Text(
+                        loc.translate('see_all'),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
                 SizedBox(
-                  height: 180,
+                  height: 240, // Card height + some padding
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: rec.length,
-                    itemBuilder: (ctx, i) {
-                      final p = rec[i];
+                    itemCount: 6, // Replace with your data length
+                    itemBuilder: (context, index) {
                       return Padding(
-                        padding: const EdgeInsets.only(right: 12.0),
-                        child: SizedBox(
-                          width: 320,
-                          child: PlaceCard(
-                            place: p,
-                            enableHero: false,
-                            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => PlaceDetailPage(place: p))),
-                          ),
+                        padding: const EdgeInsets.only(right: 16),
+                        child: HomePageCard.buildCard(
+                          title: 'Artist ${index + 1}',
+                          subtitle: 'Traditional Crafts',
+                          imageUrl: 'https://images.unsplash.com/photo-1553356084-58ef4a67b2a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', // Placeholder
                         ),
                       );
                     },
                   ),
                 ),
-                const SizedBox(height: 12),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 32),
+
+          // 3. Featured Trips section
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(prov.hasActiveFilters ? loc.translate('search_results') : loc.translate('all_places'), style: Theme.of(context).textTheme.titleMedium),
-                    if (prov.hasActiveFilters) TextButton.icon(onPressed: () => prov.clearFilters(), icon: const Icon(Icons.close, size: 18), label: Text(loc.translate('clear_filters'))),
+                    const Text('Featured Trips', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DiscoverPage())),
+                      child: Text(
+                        loc.translate('see_all'),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w600),
+                      ),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                Expanded(
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 240,
                   child: ListView.builder(
-                    itemCount: prov.filteredPlaces.length,
-                    itemBuilder: (ctx, i) => PlaceCard(
-                      place: prov.filteredPlaces[i],
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => PlaceDetailPage(place: prov.filteredPlaces[i]))),
-                    ),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 5,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: HomePageCard.buildCard(
+                          title: 'Trip to ${['Kasbah', 'Medina', 'Oasis', 'Ancient Village', 'Souk'][index]}',
+                          subtitle: '3 days • Cultural immersion',
+                          imageUrl: 'https://images.unsplash.com/photo-1585208798174-6cedd78e0198?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', // Placeholder
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],
-            );
-          },
-        ),
+            ),
+          ),
+
+          const SizedBox(height: 40), // Bottom spacing
+        ],
       ),
-      floatingActionButton: FloatingActionButton(child: const Icon(Icons.search), onPressed: () => _openSearchFilters(context)),
     );
   }
 }

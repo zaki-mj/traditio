@@ -5,9 +5,9 @@ class HomePageCard {
     return SizedBox(
       width: 180, // Fixed card width for consistent look
       child: Card(
-        elevation: 4,
+        elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        clipBehavior: Clip.antiAlias,
+        //clipBehavior: Clip.antiAlias,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

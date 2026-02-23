@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:traditional_gems/pages/dummy.dart';
+import 'package:traditional_gems/pages/discover_page.dart';
+import 'package:traditional_gems/pages/home_page.dart';
 import '../l10n/app_localizations.dart';
 import '../widgets/drawers/shared_menu_drawer.dart';
 import 'home_page.dart';
@@ -16,7 +17,7 @@ class DiscoverShell extends StatefulWidget {
 class _DiscoverShellState extends State<DiscoverShell> {
   int _index = 0;
 
-  static final List<Widget> _pages = [const DiscoverTraditionalPlacesScreen(), const CategoriesPage(), const FavoritesPage()];
+  static final List<Widget> _pages = [const DiscoverTraditionalPlacesScreen(), const DiscoverPage(), const DiscoverPage()];
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +39,8 @@ class _DiscoverShellState extends State<DiscoverShell> {
         selectedItemColor: Theme.of(context).colorScheme.primary,
         items: [
           BottomNavigationBarItem(icon: const Icon(Icons.home), label: loc.translate('home')),
-          BottomNavigationBarItem(icon: const Icon(Icons.category), label: loc.translate('categories')),
-          BottomNavigationBarItem(icon: const Icon(Icons.favorite), label: loc.translate('favorites')),
+          BottomNavigationBarItem(icon: const Icon(Icons.location_on), label: loc.translate('places')),
+          BottomNavigationBarItem(icon: const Icon(Icons.brush), label: loc.translate('artists')),
         ],
       ),
     );

@@ -11,6 +11,7 @@ class FavoritesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations(Localizations.localeOf(context));
     final favsProv = context.watch<FavoritesProvider>();
     final placesProv = context.watch<PlacesProvider>();
     final favIds = favsProv.allFavorites;
@@ -27,24 +28,15 @@ class FavoritesPage extends StatelessWidget {
         .toList();
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      appBar: AppBar(title: Text(loc.translate('favorites'))),
+      //backgroundColor: Colors.transparent,
       body: favPlaces.isEmpty
-          ? Center(
-              child: Text(
-                AppLocalizations(
-                  Localizations.localeOf(context),
-                ).translate('no_favorites_yet'),
-              ),
-            )
+          ? Center(child: Text(AppLocalizations(Localizations.localeOf(context)).translate('no_favorites_yet')))
           : ListView.builder(
               itemCount: favPlaces.length,
               itemBuilder: (ctx, i) => PlaceCard(
                 place: favPlaces[i],
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => PlaceDetailPage(place: favPlaces[i]),
-                  ),
-                ),
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => PlaceDetailPage(place: favPlaces[i]))),
               ),
             ),
     );

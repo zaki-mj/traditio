@@ -37,6 +37,7 @@ class AppLocalizations {
       'home': 'Home',
       'categories': 'Categories',
       'favorites': 'Favorites',
+      'artists': 'Artists',
       'favorites_cleared': 'Favorites cleared',
       'add_new_place': 'Add new place',
       'search_places': 'Search places...',
@@ -132,6 +133,8 @@ class AppLocalizations {
       "user_not_found": "User not found. Please check your email.",
       "wrong_password": "Wrong password. Please try again.",
       "login_error": "Login failed. Please try again.",
+      "see_all": "See all",
+      "featured_artists": "Featured Artists",
     },
     'ar': {
       'app_title': 'جواهر تقليدية',
@@ -162,6 +165,7 @@ class AppLocalizations {
       'home': 'الرئيسية',
       'categories': 'الفئات',
       'favorites': 'المفضلات',
+      'artists': 'الفنانون',
       'favorites_cleared': 'تم مسح المفضلات',
       'add_new_place': 'إضافة مكان جديد',
       'search_places': 'ابحث عن الأماكن...',
@@ -258,6 +262,8 @@ class AppLocalizations {
       "user_not_found": "لم يتم العثور على المستخدم. يرجى التحقق من بريدك الإلكتروني.",
       "wrong_password": "كلمة مرور خاطئة. يرجى المحاولة مرة أخرى.",
       "login_error": "فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.",
+      "see_all": "عرض الكل",
+      "featured_artists": "الفنانون المميزون",
     },
     'fr': {
       'app_title': 'Trésors Traditionnels',
@@ -286,6 +292,7 @@ class AppLocalizations {
       'dashboard': 'Tableau de Bord',
       'places': 'Lieux',
       'add_new_place': 'Ajouter un nouveau lieu',
+      'artists': 'Artistes',
       'search_places': 'Rechercher des lieux...',
       'all_types': 'Tous les Types',
       'total_places': 'Total des Lieux',
@@ -374,6 +381,8 @@ class AppLocalizations {
       "login_error": "Échec de la connexion. Veuillez réessayer.",
       "is_required": "est requis",
       "login_successful": "Connexion réussie",
+      "see_all": "Voir tout",
+      "featured_artists": "Artistes en vedette",
     },
   };
 
