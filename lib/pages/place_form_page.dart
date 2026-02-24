@@ -143,20 +143,13 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
 
     setState(() => _isUploading = true);
 
-    // ── This is the corrected part ───────────────────────────────────────
-    List<String> finalImageUrls = List.from(_existingImageUrls); // ← declared here
-
-    print('DEBUG: Existing image URLs count: ${_existingImageUrls.length}');
-    print('DEBUG: New picked images count: ${_newPickedImages.length}');
+    List<String> finalImageUrls = List.from(_existingImageUrls);
 
     if (_newPickedImages.isNotEmpty) {
-      print('DEBUG: Starting Cloudinary upload of ${_newPickedImages.length} images...');
       final newUrls = await CloudinaryService.uploadImages(_newPickedImages);
-      print('DEBUG: Cloudinary returned ${newUrls.length} URLs: $newUrls');
+
       finalImageUrls.addAll(newUrls);
-    } else {
-      print('DEBUG: No new images selected → skipping upload');
-    }
+    } else {}
 
     // Optional: keep only the last 6 if somehow more
     if (finalImageUrls.length > 6) {
