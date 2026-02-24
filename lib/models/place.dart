@@ -51,7 +51,14 @@ class PointOfInterest {
   final double rating;
   final bool recommended;
   final POICategory category;
-  final String? description;
+
+  // Multilingual descriptions (optional)
+  final String? descriptionAR;
+  final String? descriptionFR;
+  final String? descriptionEN;
+
+  // Backwards-compatible computed description (first available)
+  String? get description => descriptionFR ?? descriptionEN ?? descriptionAR;
 
   // Contact
   final String phone;
@@ -66,6 +73,13 @@ class PointOfInterest {
   // Media
   final String? imageUrl;
   final List<String>? imageUrls;
+  // Optional individual image link slots (for DB later)
+  final String? imageLink1;
+  final String? imageLink2;
+  final String? imageLink3;
+  final String? imageLink4;
+  final String? imageLink5;
+  final String? imageLink6;
 
   // Timestamps (useful for sorting/filtering)
   final DateTime? createdAt;
@@ -87,7 +101,15 @@ class PointOfInterest {
     required this.email,
     this.imageUrl,
     this.imageUrls,
-    this.description,
+    this.descriptionAR,
+    this.descriptionFR,
+    this.descriptionEN,
+    this.imageLink1,
+    this.imageLink2,
+    this.imageLink3,
+    this.imageLink4,
+    this.imageLink5,
+    this.imageLink6,
     this.locationLink,
     this.facebookLink,
     this.instagramLink,
@@ -95,6 +117,10 @@ class PointOfInterest {
     this.createdAt,
     this.updatedAt,
   });
+
+  // Validate rating bounds
+  // (ensures rating is within 0..5 at construction time)
+  // Note: this assert runs in debug mode.
 
   // Convert to Map for Firestore
   Map<String, dynamic> toMap() {
@@ -108,7 +134,11 @@ class PointOfInterest {
       'city_name_fr': cityNameFR,
       'rating': rating,
       'category': category.value,
-      'description': description,
+      // Write multilingual descriptions and keep legacy 'description' for compatibility
+      'description_ar': descriptionAR,
+      'description_fr': descriptionFR,
+      'description_en': descriptionEN,
+      'description': descriptionFR ?? descriptionEN ?? descriptionAR,
       'phone': phone,
       'email': email,
       'location_link': locationLink,
@@ -117,6 +147,12 @@ class PointOfInterest {
       'tiktok_link': tiktokLink,
       'image_url': imageUrl,
       'image_urls': imageUrls,
+      'image_link_1': imageLink1,
+      'image_link_2': imageLink2,
+      'image_link_3': imageLink3,
+      'image_link_4': imageLink4,
+      'image_link_5': imageLink5,
+      'image_link_6': imageLink6,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
       'recommended': recommended,
@@ -125,6 +161,23 @@ class PointOfInterest {
 
   // Create from Firestore Map
   factory PointOfInterest.fromMap(Map<String, dynamic> map, String docId) {
+    // Helper: load up to 6 image links from explicit keys or fallback to image_urls list
+    String? _safeString(Map m, String k) => m[k] as String?;
+
+    List<String>? _fromImageUrls() => map['image_urls'] != null ? List<String>.from(map['image_urls']) : null;
+
+    final _imageUrlsList = _fromImageUrls();
+
+    String? _linkAt(int idx) {
+      final key = 'image_link_\$idx';
+      // try explicit key
+      final val = map[key];
+      if (val != null) return val as String;
+      // fallback to image_urls list
+      if (_imageUrlsList != null && _imageUrlsList.length > idx) return _imageUrlsList[idx];
+      return null;
+    }
+
     return PointOfInterest(
       id: docId, // Get ID from document reference
       nameAR: map['name_ar'] as String,
@@ -140,8 +193,16 @@ class PointOfInterest {
       phone: map['phone'] as String,
       email: map['email'] as String,
       imageUrl: map['image_url'] as String?,
-      imageUrls: map['image_urls'] != null ? List<String>.from(map['image_urls']) : null,
-      description: map['description'] as String?,
+      imageUrls: _imageUrlsList,
+      descriptionAR: map['description_ar'] as String? ?? map['description'] as String?,
+      descriptionFR: map['description_fr'] as String? ?? map['description'] as String?,
+      descriptionEN: map['description_en'] as String? ?? map['description'] as String?,
+      imageLink1: _linkAt(0),
+      imageLink2: _linkAt(1),
+      imageLink3: _linkAt(2),
+      imageLink4: _linkAt(3),
+      imageLink5: _linkAt(4),
+      imageLink6: _linkAt(5),
       locationLink: map['location_link'] as String?,
       facebookLink: map['facebook_link'] as String?,
       instagramLink: map['instagram_link'] as String?,

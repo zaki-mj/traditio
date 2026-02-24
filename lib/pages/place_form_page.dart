@@ -34,6 +34,18 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
   late TextEditingController _nameARController;
   late TextEditingController _nameFRController;
   late TextEditingController _tiktokController;
+  // New multilingual description controllers
+  late TextEditingController _descriptionARController;
+  late TextEditingController _descriptionFRController;
+  late TextEditingController _descriptionENController;
+
+  // New image link controllers (6 slots)
+  late TextEditingController _imageLink1Controller;
+  late TextEditingController _imageLink2Controller;
+  late TextEditingController _imageLink3Controller;
+  late TextEditingController _imageLink4Controller;
+  late TextEditingController _imageLink5Controller;
+  late TextEditingController _imageLink6Controller;
 
   // Location data
   String? selectedStateCode;
@@ -74,6 +86,18 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
     _nameFRController = TextEditingController(text: place?.nameFR ?? '');
     _tiktokController = TextEditingController();
 
+    _descriptionARController = TextEditingController(text: place?.descriptionAR ?? '');
+    _descriptionFRController = TextEditingController(text: place?.descriptionFR ?? '');
+    _descriptionENController = TextEditingController(text: place?.descriptionEN ?? '');
+
+    // Initialize image link controllers; try explicit imageLink fields then fallback to imageUrls list
+    _imageLink1Controller = TextEditingController(text: place?.imageLink1 ?? (place?.imageUrls != null && place!.imageUrls!.isNotEmpty ? place.imageUrls![0] : ''));
+    _imageLink2Controller = TextEditingController(text: place?.imageLink2 ?? (place?.imageUrls != null && place!.imageUrls!.length > 1 ? place!.imageUrls![1] : ''));
+    _imageLink3Controller = TextEditingController(text: place?.imageLink3 ?? (place?.imageUrls != null && place!.imageUrls!.length > 2 ? place!.imageUrls![2] : ''));
+    _imageLink4Controller = TextEditingController(text: place?.imageLink4 ?? (place?.imageUrls != null && place!.imageUrls!.length > 3 ? place!.imageUrls![3] : ''));
+    _imageLink5Controller = TextEditingController(text: place?.imageLink5 ?? (place?.imageUrls != null && place!.imageUrls!.length > 4 ? place!.imageUrls![4] : ''));
+    _imageLink6Controller = TextEditingController(text: place?.imageLink6 ?? (place?.imageUrls != null && place!.imageUrls!.length > 5 ? place!.imageUrls![5] : ''));
+
     _loadStates();
   }
 
@@ -83,7 +107,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
     if (pickedFiles.isEmpty) return;
 
     setState(() {
-      _selectedImages = pickedFiles.take(3).map((xfile) => File(xfile.path)).toList();
+      _selectedImages = pickedFiles.take(6).map((xfile) => File(xfile.path)).toList();
     });
   }
 
@@ -135,6 +159,15 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
     _nameARController.dispose();
     _nameFRController.dispose();
     _tiktokController.dispose();
+    _descriptionARController.dispose();
+    _descriptionFRController.dispose();
+    _descriptionENController.dispose();
+    _imageLink1Controller.dispose();
+    _imageLink2Controller.dispose();
+    _imageLink3Controller.dispose();
+    _imageLink4Controller.dispose();
+    _imageLink5Controller.dispose();
+    _imageLink6Controller.dispose();
     super.dispose();
   }
 
@@ -168,7 +201,11 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
       return;
     }
 
-    final rating = double.tryParse(_ratingController.text) ?? 4.0;
+    var rating = double.tryParse(_ratingController.text) ?? 4.0;
+    // Clamp rating to 0..5
+    if (rating.isNaN) rating = 4.0;
+    if (rating < 0) rating = 0.0;
+    if (rating > 5) rating = 5.0;
 
     // Create PointOfInterest object
     try {
@@ -185,7 +222,15 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
         phone: _phoneController.text.trim(),
         email: _emailController.text.trim(),
         imageUrl: _imageUrlController.text.isNotEmpty ? _imageUrlController.text.trim() : null,
-        description: _descriptionController.text.trim().isNotEmpty ? _descriptionController.text.trim() : null,
+        descriptionAR: _descriptionARController.text.trim().isNotEmpty ? _descriptionARController.text.trim() : null,
+        descriptionFR: _descriptionFRController.text.trim().isNotEmpty ? _descriptionFRController.text.trim() : null,
+        descriptionEN: _descriptionENController.text.trim().isNotEmpty ? _descriptionENController.text.trim() : null,
+        imageLink1: _imageLink1Controller.text.trim().isNotEmpty ? _imageLink1Controller.text.trim() : null,
+        imageLink2: _imageLink2Controller.text.trim().isNotEmpty ? _imageLink2Controller.text.trim() : null,
+        imageLink3: _imageLink3Controller.text.trim().isNotEmpty ? _imageLink3Controller.text.trim() : null,
+        imageLink4: _imageLink4Controller.text.trim().isNotEmpty ? _imageLink4Controller.text.trim() : null,
+        imageLink5: _imageLink5Controller.text.trim().isNotEmpty ? _imageLink5Controller.text.trim() : null,
+        imageLink6: _imageLink6Controller.text.trim().isNotEmpty ? _imageLink6Controller.text.trim() : null,
         locationLink: _addressController.text.trim().isNotEmpty ? _addressController.text.trim() : null,
         facebookLink: _facebookController.text.trim().isNotEmpty ? _facebookController.text.trim() : null,
         instagramLink: _instagramController.text.trim().isNotEmpty ? _instagramController.text.trim() : null,
@@ -215,7 +260,15 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
           phone: poi.phone,
           email: poi.email,
           imageUrl: poi.imageUrl,
-          description: poi.description,
+          descriptionAR: poi.descriptionAR,
+          descriptionFR: poi.descriptionFR,
+          descriptionEN: poi.descriptionEN,
+          imageLink1: poi.imageLink1,
+          imageLink2: poi.imageLink2,
+          imageLink3: poi.imageLink3,
+          imageLink4: poi.imageLink4,
+          imageLink5: poi.imageLink5,
+          imageLink6: poi.imageLink6,
           locationLink: poi.locationLink,
           facebookLink: poi.facebookLink,
           instagramLink: poi.instagramLink,
@@ -318,8 +371,8 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                       );
                     }),
 
-                    // Add image card (only if < 3)
-                    if (_selectedImages.length < 3)
+                    // Add image card (only if < 6)
+                    if (_selectedImages.length < 6)
                       GestureDetector(
                         onTap: _pickImages,
                         child: Container(
@@ -337,7 +390,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                               const SizedBox(height: 8),
                               Text('Add photo', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
                               const SizedBox(height: 4),
-                              Text('${_selectedImages.length}/3', style: theme.textTheme.bodySmall),
+                              Text('${_selectedImages.length}/6', style: theme.textTheme.bodySmall),
                             ],
                           ),
                         ),
@@ -502,10 +555,32 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                     ),
                   ),
                   const SizedBox(height: 12),
+                  // Multilingual description fields
                   TextField(
-                    controller: _descriptionController,
+                    controller: _descriptionARController,
                     decoration: InputDecoration(
-                      labelText: loc.translate('description_label'),
+                      labelText: 'Description (Arabic)',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      prefixIcon: const Icon(Icons.description),
+                    ),
+                    maxLines: 3,
+                    textDirection: TextDirection.rtl,
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _descriptionFRController,
+                    decoration: InputDecoration(
+                      labelText: 'Description (French)',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      prefixIcon: const Icon(Icons.description),
+                    ),
+                    maxLines: 3,
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _descriptionENController,
+                    decoration: InputDecoration(
+                      labelText: 'Description (English)',
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                       prefixIcon: const Icon(Icons.description),
                     ),
@@ -540,6 +615,73 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                       prefixIcon: const Icon(Icons.image),
                     ),
                     onChanged: (_) => setState(() {}),
+                  ),
+                  const SizedBox(height: 12),
+                  // Six optional image link fields
+                  TextField(
+                    controller: _imageLink1Controller,
+                    decoration: InputDecoration(
+                      labelText: 'Image Link 1',
+                      hintText: 'https://example.com/1.jpg',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      prefixIcon: const Icon(Icons.link),
+                    ),
+                    onChanged: (_) {},
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _imageLink2Controller,
+                    decoration: InputDecoration(
+                      labelText: 'Image Link 2',
+                      hintText: 'https://example.com/2.jpg',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      prefixIcon: const Icon(Icons.link),
+                    ),
+                    onChanged: (_) {},
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _imageLink3Controller,
+                    decoration: InputDecoration(
+                      labelText: 'Image Link 3',
+                      hintText: 'https://example.com/3.jpg',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      prefixIcon: const Icon(Icons.link),
+                    ),
+                    onChanged: (_) {},
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _imageLink4Controller,
+                    decoration: InputDecoration(
+                      labelText: 'Image Link 4',
+                      hintText: 'https://example.com/4.jpg',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      prefixIcon: const Icon(Icons.link),
+                    ),
+                    onChanged: (_) {},
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _imageLink5Controller,
+                    decoration: InputDecoration(
+                      labelText: 'Image Link 5',
+                      hintText: 'https://example.com/5.jpg',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      prefixIcon: const Icon(Icons.link),
+                    ),
+                    onChanged: (_) {},
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _imageLink6Controller,
+                    decoration: InputDecoration(
+                      labelText: 'Image Link 6',
+                      hintText: 'https://example.com/6.jpg',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      prefixIcon: const Icon(Icons.link),
+                    ),
+                    onChanged: (_) {},
                   ),
                 ],
               ),

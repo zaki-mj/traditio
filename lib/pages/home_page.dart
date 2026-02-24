@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:traditional_gems/l10n/app_localizations.dart';
-import 'package:traditional_gems/pages/discover_page.dart';
+import 'package:traditional_gems/pages/discover_shell.dart';
 import '../widgets/home_page_card.dart';
-import 'categories_page.dart';
-
-HomePageCard _homePageCard = HomePageCard();
 
 class DiscoverTraditionalPlacesScreen extends StatefulWidget {
   const DiscoverTraditionalPlacesScreen({super.key});
@@ -14,6 +11,15 @@ class DiscoverTraditionalPlacesScreen extends StatefulWidget {
 }
 
 class _DiscoverTraditionalPlacesScreenState extends State<DiscoverTraditionalPlacesScreen> {
+  void _navigateToPlaces() {
+    // Find the DiscoverShell and change its index to 1 (Places tab)
+    final shellState = context.findAncestorStateOfType<DiscoverShellState>();
+    if (shellState != null) {
+      shellState.index = 1;
+      shellState.updateUI();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations(Localizations.localeOf(context));
@@ -21,38 +27,12 @@ class _DiscoverTraditionalPlacesScreenState extends State<DiscoverTraditionalPla
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. Big banner header
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              // Background image (replace with your own traditional place image)
-              Container(
-                width: double.infinity,
-                height: 280, // Adjust height as needed
-                decoration: BoxDecoration(
-                  image: const DecorationImage(
-                    image: NetworkImage(
-                      'https://images.unsplash.com/photo-1549877452-8b0a4d8f3c1e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80', // Example: traditional architecture
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              // Semi-transparent overlay for better text readability
-              Container(width: double.infinity, height: 280, color: Colors.black.withOpacity(0.45)),
-              // Text overlay
-              const Text(
-                'Discover Traditional Places',
-                style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 1.2,
-                  shadows: [Shadow(blurRadius: 10.0, color: Colors.black87, offset: Offset(2, 2))],
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
+          GestureDetector(
+            onTap: _navigateToPlaces,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ClipRRect(borderRadius: BorderRadiusGeometry.circular(20), child: Image.asset("assets/pictures/discover_banner.jpg")),
+            ),
           ),
 
           const SizedBox(height: 32),
@@ -68,7 +48,7 @@ class _DiscoverTraditionalPlacesScreenState extends State<DiscoverTraditionalPla
                   children: [
                     const Text('Featured Artists', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                     GestureDetector(
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DiscoverPage())),
+                      onTap: _navigateToPlaces,
                       child: Text(
                         loc.translate('see_all'),
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w600),
@@ -111,7 +91,7 @@ class _DiscoverTraditionalPlacesScreenState extends State<DiscoverTraditionalPla
                   children: [
                     const Text('Featured Trips', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                     GestureDetector(
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DiscoverPage())),
+                      onTap: _navigateToPlaces,
                       child: Text(
                         loc.translate('see_all'),
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w600),
