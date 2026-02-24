@@ -32,7 +32,7 @@ class PlaceCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    CategoryImage(imageUrl: place.imageUrl, category: place.category, enableHero: enableHero, heroTag: enableHero ? 'place_image_${place.id}' : null, fit: BoxFit.cover),
+                    CategoryImage(imageUrl: place.imageUrls?.isNotEmpty == true ? place.imageUrls![0] : null, category: place.category, enableHero: enableHero, heroTag: enableHero ? 'place_image_${place.id}' : null, fit: BoxFit.cover),
                     Container(decoration: const BoxDecoration(gradient: AppColors.overlayGradient)),
                     Positioned(
                       left: 12,

@@ -25,5 +25,5 @@ class AppColors {
   // Gradients
   static const LinearGradient cardGradient = LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF00796B), Color(0xFF26A69A)]);
 
-  static const LinearGradient overlayGradient = LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black54]);
+  static const LinearGradient overlayGradient = LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Color.fromARGB(55, 0, 0, 0)]);
 }

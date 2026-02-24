@@ -73,13 +73,6 @@ class PointOfInterest {
   // Media
   final String? imageUrl;
   final List<String>? imageUrls;
-  // Optional individual image link slots (for DB later)
-  final String? imageLink1;
-  final String? imageLink2;
-  final String? imageLink3;
-  final String? imageLink4;
-  final String? imageLink5;
-  final String? imageLink6;
 
   // Timestamps (useful for sorting/filtering)
   final DateTime? createdAt;
@@ -104,12 +97,6 @@ class PointOfInterest {
     this.descriptionAR,
     this.descriptionFR,
     this.descriptionEN,
-    this.imageLink1,
-    this.imageLink2,
-    this.imageLink3,
-    this.imageLink4,
-    this.imageLink5,
-    this.imageLink6,
     this.locationLink,
     this.facebookLink,
     this.instagramLink,
@@ -147,12 +134,7 @@ class PointOfInterest {
       'tiktok_link': tiktokLink,
       'image_url': imageUrl,
       'image_urls': imageUrls,
-      'image_link_1': imageLink1,
-      'image_link_2': imageLink2,
-      'image_link_3': imageLink3,
-      'image_link_4': imageLink4,
-      'image_link_5': imageLink5,
-      'image_link_6': imageLink6,
+
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
       'recommended': recommended,
@@ -197,12 +179,6 @@ class PointOfInterest {
       descriptionAR: map['description_ar'] as String? ?? map['description'] as String?,
       descriptionFR: map['description_fr'] as String? ?? map['description'] as String?,
       descriptionEN: map['description_en'] as String? ?? map['description'] as String?,
-      imageLink1: _linkAt(0),
-      imageLink2: _linkAt(1),
-      imageLink3: _linkAt(2),
-      imageLink4: _linkAt(3),
-      imageLink5: _linkAt(4),
-      imageLink6: _linkAt(5),
       locationLink: map['location_link'] as String?,
       facebookLink: map['facebook_link'] as String?,
       instagramLink: map['instagram_link'] as String?,
