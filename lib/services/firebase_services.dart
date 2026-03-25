@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import '../models/place.dart';
+import '../models/artist.dart';
 
 class Dummy {
   final String name;
@@ -63,5 +64,52 @@ class FirebaseServices {
   /// Backwards-compat helper: add the simple Dummy type to a default collection
   Future<void> addDummyData(Dummy dummy) async {
     await _firestore.collection('places').add(dummy.toMap());
+  }
+
+  // ============ ARTIST CRUD ============
+  final String artistCollection = 'artists';
+
+  /// Create a new Artist in Firestore
+  Future<DocumentReference> createArtist(Artist artist) async {
+    final map = artist.toMap();
+    return await _firestore.collection(artistCollection).add(map);
+  }
+
+  /// Stream all Artists as a list
+  Stream<List<Artist>> streamArtists() {
+    return _firestore
+        .collection(artistCollection)
+        .snapshots()
+        .handleError((e) {
+          print('Error streaming artists: $e');
+        })
+        .map((snap) {
+          try {
+            return snap.docs.map((d) => Artist.fromMap(d.data(), d.id)).toList();
+          } catch (e) {
+            print('Error parsing artists: $e');
+            return [];
+          }
+        });
+  }
+
+  /// Get a single Artist stream by id
+  Stream<Artist?> streamArtistById(String id) {
+    return _firestore.collection(artistCollection).doc(id).snapshots().map((doc) {
+      if (!doc.exists || doc.data() == null) return null;
+      return Artist.fromMap(doc.data()!, doc.id);
+    });
+  }
+
+  /// Update an existing Artist (requires artist.id to be non-null)
+  Future<void> updateArtist(Artist artist) async {
+    if (artist.id == null) throw ArgumentError('Artist id is required to update');
+    final map = artist.toMap();
+    await _firestore.collection(artistCollection).doc(artist.id).update(map);
+  }
+
+  /// Delete an Artist by id
+  Future<void> deleteArtist(String id) async {
+    await _firestore.collection(artistCollection).doc(id).delete();
   }
 }

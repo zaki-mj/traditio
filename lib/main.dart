@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'providers/theme_provider.dart';
 import 'providers/locale_provider.dart';
 import 'providers/places_provider.dart';
+import 'providers/artists_provider.dart';
 import 'providers/favorites_provider.dart';
 import 'providers/admin_provider.dart';
 import 'theme/app_theme.dart';
@@ -32,6 +33,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
         ChangeNotifierProvider(create: (_) => PlacesProvider()),
+        ChangeNotifierProvider(create: (_) => ArtistsProvider()),
         ChangeNotifierProvider(create: (_) => FavoritesProvider()),
         ChangeNotifierProvider(create: (_) => AdminProvider()),
       ],

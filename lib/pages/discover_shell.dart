@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:traditional_gems/pages/explore_page.dart';
+import 'package:traditional_gems/pages/discover_artists_page.dart';
 import '../l10n/app_localizations.dart';
 import '../widgets/drawers/shared_menu_drawer.dart';
 import 'home_page.dart';
@@ -16,7 +17,7 @@ class DiscoverShell extends StatefulWidget {
 class DiscoverShellState extends State<DiscoverShell> {
   int index = 0;
 
-  static final List<Widget> _pages = [const DiscoverTraditionalPlacesScreen(), const ExplorePage(), const ExplorePage()];
+  static final List<Widget> _pages = [const DiscoverTraditionalPlacesScreen(), const ExplorePage(), const DiscoverArtistsPage()];
 
   void updateUI() {
     setState(() {});
