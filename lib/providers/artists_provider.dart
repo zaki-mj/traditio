@@ -26,7 +26,7 @@ class ArtistsProvider extends ChangeNotifier {
     _all.addAll([
       Artist(
         id: 'test_1',
-        name: 'Ahmed Benali',
+
         wilayaCode: '16',
         wilayaNameAR: 'الجزائر',
         wilayaNameFR: 'Alger',
@@ -36,10 +36,12 @@ class ArtistsProvider extends ChangeNotifier {
         email: 'ahmed@example.com',
         descriptionFR: 'Artiste traditionnel spécialisé en peinture',
         imageUrls: ['https://via.placeholder.com/400x300?text=Ahmed+Benali'],
+        nameAR: '',
+        nameFR: '',
       ),
       Artist(
         id: 'test_2',
-        name: 'Fatima Zahra',
+
         wilayaCode: '31',
         wilayaNameAR: 'وهران',
         wilayaNameFR: 'Oran',
@@ -49,6 +51,8 @@ class ArtistsProvider extends ChangeNotifier {
         email: 'fatima@example.com',
         descriptionFR: 'Danseuse et chorégraphe traditionnelle',
         imageUrls: ['https://via.placeholder.com/400x300?text=Fatima+Zahra'],
+        nameAR: '',
+        nameFR: '',
       ),
     ]);
   }
@@ -100,7 +104,7 @@ class ArtistsProvider extends ChangeNotifier {
   List<Artist> get filteredArtists {
     var list = _all.where((a) {
       // Search query matches name or description
-      final matchesQuery = _query.isEmpty || a.name.toLowerCase().contains(_query) || (a.description ?? '').toLowerCase().contains(_query);
+      final matchesQuery = _query.isEmpty || a.nameAR.toLowerCase().contains(_query) || (a.description ?? '').toLowerCase().contains(_query);
 
       // Location filter by wilaya
       final matchesLocation = _location == 'All' || a.wilayaNameFR == _location;

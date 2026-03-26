@@ -208,7 +208,7 @@ class DiscoverArtistsPage extends StatelessWidget {
 
   Widget _buildArtistCard(BuildContext context, Artist artist, ThemeData theme) {
     final langCode = Localizations.localeOf(context).languageCode;
-    final displayName = langCode == 'ar' ? artist.name : artist.name;
+    final displayName = langCode == 'ar' ? artist.nameAR : artist.nameFR;
     final wilaya = langCode == 'ar' ? artist.wilayaNameAR : artist.wilayaNameFR;
     final city = langCode == 'ar' ? artist.cityNameAR : artist.cityNameFR;
 
