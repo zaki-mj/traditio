@@ -140,7 +140,7 @@ class _DiscoverTraditionalPlacesScreenState extends State<DiscoverTraditionalPla
 
           const SizedBox(height: 32),
 
-          // 2. Featured Artists section
+          // 1. Featured Places section
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
@@ -162,17 +162,70 @@ class _DiscoverTraditionalPlacesScreenState extends State<DiscoverTraditionalPla
                 const SizedBox(height: 16),
                 SizedBox(
                   height: 240, // Card height + some padding
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 6, // Replace with your data length
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 16),
-                        child: HomePageCard.buildCard(
-                          title: 'Artist ${index + 1}',
-                          subtitle: 'Traditional Crafts',
-                          imageUrl: 'https://images.unsplash.com/photo-1553356084-58ef4a67b2a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', // Placeholder
-                        ),
+                  child: StreamBuilder<List<PointOfInterest>>(
+                    stream: FirebaseServices().streamRecommendedPOIs(),
+                    builder: (ctx, snap) {
+                      final full = snap.hasData ? snap.data! : poi_prov.recommended;
+                      final recommended = full.isEmpty ? <PointOfInterest>[] : (full.length > 5 ? full.sublist(0, 5) : full);
+
+                      if (recommended.isEmpty) {
+                        return Center(child: Text(loc.translate('no_places_found')));
+                      }
+
+                      return PageView.builder(
+                        controller: PageController(viewportFraction: 0.85),
+                        itemCount: recommended.length,
+                        itemBuilder: (ctx, i) {
+                          final p = recommended[i];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            child: GestureDetector(
+                              onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => PlaceDetailPage(place: p))),
+                              child: Material(
+                                elevation: 8,
+                                borderRadius: BorderRadius.circular(12),
+                                clipBehavior: Clip.hardEdge,
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    p.imageUrl != null && p.imageUrl!.isNotEmpty
+                                        ? Image.network(
+                                            p.imageUrl!,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (_, __, ___) => Container(color: theme.colorScheme.surface),
+                                          )
+                                        : Container(
+                                            color: _categoryColor(p.category).withAlpha(30),
+                                            alignment: Alignment.center,
+                                            child: Icon(_categoryIcon(p.category), size: 48, color: _categoryColor(p.category)),
+                                          ),
+                                    Container(decoration: const BoxDecoration(gradient: AppColors.overlayGradient)),
+                                    Positioned(
+                                      left: 12,
+                                      bottom: 12,
+                                      right: 12,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(color: Colors.black26, borderRadius: BorderRadius.circular(8)),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              Localizations.localeOf(context).languageCode == 'ar' ? p.nameAR : p.nameFR,
+                                              style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                                            ),
+                                            Text('${Localizations.localeOf(context).languageCode == 'ar' ? p.wilayaNameAR : p.wilayaNameFR} • ${loc.translate('type_${p.category.name}')}', style: const TextStyle(color: Colors.white70, fontSize: 12)),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       );
                     },
                   ),

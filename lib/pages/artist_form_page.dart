@@ -3,15 +3,15 @@ import 'package:traditional_gems/models/artist.dart';
 import '../services/firebase_services.dart';
 import '../services/cloudinary_service.dart';
 import 'package:traditional_gems/services/location_services.dart';
-import '../models/place.dart';
+import '../models/artist.dart';
 import '../l10n/app_localizations.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 class ArtistFormPage extends StatefulWidget {
-  final PointOfInterest? place;
+  final Artist? artist;
 
-  const ArtistFormPage({super.key, this.place});
+  const ArtistFormPage({super.key, this.artist});
 
   @override
   State<ArtistFormPage> createState() => _ArtistFormPageState();
@@ -29,7 +29,6 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
   late TextEditingController _facebookController;
   late TextEditingController _instagramController;
   late TextEditingController _tiktokController;
-  late TextEditingController _ratingController;
 
   String? selectedStateCode;
   String? selectedCityName;
@@ -51,7 +50,7 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
   @override
   void initState() {
     super.initState();
-    final p = widget.place;
+    final p = widget.artist;
 
     _nameARController = TextEditingController(text: p?.nameAR ?? '');
     _nameFRController = TextEditingController(text: p?.nameFR ?? '');
@@ -64,7 +63,6 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
     _facebookController = TextEditingController(text: p?.facebookLink ?? '');
     _instagramController = TextEditingController(text: p?.instagramLink ?? '');
     _tiktokController = TextEditingController(text: p?.tiktokLink ?? '');
-    _ratingController = TextEditingController(text: p?.rating.toString() ?? '4.0');
 
     if (p != null && p.imageUrls != null) {
       _existingImageUrls = List<String>.from(p.imageUrls!);
@@ -127,11 +125,11 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
     _facebookController.dispose();
     _instagramController.dispose();
     _tiktokController.dispose();
-    _ratingController.dispose();
+
     super.dispose();
   }
 
-  Future<void> _savePlace() async {
+  Future<void> _saveArtist() async {
     // Basic validation
     if (_nameARController.text.trim().isEmpty || _nameFRController.text.trim().isEmpty || selectedStateCode == null || selectedCityName == null || _phoneController.text.trim().isEmpty || _emailController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill required fields'), backgroundColor: Colors.red));
@@ -155,11 +153,8 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
 
     print('DEBUG: Final imageUrls before saving to Firestore: ${finalImageUrls.length} items → $finalImageUrls');
 
-    final rating = double.tryParse(_ratingController.text) ?? 4.0;
-    final clampedRating = rating.clamp(0.0, 5.0);
-
     final art = Artist(
-      id: widget.place?.id,
+      id: widget.artist?.id,
       nameAR: _nameARController.text.trim(),
       nameFR: _nameFRController.text.trim(),
       wilayaCode: selectedStateCode!,
@@ -178,13 +173,13 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
       facebookLink: _facebookController.text.trim().isNotEmpty ? _facebookController.text.trim() : null,
       instagramLink: _instagramController.text.trim().isNotEmpty ? _instagramController.text.trim() : null,
       tiktokLink: _tiktokController.text.trim().isNotEmpty ? _tiktokController.text.trim() : null,
-      createdAt: widget.place?.createdAt ?? DateTime.now(),
+      createdAt: widget.artist?.createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),
     );
 
     try {
       final svc = FirebaseServices();
-      if (widget.place == null) {
+      if (widget.artist == null) {
         await svc.createArtist(art);
         print('DEBUG: New POI created successfully');
       } else {
@@ -210,13 +205,13 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations(Localizations.localeOf(context));
     final theme = Theme.of(context);
-    final isEditing = widget.place != null;
+    final isEditing = widget.artist != null;
     final currentLocale = Localizations.localeOf(context).languageCode;
 
     final allImages = [..._existingImageUrls.map((url) => url), ..._newPickedImages.map((f) => f.path)];
 
     return Scaffold(
-      appBar: AppBar(title: Text(isEditing ? 'Edit Place' : 'Create Place')),
+      appBar: AppBar(title: Text(isEditing ? 'Edit Artist' : 'Create Artist')),
       body: Stack(
         children: [
           ListView(
@@ -434,17 +429,6 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                       ),
 
                       const SizedBox(height: 12),
-                      TextField(
-                        controller: _ratingController,
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        decoration: InputDecoration(
-                          labelText: 'Rating (0-5)',
-                          hintText: '4.5',
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                          prefixIcon: const Icon(Icons.star),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
 
                       TextField(
                         controller: _descriptionARController,
@@ -593,7 +577,7 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: _isUploading ? null : _savePlace,
+                      onPressed: _isUploading ? null : _saveArtist,
                       child: _isUploading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2.5)) : Text(isEditing ? 'Update' : 'Create'),
                     ),
                   ),
