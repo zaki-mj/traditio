@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:traditional_gems/models/artist.dart';
 import 'package:traditional_gems/theme/app_colors.dart';
 import '../models/place.dart';
 

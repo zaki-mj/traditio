@@ -253,9 +253,9 @@ class DiscoverPage extends StatelessWidget {
                                 child: Stack(
                                   fit: StackFit.expand,
                                   children: [
-                                    p.imageUrl != null && p.imageUrl!.isNotEmpty
+                                    p.imageUrls?[0] != null && p.imageUrls!.isNotEmpty
                                         ? Image.network(
-                                            p.imageUrl!,
+                                            p.imageUrls![0],
                                             fit: BoxFit.cover,
                                             errorBuilder: (_, __, ___) => Container(color: theme.colorScheme.surface),
                                           )

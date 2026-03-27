@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:traditional_gems/pages/artist_details_page.dart';
+import '../l10n/app_localizations.dart';
 import '../providers/artists_provider.dart';
 import '../models/artist.dart';
+import '../widgets/cards/artist_card.dart'; // ← You'll need to create this
+import '../theme/app_colors.dart';
+// ← Adjust name if different
 
 class DiscoverArtistsPage extends StatelessWidget {
   const DiscoverArtistsPage({super.key});
 
   void _openSearchFilters(BuildContext context) {
     final prov = context.read<ArtistsProvider>();
+    final loc = AppLocalizations(Localizations.localeOf(context));
     final theme = Theme.of(context);
 
     showModalBottomSheet(
@@ -17,7 +23,7 @@ class DiscoverArtistsPage extends StatelessWidget {
       builder: (ctx) => StatefulBuilder(
         builder: (context, setModalState) => DraggableScrollableSheet(
           expand: false,
-          initialChildSize: 0.75,
+          initialChildSize: 0.65, // Slightly smaller since no type filter
           minChildSize: 0.5,
           maxChildSize: 0.95,
           builder: (context, scrollController) => SingleChildScrollView(
@@ -39,7 +45,7 @@ class DiscoverArtistsPage extends StatelessWidget {
 
                   // Title
                   Text(
-                    'Search & Filter Artists',
+                    loc.translate('search_filter'),
                     style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                   ),
                   const SizedBox(height: 24),
@@ -47,7 +53,7 @@ class DiscoverArtistsPage extends StatelessWidget {
                   // Search TextField
                   TextField(
                     decoration: InputDecoration(
-                      hintText: 'Search by name',
+                      hintText: loc.translate('search_by_name'),
                       prefixIcon: const Icon(Icons.search),
                       suffixIcon: prov.searchQuery.isNotEmpty
                           ? GestureDetector(
@@ -82,7 +88,7 @@ class DiscoverArtistsPage extends StatelessWidget {
                   const SizedBox(height: 24),
 
                   // Location Filter
-                  Text('Select Location', style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.5)),
+                  Text(loc.translate('select_location'), style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.5)),
                   const SizedBox(height: 10),
                   Container(
                     decoration: BoxDecoration(
@@ -99,7 +105,7 @@ class DiscoverArtistsPage extends StatelessWidget {
                               value: l,
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                child: Text(l == 'All' ? 'All Locations' : prov.getWilayaName(l, Localizations.localeOf(context).languageCode), style: theme.textTheme.bodyMedium),
+                                child: Text(l == 'All' ? loc.translate('all_locations') : prov.getWilayaName(l, Localizations.localeOf(context).languageCode), style: theme.textTheme.bodyMedium),
                               ),
                             ),
                           )
@@ -125,7 +131,7 @@ class DiscoverArtistsPage extends StatelessWidget {
                               setModalState(() {});
                             },
                             icon: const Icon(Icons.clear),
-                            label: const Text('Clear Filters'),
+                            label: Text(loc.translate('clear_filters')),
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 12),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -137,7 +143,7 @@ class DiscoverArtistsPage extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: () => Navigator.pop(context),
                           icon: const Icon(Icons.search),
-                          label: const Text('Search'),
+                          label: Text(loc.translate('search')),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: theme.colorScheme.primary,
                             foregroundColor: Colors.white,
@@ -160,6 +166,7 @@ class DiscoverArtistsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations(Localizations.localeOf(context));
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -172,19 +179,85 @@ class DiscoverArtistsPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Recommended Section
+                Text(loc.translate('recommended'), style: theme.textTheme.titleMedium),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 180,
+                  child: prov.recommended.isEmpty
+                      ? Center(child: Text(loc.translate('no_artists_found')))
+                      : PageView.builder(
+                          controller: PageController(viewportFraction: 0.85),
+                          itemCount: prov.recommended.length > 5 ? 5 : prov.recommended.length,
+                          itemBuilder: (ctx, i) {
+                            final artist = prov.recommended[i];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 6),
+                              child: GestureDetector(
+                                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ArtistDetailPage(artist: artist))),
+                                child: Material(
+                                  elevation: 8,
+                                  borderRadius: BorderRadius.circular(12),
+                                  clipBehavior: Clip.hardEdge,
+                                  child: Stack(
+                                    fit: StackFit.expand,
+                                    children: [
+                                      // Image
+                                      artist.imageUrl != null && artist.imageUrl!.isNotEmpty
+                                          ? Image.network(
+                                              artist.imageUrl!,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) => Container(color: theme.colorScheme.surface),
+                                            )
+                                          : artist.imageUrls != null && artist.imageUrls!.isNotEmpty
+                                          ? Image.network(
+                                              artist.imageUrls!.first,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) => Container(color: theme.colorScheme.surface),
+                                            )
+                                          : Container(color: theme.colorScheme.primary.withAlpha(30), alignment: Alignment.center, child: const Icon(Icons.person, size: 48)),
+
+                                      Container(decoration: const BoxDecoration(gradient: AppColors.overlayGradient)),
+
+                                      Positioned(
+                                        left: 12,
+                                        bottom: 12,
+                                        right: 12,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(color: Colors.black26, borderRadius: BorderRadius.circular(8)),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                Localizations.localeOf(context).languageCode == 'ar' ? (artist.nameAR.isNotEmpty ? artist.nameAR : artist.nameFR) : (artist.nameFR.isNotEmpty ? artist.nameFR : artist.nameAR),
+                                                style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                                              ),
+                                              Text(Localizations.localeOf(context).languageCode == 'ar' ? artist.wilayaNameAR : artist.wilayaNameFR, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                ),
+                const SizedBox(height: 12),
+
                 // Results Heading
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(prov.hasActiveFilters ? 'Search Results' : 'All Artists', style: theme.textTheme.titleMedium),
-                    if (prov.hasActiveFilters)
-                      TextButton.icon(
-                        onPressed: () {
-                          prov.clearFilters();
-                        },
-                        icon: const Icon(Icons.close, size: 18),
-                        label: const Text('Clear'),
-                      ),
+                    Text(
+                      prov.hasActiveFilters ? loc.translate('search_results') : loc.translate('all_artists'), // Make sure this key exists in your localization
+                      style: theme.textTheme.titleMedium,
+                    ),
+                    if (prov.hasActiveFilters) TextButton.icon(onPressed: () => prov.clearFilters(), icon: const Icon(Icons.close, size: 18), label: Text(loc.translate('clear_filters'))),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -193,9 +266,15 @@ class DiscoverArtistsPage extends StatelessWidget {
                 Expanded(
                   child: filtered.isEmpty
                       ? Center(
-                          child: Text('No artists found', style: theme.textTheme.bodyLarge?.copyWith(color: Colors.grey)),
+                          child: Text(loc.translate('no_artists_found'), style: theme.textTheme.bodyLarge?.copyWith(color: Colors.grey)),
                         )
-                      : ListView.builder(itemCount: filtered.length, itemBuilder: (ctx, i) => _buildArtistCard(context, filtered[i], theme)),
+                      : ListView.builder(
+                          itemCount: filtered.length,
+                          itemBuilder: (ctx, i) => ArtistCard(
+                            artist: filtered[i],
+                            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ArtistDetailPage(artist: filtered[i]))),
+                          ),
+                        ),
                 ),
               ],
             ),
@@ -203,97 +282,6 @@ class DiscoverArtistsPage extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(child: const Icon(Icons.search), onPressed: () => _openSearchFilters(context)),
-    );
-  }
-
-  Widget _buildArtistCard(BuildContext context, Artist artist, ThemeData theme) {
-    final langCode = Localizations.localeOf(context).languageCode;
-    final displayName = langCode == 'ar' ? artist.nameAR : artist.nameFR;
-    final wilaya = langCode == 'ar' ? artist.wilayaNameAR : artist.wilayaNameFR;
-    final city = langCode == 'ar' ? artist.cityNameAR : artist.cityNameFR;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Material(
-        elevation: 2,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: theme.dividerColor, width: 1),
-          ),
-          child: Column(
-            children: [
-              // Image carousel
-              if (artist.imageUrls != null && artist.imageUrls!.isNotEmpty)
-                ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                  child: SizedBox(
-                    height: 200,
-                    child: PageView.builder(
-                      itemCount: artist.imageUrls!.length,
-                      itemBuilder: (ctx, i) => Image.network(
-                        artist.imageUrls![i],
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(color: theme.colorScheme.surfaceContainerHighest, alignment: Alignment.center, child: const Icon(Icons.image, size: 64)),
-                      ),
-                    ),
-                  ),
-                )
-              else
-                Container(
-                  height: 200,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerHighest,
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                  ),
-                  alignment: Alignment.center,
-                  child: const Icon(Icons.person, size: 64),
-                ),
-
-              // Artist Info
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      displayName,
-                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      '$wilaya • $city',
-                      style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 8),
-                    if (artist.description != null && artist.description!.isNotEmpty) Text(artist.description!, style: theme.textTheme.bodySmall, maxLines: 2, overflow: TextOverflow.ellipsis),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (artist.phone.isNotEmpty)
-                          Tooltip(
-                            message: artist.phone,
-                            child: Icon(Icons.phone, size: 16, color: theme.colorScheme.primary),
-                          ),
-                        const SizedBox(width: 8),
-                        if (artist.email.isNotEmpty)
-                          Tooltip(
-                            message: artist.email,
-                            child: Icon(Icons.email, size: 16, color: theme.colorScheme.primary),
-                          ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

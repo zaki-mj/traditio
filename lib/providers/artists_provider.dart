@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import '../models/artist.dart';
 import '../services/firebase_services.dart';
@@ -15,9 +14,9 @@ class ArtistsProvider extends ChangeNotifier {
   String _location = 'All';
 
   void _initialize() {
-    // Add test artists to avoid empty list issues
+    // Add test artists to avoid empty list issues (as you originally had)
     _addTestArtists();
-    // Then start listening to Firestore for real updates
+    // Then start listening to Firestore
     startListening();
   }
 
@@ -26,7 +25,6 @@ class ArtistsProvider extends ChangeNotifier {
     _all.addAll([
       Artist(
         id: 'test_1',
-
         wilayaCode: '16',
         wilayaNameAR: 'الجزائر',
         wilayaNameFR: 'Alger',
@@ -41,7 +39,6 @@ class ArtistsProvider extends ChangeNotifier {
       ),
       Artist(
         id: 'test_2',
-
         wilayaCode: '31',
         wilayaNameAR: 'وهران',
         wilayaNameFR: 'Oran',
@@ -57,7 +54,27 @@ class ArtistsProvider extends ChangeNotifier {
     ]);
   }
 
+  // ====================== Getters ======================
+
   List<Artist> get allArtists => List.unmodifiable(_all);
+
+  /// Recommended artists (using recommended flag)
+  List<Artist> get recommended {
+    final rec = _all.where((a) => a.recommended).toList();
+
+    if (rec.isEmpty) {
+      // Fallback: return first 6 artists if none are marked recommended
+      final copy = List<Artist>.from(_all);
+      // You can change sorting logic if you want (e.g. by createdAt)
+      return copy.take(6).toList();
+    }
+
+    // Sort recommended artists (you can adjust ordering)
+    rec.sort((a, b) => (b.updatedAt ?? DateTime(2000)).compareTo(a.updatedAt ?? DateTime(2000)));
+    return rec;
+  }
+
+  bool isRecommended(String id) => _all.any((a) => a.id == id && a.recommended);
 
   List<String> get availableLocations {
     final set = <String>{'All'};
@@ -67,7 +84,6 @@ class ArtistsProvider extends ChangeNotifier {
     return set.toList()..sort();
   }
 
-  // Get wilaya name in the specified language
   String getWilayaName(String wilayaNameFR, String languageCode) {
     if (languageCode == 'ar') {
       try {
@@ -80,8 +96,10 @@ class ArtistsProvider extends ChangeNotifier {
     return wilayaNameFR;
   }
 
+  // ====================== Filter Controls ======================
+
   void setSearchQuery(String q) {
-    _query = q.toLowerCase();
+    _query = q.toLowerCase().trim();
     notifyListeners();
   }
 
@@ -101,16 +119,22 @@ class ArtistsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // ====================== Filtered List ======================
+
   List<Artist> get filteredArtists {
     var list = _all.where((a) {
       // Search query matches name or description
-      final matchesQuery = _query.isEmpty || a.nameAR.toLowerCase().contains(_query) || (a.description ?? '').toLowerCase().contains(_query);
+      final matchesQuery = _query.isEmpty || a.nameAR.toLowerCase().contains(_query) || a.nameFR.toLowerCase().contains(_query) || (a.description ?? '').toLowerCase().contains(_query);
 
       // Location filter by wilaya
       final matchesLocation = _location == 'All' || a.wilayaNameFR == _location;
 
       return matchesQuery && matchesLocation;
     }).toList();
+
+    // Sort by updatedAt descending (most recent first) - you can change this
+    list.sort((a, b) => (b.updatedAt ?? DateTime(2000)).compareTo(a.updatedAt ?? DateTime(2000)));
+
     return list;
   }
 
@@ -122,12 +146,14 @@ class ArtistsProvider extends ChangeNotifier {
     }
   }
 
-  // --- Firestore subscription
+  // ====================== Firestore ======================
+
   StreamSubscription<List<Artist>>? _subscription;
   final FirebaseServices _svc = FirebaseServices();
 
   void startListening() {
     if (_subscription != null) return;
+
     try {
       _subscription = _svc.streamArtists().listen(
         (list) {
@@ -137,12 +163,12 @@ class ArtistsProvider extends ChangeNotifier {
           notifyListeners();
         },
         onError: (e) {
-          print('ArtistsProvider stream error: $e');
+          debugPrint('ArtistsProvider stream error: $e');
         },
         cancelOnError: false,
       );
     } catch (e) {
-      print('Error starting artists listener: $e');
+      debugPrint('Error starting artists listener: $e');
     }
   }
 
@@ -157,8 +183,42 @@ class ArtistsProvider extends ChangeNotifier {
     super.dispose();
   }
 
+  // ====================== CRUD ======================
+
   /// Delete an artist by id
   Future<void> deleteArtist(String id) async {
     await FirebaseServices().deleteArtist(id);
+  }
+
+  /// Toggle recommended status
+  Future<void> toggleRecommended(String id) async {
+    final artist = _all.firstWhere((a) => a.id == id, orElse: () => throw StateError('Artist not found'));
+
+    final updated = Artist(
+      id: artist.id,
+      nameAR: artist.nameAR,
+      nameFR: artist.nameFR,
+      wilayaCode: artist.wilayaCode,
+      wilayaNameAR: artist.wilayaNameAR,
+      wilayaNameFR: artist.wilayaNameFR,
+      cityNameAR: artist.cityNameAR,
+      cityNameFR: artist.cityNameFR,
+      recommended: !artist.recommended,
+      phone: artist.phone,
+      email: artist.email,
+      imageUrl: artist.imageUrl,
+      imageUrls: artist.imageUrls,
+      descriptionAR: artist.descriptionAR,
+      descriptionFR: artist.descriptionFR,
+      descriptionEN: artist.descriptionEN,
+      locationLink: artist.locationLink,
+      facebookLink: artist.facebookLink,
+      instagramLink: artist.instagramLink,
+      tiktokLink: artist.tiktokLink,
+      createdAt: artist.createdAt,
+      updatedAt: DateTime.now(),
+    );
+
+    await _svc.updateArtist(updated); // ← Make sure this method exists in FirebaseServices
   }
 }

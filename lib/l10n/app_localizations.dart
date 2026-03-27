@@ -135,6 +135,11 @@ class AppLocalizations {
       "login_error": "Login failed. Please try again.",
       "see_all": "See all",
       "featured_artists": "Featured Artists",
+      'journeys': 'Journeys',
+      'featured_total': 'Featured',
+      'manage_featured': 'Manage Featured',
+      'all': 'All',
+      'placeholder_data': 'Placeholder data',
     },
     'ar': {
       'app_title': 'جواهر تقليدية',
@@ -264,6 +269,11 @@ class AppLocalizations {
       "login_error": "فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.",
       "see_all": "عرض الكل",
       "featured_artists": "الفنانون المميزون",
+      'journeys': 'الرحلات',
+      'featured_total': 'المميزة',
+      'manage_featured': 'إدارة المميزين',
+      'all': 'الكل',
+      'placeholder_data': 'بيانات مؤقتة',
     },
     'fr': {
       'app_title': 'Trésors Traditionnels',
@@ -383,6 +393,11 @@ class AppLocalizations {
       "login_successful": "Connexion réussie",
       "see_all": "Voir tout",
       "featured_artists": "Artistes en vedette",
+      'journeys': 'Circuits',
+      'featured_total': 'En vedette',
+      'manage_featured': 'Gérer les mis en avant',
+      'all': 'Tout',
+      'placeholder_data': 'Données provisoires',
     },
   };
 

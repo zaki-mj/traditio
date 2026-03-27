@@ -92,9 +92,9 @@ class _DiscoverTraditionalPlacesScreenState extends State<DiscoverTraditionalPla
                                 child: Stack(
                                   fit: StackFit.expand,
                                   children: [
-                                    p.imageUrl != null && p.imageUrl!.isNotEmpty
+                                    p.imageUrls != null && p.imageUrls!.isNotEmpty
                                         ? Image.network(
-                                            p.imageUrl!,
+                                            p.imageUrls![0],
                                             fit: BoxFit.cover,
                                             errorBuilder: (_, __, ___) => Container(color: theme.colorScheme.surface),
                                           )
@@ -188,9 +188,9 @@ class _DiscoverTraditionalPlacesScreenState extends State<DiscoverTraditionalPla
                                 child: Stack(
                                   fit: StackFit.expand,
                                   children: [
-                                    p.imageUrl != null && p.imageUrl!.isNotEmpty
+                                    p.imageUrls != null && p.imageUrls!.isNotEmpty
                                         ? Image.network(
-                                            p.imageUrl!,
+                                            p.imageUrls![0],
                                             fit: BoxFit.cover,
                                             errorBuilder: (_, __, ___) => Container(color: theme.colorScheme.surface),
                                           )

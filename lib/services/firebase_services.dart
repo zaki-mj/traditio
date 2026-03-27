@@ -101,6 +101,12 @@ class FirebaseServices {
     });
   }
 
+  Stream<List<Artist>> streamRecommendedArtists() {
+    return _firestore.collection(artistCollection).where('recommended', isEqualTo: true).snapshots().map((snap) {
+      return snap.docs.map((d) => Artist.fromMap(d.data(), d.id)).toList();
+    });
+  }
+
   /// Update an existing Artist (requires artist.id to be non-null)
   Future<void> updateArtist(Artist artist) async {
     if (artist.id == null) throw ArgumentError('Artist id is required to update');
