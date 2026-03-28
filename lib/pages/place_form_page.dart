@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import '../services/firebase_services.dart';
-import '../services/cloudinary_service.dart';
-import 'package:traditional_gems/services/location_services.dart';
-import '../models/place.dart';
-import '../l10n/app_localizations.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+
+import '../services/firebase_services.dart';
+import '../services/cloudinary_service.dart';
+import '../services/location_services.dart'; // Make sure the path is correct
+import '../models/place.dart';
+import '../l10n/app_localizations.dart';
 
 class PlaceFormPage extends StatefulWidget {
   final PointOfInterest? place;
@@ -17,6 +18,7 @@ class PlaceFormPage extends StatefulWidget {
 }
 
 class _PlaceFormPageState extends State<PlaceFormPage> {
+  // Controllers
   late TextEditingController _nameARController;
   late TextEditingController _nameFRController;
   late TextEditingController _descriptionARController;
@@ -32,6 +34,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
 
   late String _selectedType;
 
+  // Location fields
   String? selectedStateCode;
   String? selectedCityName;
   String? selectedWilayaNameAR;
@@ -44,8 +47,10 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
   bool isLoadingStates = true;
 
   final ImagePicker _picker = ImagePicker();
-  List<File> _newPickedImages = [];
-  List<String> _existingImageUrls = [];
+
+  // Image management
+  List<String> _existingImageUrls = []; // URLs from database (can be removed)
+  List<File> _newPickedImages = []; // New images selected by user
 
   bool _isUploading = false;
 
@@ -54,6 +59,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
     super.initState();
     final p = widget.place;
 
+    // Initialize controllers
     _nameARController = TextEditingController(text: p?.nameAR ?? '');
     _nameFRController = TextEditingController(text: p?.nameFR ?? '');
     _descriptionARController = TextEditingController(text: p?.descriptionAR ?? '');
@@ -65,10 +71,11 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
     _facebookController = TextEditingController(text: p?.facebookLink ?? '');
     _instagramController = TextEditingController(text: p?.instagramLink ?? '');
     _tiktokController = TextEditingController(text: p?.tiktokLink ?? '');
-    _ratingController = TextEditingController(text: p?.rating.toString() ?? '4.0');
+    _ratingController = TextEditingController(text: (p?.rating ?? 4.0).toString());
 
-    _selectedType = p?.category.name ?? 'hotel';
+    _selectedType = p?.category.name.toLowerCase() ?? 'hotel';
 
+    // Load existing images when editing
     if (p != null && p.imageUrls != null) {
       _existingImageUrls = List<String>.from(p.imageUrls!);
     }
@@ -76,15 +83,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
     _loadStates();
   }
 
-  Future<void> _pickImages() async {
-    final List<XFile>? picked = await _picker.pickMultiImage(imageQuality: 80, limit: 6);
-    if (picked == null || picked.isEmpty) return;
-
-    setState(() {
-      _newPickedImages = picked.map((x) => File(x.path)).toList();
-    });
-  }
-
+  // ==================== LOCATION ====================
   Future<void> _loadStates() async {
     setState(() => isLoadingStates = true);
     try {
@@ -117,27 +116,37 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
     }
   }
 
-  @override
-  void dispose() {
-    _nameARController.dispose();
-    _nameFRController.dispose();
-    _descriptionARController.dispose();
-    _descriptionFRController.dispose();
-    _descriptionENController.dispose();
-    _phoneController.dispose();
-    _emailController.dispose();
-    _addressController.dispose();
-    _facebookController.dispose();
-    _instagramController.dispose();
-    _tiktokController.dispose();
-    _ratingController.dispose();
-    super.dispose();
+  // ==================== IMAGE HANDLING ====================
+  Future<void> _pickImages() async {
+    final int currentTotal = _existingImageUrls.length + _newPickedImages.length;
+    final int remaining = 6 - currentTotal;
+    if (remaining <= 0) return;
+
+    final List<XFile>? picked = await _picker.pickMultiImage(imageQuality: 80, limit: remaining);
+
+    if (picked == null || picked.isEmpty) return;
+
+    setState(() {
+      _newPickedImages.addAll(picked.map((x) => File(x.path)));
+    });
   }
 
+  void _removeImage(int index) {
+    setState(() {
+      if (index < _existingImageUrls.length) {
+        _existingImageUrls.removeAt(index);
+      } else {
+        final newIndex = index - _existingImageUrls.length;
+        _newPickedImages.removeAt(newIndex);
+      }
+    });
+  }
+
+  // ==================== SAVE ====================
   Future<void> _savePlace() async {
-    // Basic validation
+    // Validation
     if (_nameARController.text.trim().isEmpty || _nameFRController.text.trim().isEmpty || selectedStateCode == null || selectedCityName == null || _phoneController.text.trim().isEmpty || _emailController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill required fields'), backgroundColor: Colors.red));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all required fields'), backgroundColor: Colors.red));
       return;
     }
 
@@ -145,18 +154,23 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
 
     List<String> finalImageUrls = List.from(_existingImageUrls);
 
+    // Upload new images if any
     if (_newPickedImages.isNotEmpty) {
-      final newUrls = await CloudinaryService.uploadImages(_newPickedImages);
-
-      finalImageUrls.addAll(newUrls);
-    } else {}
-
-    // Optional: keep only the last 6 if somehow more
-    if (finalImageUrls.length > 6) {
-      finalImageUrls = finalImageUrls.sublist(finalImageUrls.length - 6);
+      try {
+        final newUrls = await CloudinaryService.uploadImages(_newPickedImages);
+        finalImageUrls.addAll(newUrls);
+      } catch (e) {
+        print('Image upload error: $e');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Some images failed to upload'), backgroundColor: Colors.orange));
+        }
+      }
     }
 
-    print('DEBUG: Final imageUrls before saving to Firestore: ${finalImageUrls.length} items → $finalImageUrls');
+    // Limit to maximum 6 images
+    if (finalImageUrls.length > 6) {
+      finalImageUrls = finalImageUrls.sublist(0, 6);
+    }
 
     final rating = double.tryParse(_ratingController.text) ?? 4.0;
     final clampedRating = rating.clamp(0.0, 5.0);
@@ -188,26 +202,42 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
 
     try {
       final svc = FirebaseServices();
+
       if (widget.place == null) {
         await svc.createPOI(poi);
-        print('DEBUG: New POI created successfully');
       } else {
         await svc.updatePOI(poi);
-        print('DEBUG: POI updated successfully');
       }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Saved successfully!'), backgroundColor: Colors.green));
         Navigator.pop(context);
       }
-    } catch (e, stack) {
-      print('ERROR saving POI: $e\n$stack');
+    } catch (e) {
+      print('Error saving place: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error saving: $e'), backgroundColor: Colors.red));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to save: $e'), backgroundColor: Colors.red));
       }
     } finally {
       if (mounted) setState(() => _isUploading = false);
     }
+  }
+
+  @override
+  void dispose() {
+    _nameARController.dispose();
+    _nameFRController.dispose();
+    _descriptionARController.dispose();
+    _descriptionFRController.dispose();
+    _descriptionENController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _addressController.dispose();
+    _facebookController.dispose();
+    _instagramController.dispose();
+    _tiktokController.dispose();
+    _ratingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -217,7 +247,8 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
     final isEditing = widget.place != null;
     final currentLocale = Localizations.localeOf(context).languageCode;
 
-    final allImages = [..._existingImageUrls.map((url) => url), ..._newPickedImages.map((f) => f.path)];
+    final int totalImages = _existingImageUrls.length + _newPickedImages.length;
+    final bool canAddMore = totalImages < 6;
 
     return Scaffold(
       appBar: AppBar(title: Text(isEditing ? 'Edit Place' : 'Create Place')),
@@ -226,13 +257,13 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
           ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              // Photos Section
-              Text('Photos', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+              // ====================== PHOTOS SECTION ======================
+              Text('Photos ($totalImages/6)', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
               const SizedBox(height: 12),
 
               SizedBox(
                 height: 180,
-                child: allImages.isEmpty
+                child: totalImages == 0
                     ? GestureDetector(
                         onTap: _pickImages,
                         child: Center(
@@ -243,16 +274,16 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                               const SizedBox(height: 16),
                               Text('Tap to add photos', style: theme.textTheme.titleMedium),
                               const SizedBox(height: 8),
-                              Text('(up to 6 images)'),
+                              const Text('(Maximum 6 images)'),
                             ],
                           ),
                         ),
                       )
                     : ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: allImages.length + ((_newPickedImages.length + _existingImageUrls.length) < 6 ? 1 : 0),
-                        itemBuilder: (context, i) {
-                          final isAddButton = i == allImages.length;
+                        itemCount: totalImages + (canAddMore ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          final bool isAddButton = canAddMore && index == totalImages;
 
                           if (isAddButton) {
                             return GestureDetector(
@@ -270,17 +301,17 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                                   children: [
                                     Icon(Icons.add_photo_alternate, size: 40, color: theme.colorScheme.primary),
                                     const SizedBox(height: 8),
-                                    Text('Add more', style: theme.textTheme.bodyMedium),
-                                    Text('${_existingImageUrls.length + _newPickedImages.length}/6'),
+                                    const Text('Add more'),
+                                    Text('$totalImages/6'),
                                   ],
                                 ),
                               ),
                             );
                           }
 
-                          final src = allImages[i];
-                          final isNetwork = src.startsWith('http');
-                          final isMain = i == 0;
+                          // Show image
+                          final bool isExisting = index < _existingImageUrls.length;
+                          final String src = isExisting ? _existingImageUrls[index] : _newPickedImages[index - _existingImageUrls.length].path;
 
                           return Padding(
                             padding: const EdgeInsets.only(right: 12),
@@ -288,9 +319,9 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                               children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(16),
-                                  child: isNetwork ? Image.network(src, width: 160, height: 180, fit: BoxFit.cover) : Image.file(File(src), width: 160, height: 180, fit: BoxFit.cover),
+                                  child: isExisting ? Image.network(src, width: 160, height: 180, fit: BoxFit.cover) : Image.file(File(src), width: 160, height: 180, fit: BoxFit.cover),
                                 ),
-                                if (isMain)
+                                if (index == 0)
                                   Positioned(
                                     bottom: 8,
                                     left: 8,
@@ -304,15 +335,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                                   top: 8,
                                   right: 8,
                                   child: InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        if (i < _existingImageUrls.length) {
-                                          _existingImageUrls.removeAt(i);
-                                        } else {
-                                          _newPickedImages.removeAt(i - _existingImageUrls.length);
-                                        }
-                                      });
-                                    },
+                                    onTap: () => _removeImage(index),
                                     child: CircleAvatar(
                                       radius: 14,
                                       backgroundColor: Colors.black54,
@@ -329,12 +352,12 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
 
               const SizedBox(height: 32),
 
-              // ── Basic Info Card ───────────────────────────────────────────────
+              // ==================== BASIC INFORMATION ====================
               Card(
                 elevation: 2,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -346,40 +369,25 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
 
                       TextField(
                         controller: _nameARController,
-                        decoration: InputDecoration(
-                          labelText: 'Name (Arabic)',
-                          hintText: 'اسم المكان',
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                          prefixIcon: const Icon(Icons.language),
-                        ),
+                        decoration: const InputDecoration(labelText: 'Name (Arabic)', border: OutlineInputBorder()),
                         textDirection: TextDirection.rtl,
                       ),
                       const SizedBox(height: 12),
                       TextField(
                         controller: _nameFRController,
-                        decoration: InputDecoration(
-                          labelText: 'Name (French)',
-                          hintText: 'Nom du lieu',
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                          prefixIcon: const Icon(Icons.language),
-                        ),
+                        decoration: const InputDecoration(labelText: 'Name (French)', border: OutlineInputBorder()),
                       ),
                       const SizedBox(height: 12),
 
                       DropdownButtonFormField<String>(
                         value: _selectedType,
-                        decoration: InputDecoration(
-                          labelText: loc.translate('type_label'),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                          prefixIcon: const Icon(Icons.category),
-                        ),
-                        items: ['hotel', 'restaurant', 'attraction', 'store', 'other'].map((type) => DropdownMenuItem(value: type, child: Text(loc.translate('type_$type')))).toList(),
-                        onChanged: (value) {
-                          setState(() => _selectedType = value ?? 'hotel');
-                        },
+                        decoration: const InputDecoration(labelText: 'Type', border: OutlineInputBorder()),
+                        items: ['hotel', 'restaurant', 'attraction', 'store', 'other'].map((type) => DropdownMenuItem(value: type, child: Text(type.capitalize()))).toList(),
+                        onChanged: (value) => setState(() => _selectedType = value ?? 'hotel'),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 20),
 
+                      // Location Dropdowns (keep your original logic)
                       Row(
                         children: [
                           Expanded(
@@ -387,19 +395,9 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                                 ? const Center(child: CircularProgressIndicator())
                                 : DropdownButtonFormField<String>(
                                     value: selectedStateCode,
-                                    isExpanded: true,
-                                    decoration: InputDecoration(
-                                      labelText: currentLocale == 'ar' ? 'الولاية' : 'Wilaya',
-                                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                                      prefixIcon: Icon(Icons.location_on, color: theme.colorScheme.primary),
-                                      filled: true,
-                                      fillColor: theme.colorScheme.surface,
-                                    ),
+                                    decoration: const InputDecoration(labelText: 'Wilaya', border: OutlineInputBorder()),
                                     items: states.map((state) {
-                                      return DropdownMenuItem<String>(
-                                        value: state['code'],
-                                        child: currentLocale == 'ar' ? Text('${state['code']} ${state['nameAR']}', overflow: TextOverflow.ellipsis, maxLines: 1) : Text('${state['code']} ${state['nameFR']}', overflow: TextOverflow.ellipsis, maxLines: 1),
-                                      );
+                                      return DropdownMenuItem<String>(value: state['code'], child: Text('${state['code']} ${state['nameAR'] ?? state['nameFR']}'));
                                     }).toList(),
                                     onChanged: (value) {
                                       if (value != null) {
@@ -418,34 +416,18 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                           Expanded(
                             child: DropdownButtonFormField<String>(
                               value: selectedCityName,
-                              isExpanded: true,
-                              decoration: InputDecoration(
-                                labelText: currentLocale == 'ar' ? 'البلدية' : 'Commune',
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                                prefixIcon: Icon(Icons.location_city, color: theme.colorScheme.primary),
-                                filled: true,
-                                fillColor: theme.colorScheme.surface,
-                              ),
-                              items: selectedStateCode == null
-                                  ? []
-                                  : cities.map((city) {
-                                      return DropdownMenuItem<String>(
-                                        value: city['nameFR'],
-                                        child: currentLocale == 'ar' ? Text(city['nameAR'], overflow: TextOverflow.ellipsis, maxLines: 1) : Text(city['nameFR'], overflow: TextOverflow.ellipsis, maxLines: 1),
-                                      );
-                                    }).toList(),
-                              onChanged: selectedStateCode == null
-                                  ? null
-                                  : (value) {
-                                      if (value != null) {
-                                        final city = cities.firstWhere((c) => c['nameFR'] == value);
-                                        setState(() {
-                                          selectedCityName = value;
-                                          selectedCityNameAR = city['nameAR'];
-                                          selectedCityNameFR = city['nameFR'];
-                                        });
-                                      }
-                                    },
+                              decoration: const InputDecoration(labelText: 'Commune', border: OutlineInputBorder()),
+                              items: cities.map((city) => DropdownMenuItem<String>(value: city['nameFR'], child: Text(currentLocale == 'ar' ? (city['nameAR'] ?? city['nameFR']) : city['nameFR']))).toList(),
+                              onChanged: (value) {
+                                if (value != null) {
+                                  final city = cities.firstWhere((c) => c['nameFR'] == value);
+                                  setState(() {
+                                    selectedCityName = value;
+                                    selectedCityNameAR = city['nameAR'];
+                                    selectedCityNameFR = city['nameFR'];
+                                  });
+                                }
+                              },
                             ),
                           ),
                         ],
@@ -455,53 +437,13 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                       TextField(
                         controller: _ratingController,
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        decoration: InputDecoration(
-                          labelText: 'Rating (0-5)',
-                          hintText: '4.5',
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                          prefixIcon: const Icon(Icons.star),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-
-                      TextField(
-                        controller: _descriptionARController,
-                        decoration: InputDecoration(
-                          labelText: 'Description (Arabic)',
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                          prefixIcon: const Icon(Icons.description),
-                        ),
-                        maxLines: 3,
-                        textDirection: TextDirection.rtl,
-                      ),
-                      const SizedBox(height: 12),
-                      TextField(
-                        controller: _descriptionFRController,
-                        decoration: InputDecoration(
-                          labelText: 'Description (French)',
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                          prefixIcon: const Icon(Icons.description),
-                        ),
-                        maxLines: 3,
-                      ),
-                      const SizedBox(height: 12),
-                      TextField(
-                        controller: _descriptionENController,
-                        decoration: InputDecoration(
-                          labelText: 'Description (English)',
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                          prefixIcon: const Icon(Icons.description),
-                        ),
-                        maxLines: 3,
+                        decoration: const InputDecoration(labelText: 'Rating (0-5)', border: OutlineInputBorder()),
                       ),
                     ],
                   ),
                 ),
               ),
 
-              const SizedBox(height: 16),
-
-              // Contact Card
               Card(
                 elevation: 2,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -600,9 +542,9 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 32),
 
+              // Save Buttons
               Row(
                 children: [
                   Expanded(
@@ -612,7 +554,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: _isUploading ? null : _savePlace,
-                      child: _isUploading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2.5)) : Text(isEditing ? 'Update' : 'Create'),
+                      child: _isUploading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : Text(isEditing ? 'Update' : 'Create'),
                     ),
                   ),
                 ],
@@ -630,4 +572,9 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
       ),
     );
   }
+}
+
+// Simple extension for capitalize (optional)
+extension StringExtension on String {
+  String capitalize() => isNotEmpty ? '${this[0].toUpperCase()}${substring(1)}' : '';
 }

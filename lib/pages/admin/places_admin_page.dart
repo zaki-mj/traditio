@@ -113,7 +113,7 @@ class _PlacesAdminPageState extends State<PlacesAdminPage> {
                     itemBuilder: (ctx, i) {
                       final p = filtered[i];
                       final displayName = locale == 'ar' ? p.nameAR : p.nameFR;
-                      final city = locale == 'ar' ? p.cityNameAR : p.cityNameFR;
+                      final city = locale == 'ar' ? p.cityNameAR + " ، " + p.wilayaNameAR : p.cityNameFR + " , " + p.wilayaNameFR;
                       final type = p.category.name;
                       final typeColor = _typeColors[type] ?? const Color(0xFF6B7280);
                       final typeIcon = _typeIcons[type] ?? Icons.place_rounded;
