@@ -152,9 +152,10 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
 
     setState(() => _isUploading = true);
 
+    // Start with the CURRENT existing images (after user removals)
     List<String> finalImageUrls = List.from(_existingImageUrls);
 
-    // Upload new images if any
+    // Upload and add any NEW picked images
     if (_newPickedImages.isNotEmpty) {
       try {
         final newUrls = await CloudinaryService.uploadImages(_newPickedImages);
@@ -162,7 +163,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
       } catch (e) {
         print('Image upload error: $e');
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Some images failed to upload'), backgroundColor: Colors.orange));
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Some images failed to upload'), backgroundColor: Colors.orange));
         }
       }
     }
@@ -188,7 +189,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
       category: POICategory.fromValue(['hotel', 'restaurant', 'attraction', 'store', 'other'].indexOf(_selectedType) + 1),
       phone: _phoneController.text.trim(),
       email: _emailController.text.trim(),
-      imageUrls: finalImageUrls.isNotEmpty ? finalImageUrls : null,
+      imageUrls: finalImageUrls, // ← Always a list (empty = [])
       descriptionAR: _descriptionARController.text.trim().isNotEmpty ? _descriptionARController.text.trim() : null,
       descriptionFR: _descriptionFRController.text.trim().isNotEmpty ? _descriptionFRController.text.trim() : null,
       descriptionEN: _descriptionENController.text.trim().isNotEmpty ? _descriptionENController.text.trim() : null,
@@ -211,7 +212,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Saved successfully!'), backgroundColor: Colors.green));
-        Navigator.pop(context);
+        Navigator.pop(context, true); // Optional: return true to refresh previous page
       }
     } catch (e) {
       print('Error saving place: $e');

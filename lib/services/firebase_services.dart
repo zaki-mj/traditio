@@ -1,47 +1,44 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 import '../models/place.dart';
 import '../models/artist.dart';
 
-class Dummy {
-  final String name;
-  final String place;
-  final double? rating;
-
-  const Dummy({required this.name, required this.place, this.rating});
-
-  Map<String, dynamic> toMap() {
-    return {'name': name, 'place': place, 'rating': rating};
-  }
-}
-
 class FirebaseServices {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  // Collection name for PointOfInterest records. Keep this centralized.
-  final String poiCollection = 'points_of_interest';
 
-  /// Create a new Point of Interest in Firestore.
+  final String poiCollection = 'points_of_interest';
+  final String artistCollection = 'artists';
+
+  // ====================== POI ======================
+
   Future<DocumentReference> createPOI(PointOfInterest poi) async {
     final map = poi.toMap();
     return await _firestore.collection(poiCollection).add(map);
   }
 
-  /// Stream all POIs as a list. Useful for providing to UI via provider/streambuilder.
+  Future<void> updatePOI(PointOfInterest poi) async {
+    if (poi.id == null) throw ArgumentError('POI id is required to update');
+
+    final map = poi.toMap();
+
+    // CRITICAL FIX: Always send imageUrls as list (never null) on update
+    if (map['imageUrls'] == null) {
+      map['imageUrls'] = <String>[];
+    }
+
+    await _firestore.collection(poiCollection).doc(poi.id).update(map);
+  }
+
   Stream<List<PointOfInterest>> streamPOIs() {
     return _firestore.collection(poiCollection).snapshots().map((snap) {
       return snap.docs.map((d) => PointOfInterest.fromMap(d.data(), d.id)).toList();
     });
   }
 
-  /// Stream only POIs that are marked as recommended.
   Stream<List<PointOfInterest>> streamRecommendedPOIs() {
-    return _firestore.collection(poiCollection).where('recommended', isEqualTo: true).snapshots().map((snap) {
-      return snap.docs.map((d) => PointOfInterest.fromMap(d.data(), d.id)).toList();
-    });
+    return _firestore.collection(poiCollection).where('recommended', isEqualTo: true).snapshots().map((snap) => snap.docs.map((d) => PointOfInterest.fromMap(d.data(), d.id)).toList());
   }
 
-  /// Get a single POI stream by id
   Stream<PointOfInterest?> streamPOIById(String id) {
     return _firestore.collection(poiCollection).doc(id).snapshots().map((doc) {
       if (!doc.exists || doc.data() == null) return null;
@@ -49,51 +46,39 @@ class FirebaseServices {
     });
   }
 
-  /// Update an existing POI (requires poi.id to be non-null)
-  Future<void> updatePOI(PointOfInterest poi) async {
-    if (poi.id == null) throw ArgumentError('POI id is required to update');
-    final map = poi.toMap();
-    await _firestore.collection(poiCollection).doc(poi.id).update(map);
-  }
-
-  /// Delete a POI by id
   Future<void> deletePOI(String id) async {
     await _firestore.collection(poiCollection).doc(id).delete();
   }
 
-  /// Backwards-compat helper: add the simple Dummy type to a default collection
-  Future<void> addDummyData(Dummy dummy) async {
-    await _firestore.collection('places').add(dummy.toMap());
-  }
+  // ====================== ARTIST ======================
 
-  // ============ ARTIST CRUD ============
-  final String artistCollection = 'artists';
-
-  /// Create a new Artist in Firestore
   Future<DocumentReference> createArtist(Artist artist) async {
     final map = artist.toMap();
     return await _firestore.collection(artistCollection).add(map);
   }
 
-  /// Stream all Artists as a list
-  Stream<List<Artist>> streamArtists() {
-    return _firestore
-        .collection(artistCollection)
-        .snapshots()
-        .handleError((e) {
-          print('Error streaming artists: $e');
-        })
-        .map((snap) {
-          try {
-            return snap.docs.map((d) => Artist.fromMap(d.data(), d.id)).toList();
-          } catch (e) {
-            print('Error parsing artists: $e');
-            return [];
-          }
-        });
+  Future<void> updateArtist(Artist artist) async {
+    if (artist.id == null) throw ArgumentError('Artist id is required to update');
+
+    final map = artist.toMap();
+
+    // CRITICAL FIX: Always send imageUrls / images as list (never null) on update
+    if (map.containsKey('imageUrls') && map['imageUrls'] == null) {
+      map['imageUrls'] = <String>[];
+    }
+    if (map.containsKey('images') && map['images'] == null) {
+      map['images'] = <String>[];
+    }
+
+    await _firestore.collection(artistCollection).doc(artist.id).update(map);
   }
 
-  /// Get a single Artist stream by id
+  Stream<List<Artist>> streamArtists() {
+    return _firestore.collection(artistCollection).snapshots().map((snap) {
+      return snap.docs.map((d) => Artist.fromMap(d.data(), d.id)).toList();
+    });
+  }
+
   Stream<Artist?> streamArtistById(String id) {
     return _firestore.collection(artistCollection).doc(id).snapshots().map((doc) {
       if (!doc.exists || doc.data() == null) return null;
@@ -102,19 +87,9 @@ class FirebaseServices {
   }
 
   Stream<List<Artist>> streamRecommendedArtists() {
-    return _firestore.collection(artistCollection).where('recommended', isEqualTo: true).snapshots().map((snap) {
-      return snap.docs.map((d) => Artist.fromMap(d.data(), d.id)).toList();
-    });
+    return _firestore.collection(artistCollection).where('recommended', isEqualTo: true).snapshots().map((snap) => snap.docs.map((d) => Artist.fromMap(d.data(), d.id)).toList());
   }
 
-  /// Update an existing Artist (requires artist.id to be non-null)
-  Future<void> updateArtist(Artist artist) async {
-    if (artist.id == null) throw ArgumentError('Artist id is required to update');
-    final map = artist.toMap();
-    await _firestore.collection(artistCollection).doc(artist.id).update(map);
-  }
-
-  /// Delete an Artist by id
   Future<void> deleteArtist(String id) async {
     await _firestore.collection(artistCollection).doc(id).delete();
   }
