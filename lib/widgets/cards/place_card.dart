@@ -81,10 +81,8 @@ class PlaceCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(Localizations.localeOf(context).languageCode == 'ar' ? place.nameAR : place.nameFR, style: theme.textTheme.titleMedium),
-                      const SizedBox(height: 6),
+                      Expanded(child: Text("")),
 
-                      Expanded(child: Text(place.description ?? '', maxLines: 3, overflow: TextOverflow.ellipsis)),
-                      const SizedBox(height: 8),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

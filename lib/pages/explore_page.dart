@@ -13,9 +13,7 @@ class ExplorePage extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: false,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (ctx) {
         final types = ['hotel', 'restaurant', 'attraction'];
         return Padding(
@@ -25,21 +23,14 @@ class ExplorePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               TextField(
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  hintText: 'Search',
-                ),
+                decoration: const InputDecoration(prefixIcon: Icon(Icons.search), hintText: 'Search'),
                 onChanged: (v) => prov.setSearchQuery(v),
               ),
               const SizedBox(height: 10),
               Wrap(
                 spacing: 8,
                 children: types.map((t) {
-                  return FilterChip(
-                    label: Text(t),
-                    selected: prov.isTypeSelected(t),
-                    onSelected: (_) => prov.toggleType(t),
-                  );
+                  return FilterChip(label: Text(t), selected: prov.isTypeSelected(t), onSelected: (_) => prov.toggleType(t));
                 }).toList(),
               ),
               const SizedBox(height: 10),
@@ -49,9 +40,7 @@ class ExplorePage extends StatelessWidget {
                   const SizedBox(width: 8),
                   DropdownButton<String>(
                     value: prov.currentLocation,
-                    items: prov.availableLocations
-                        .map((l) => DropdownMenuItem(value: l, child: Text(l)))
-                        .toList(),
+                    items: prov.availableLocations.map((l) => DropdownMenuItem(value: l, child: Text(l))).toList(),
                     onChanged: (v) => prov.setLocation(v ?? 'All'),
                   ),
                   const Spacer(),
@@ -66,10 +55,7 @@ class ExplorePage extends StatelessWidget {
                     },
                     child: const Text('Clear'),
                   ),
-                  ElevatedButton(
-                    onPressed: () => Navigator.of(ctx).pop(),
-                    child: const Text('Apply'),
-                  ),
+                  ElevatedButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Apply')),
                 ],
               ),
               const SizedBox(height: 8),
@@ -94,20 +80,13 @@ class ExplorePage extends StatelessWidget {
                     itemCount: filtered.length,
                     itemBuilder: (ctx, i) => PlaceCard(
                       place: filtered[i],
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => PlaceDetailPage(place: filtered[i]),
-                        ),
-                      ),
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => PlaceDetailPage(place: filtered[i]))),
                     ),
                   );
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.search),
-        onPressed: () => _openFilters(context),
-      ),
+      floatingActionButton: FloatingActionButton(child: const Icon(Icons.search), onPressed: () => _openFilters(context)),
     );
   }
 }

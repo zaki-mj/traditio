@@ -149,6 +149,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations(Localizations.localeOf(context));
     final theme = Theme.of(context);
+    bool hasPhone = widget.place.phone != "NULL" && widget.place.phone!.trim().isNotEmpty;
+    bool hasEmail = widget.place.email != "NULL" && widget.place.email!.trim().isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(
@@ -224,33 +226,31 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                   ),
 
                   // ... rest of your cards (Description, Contact, Address, Social) remain unchanged ...
-                  const SizedBox(height: 32),
-
-                  // Description Card
-                  Card(
-                    color: theme.colorScheme.surface,
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            AppLocalizations(Localizations.localeOf(context)).translate('about'),
-                            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
-                          ),
-                          const SizedBox(height: 12),
-                          Text(widget.place.description ?? '', style: theme.textTheme.bodyMedium),
-                        ],
+                  if (widget.place.description != null && widget.place.description!.trim().isNotEmpty)
+                    Card(
+                      color: theme.colorScheme.surface,
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              loc.translate('about'),
+                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(widget.place.description!, style: theme.textTheme.bodyMedium),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
+
                   const SizedBox(height: 16),
 
-                  // Contact Card
-                  // phone/email are required in POI model, guard against empty strings instead
-                  if ((widget.place.phone?.isNotEmpty ?? false) || (widget.place.email?.isNotEmpty ?? false))
+                  // 2. Contact Card - Only show if phone or email is present and not empty
+                  if (hasPhone || hasEmail)
                     Card(
                       color: theme.colorScheme.surface,
                       elevation: 2,
@@ -265,9 +265,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                               style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                             ),
                             const SizedBox(height: 12),
-
-                            // Phone
-                            if (widget.place.phone?.isNotEmpty ?? false)
+                            if (hasPhone)
                               Row(
                                 children: [
                                   Icon(Icons.phone, color: theme.colorScheme.primary),
@@ -281,12 +279,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                                   ),
                                 ],
                               ),
-
-                            // Add spacing only if both phone and email exist
-                            if ((widget.place.phone?.isNotEmpty ?? false) && (widget.place.email?.isNotEmpty ?? false)) const SizedBox(height: 12),
-
-                            // Email
-                            if (widget.place.email?.isNotEmpty ?? false)
+                            if (hasPhone && hasEmail) const SizedBox(height: 12),
+                            if (hasEmail)
                               Row(
                                 children: [
                                   Icon(Icons.email, color: theme.colorScheme.primary),
@@ -304,6 +298,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                         ),
                       ),
                     ),
+
                   const SizedBox(height: 16),
 
                   // Address Card
