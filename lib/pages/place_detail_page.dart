@@ -250,7 +250,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
 
                   // Contact Card
                   // phone/email are required in POI model, guard against empty strings instead
-                  if ((widget.place.phone.isNotEmpty) || (widget.place.email.isNotEmpty))
+                  if ((widget.place.phone?.isNotEmpty ?? false) || (widget.place.email?.isNotEmpty ?? false))
                     Card(
                       color: theme.colorScheme.surface,
                       elevation: 2,
@@ -265,26 +265,28 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                               style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                             ),
                             const SizedBox(height: 12),
-                            if (widget.place.phone.isNotEmpty)
-                              Column(
+
+                            // Phone
+                            if (widget.place.phone?.isNotEmpty ?? false)
+                              Row(
                                 children: [
-                                  Row(
-                                    children: [
-                                      Icon(Icons.phone, color: theme.colorScheme.primary),
-                                      const SizedBox(width: 6),
-                                      GestureDetector(
-                                        onTap: () => _launchURL(context, 'tel:${widget.place.phone}'),
-                                        child: Text(
-                                          widget.place.phone,
-                                          style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary, decoration: TextDecoration.underline),
-                                        ),
-                                      ),
-                                    ],
+                                  Icon(Icons.phone, color: theme.colorScheme.primary),
+                                  const SizedBox(width: 6),
+                                  GestureDetector(
+                                    onTap: () => _launchURL(context, 'tel:${widget.place.phone}'),
+                                    child: Text(
+                                      widget.place.phone!,
+                                      style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary, decoration: TextDecoration.underline),
+                                    ),
                                   ),
-                                  if (widget.place.email.isNotEmpty) const SizedBox(height: 12),
                                 ],
                               ),
-                            if (widget.place.email.isNotEmpty)
+
+                            // Add spacing only if both phone and email exist
+                            if ((widget.place.phone?.isNotEmpty ?? false) && (widget.place.email?.isNotEmpty ?? false)) const SizedBox(height: 12),
+
+                            // Email
+                            if (widget.place.email?.isNotEmpty ?? false)
                               Row(
                                 children: [
                                   Icon(Icons.email, color: theme.colorScheme.primary),
@@ -292,7 +294,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                                   GestureDetector(
                                     onTap: () => _launchURL(context, 'mailto:${widget.place.email}'),
                                     child: Text(
-                                      widget.place.email,
+                                      widget.place.email!,
                                       style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.primary, decoration: TextDecoration.underline),
                                     ),
                                   ),

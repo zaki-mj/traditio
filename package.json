@@ -1,0 +1,29 @@
+{
+  "name": "traditio",
+  "version": "1.0.0",
+  "description": "**Traditional Gems** is a Flutter app for discovering traditional and cultural places across Algeria such as hotels, restaurants, attractions and local stores. The app was developed as a client request for PhD research and supports bilingual/localized content for real-world field studies.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zaki-mj/traditio.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/zaki-mj/traditio/issues"
+  },
+  "homepage": "https://github.com/zaki-mj/traditio#readme",
+  "dependencies": {
+    "csv-parser": "^3.2.0",
+    "firebase-admin": "^13.7.0"
+  }
+}

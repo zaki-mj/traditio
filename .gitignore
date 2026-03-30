@@ -43,3 +43,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+/node_modules
+/assets/data/traditionalgems-4e869-firebase-adminsdk-fbsvc-7c02c77c54.json

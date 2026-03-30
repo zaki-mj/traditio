@@ -1,22 +1,3 @@
-class Place {
-  final String id;
-  final String name;
-  final String description;
-  final String type; // e.g. hotel, restaurant, attraction
-  final String location; // city or area
-  final String imageUrl;
-  final double rating;
-  final bool recommended;
-  final String? phone;
-  final String? email;
-  final String? address;
-  final String? facebookUrl;
-  final String? instagramUrl;
-  final String? twitterUrl;
-
-  const Place({required this.id, required this.name, required this.description, required this.type, required this.location, required this.imageUrl, required this.rating, this.recommended = false, this.phone, this.email, this.address, this.facebookUrl, this.instagramUrl, this.twitterUrl});
-}
-
 enum POICategory {
   hotel(1, 'hotel'),
   restaurant(2, 'restaurant'),
@@ -44,8 +25,8 @@ class PointOfInterest {
   final String wilayaCode;
   final String wilayaNameAR;
   final String wilayaNameFR;
-  final String cityNameAR;
-  final String cityNameFR;
+  final String? cityNameAR;
+  final String? cityNameFR;
 
   // Basic info
   final double rating;
@@ -61,8 +42,8 @@ class PointOfInterest {
   String? get description => descriptionFR ?? descriptionEN ?? descriptionAR;
 
   // Contact
-  final String phone;
-  final String email;
+  final String? phone;
+  final String? email;
   final String? locationLink; // Google Maps link
 
   // Social media
@@ -85,13 +66,13 @@ class PointOfInterest {
     required this.wilayaCode,
     required this.wilayaNameAR,
     required this.wilayaNameFR,
-    required this.cityNameAR,
-    required this.cityNameFR,
+    this.cityNameAR,
+    this.cityNameFR,
     required this.rating,
     this.recommended = false,
     required this.category,
-    required this.phone,
-    required this.email,
+    this.phone,
+    this.email,
 
     this.imageUrls,
     this.descriptionAR,
@@ -143,48 +124,53 @@ class PointOfInterest {
 
   // Create from Firestore Map
   factory PointOfInterest.fromMap(Map<String, dynamic> map, String docId) {
-    // Helper: load up to 6 image links from explicit keys or fallback to image_urls list
-    String? _safeString(Map m, String k) => m[k] as String?;
-
-    List<String>? _fromImageUrls() => map['image_urls'] != null ? List<String>.from(map['image_urls']) : null;
+    List<String>? _fromImageUrls() {
+      if (map['image_urls'] == null) return null;
+      return List<String>.from(map['image_urls']);
+    }
 
     final _imageUrlsList = _fromImageUrls();
 
-    String? _linkAt(int idx) {
-      final key = 'image_link_\$idx';
-      // try explicit key
-      final val = map[key];
-      if (val != null) return val as String;
-      // fallback to image_urls list
-      if (_imageUrlsList != null && _imageUrlsList.length > idx) return _imageUrlsList[idx];
-      return null;
-    }
-
     return PointOfInterest(
-      id: docId, // Get ID from document reference
-      nameAR: map['name_ar'] as String,
-      nameFR: map['name_fr'] as String,
-      wilayaCode: map['wilaya_code'] as String,
-      wilayaNameAR: map['wilaya_name_ar'] as String,
-      wilayaNameFR: map['wilaya_name_fr'] as String,
-      cityNameAR: map['city_name_ar'] as String,
-      cityNameFR: map['city_name_fr'] as String,
-      rating: (map['rating'] as num).toDouble(),
-      recommended: map['recommended'] == null ? false : (map['recommended'] as bool),
-      category: POICategory.fromValue(map['category'] as int),
-      phone: map['phone'] as String,
-      email: map['email'] as String,
+      id: docId,
+      // Required fields - keep cast but ensure data exists or use fallback
+      nameAR: map['name_ar']?.toString() ?? '',
+      nameFR: map['name_fr']?.toString() ?? '',
+      wilayaCode: map['wilaya_code']?.toString() ?? '',
+      wilayaNameAR: map['wilaya_name_ar']?.toString() ?? '',
+      wilayaNameFR: map['wilaya_name_fr']?.toString() ?? '',
+
+      // Optional fields - MUST use as String? to allow nulls
+      cityNameAR: map['city_name_ar'] as String?,
+      cityNameFR: map['city_name_fr'] as String?,
+
+      // Numeric handling
+      rating: (map['rating'] as num?)?.toDouble() ?? 0.0,
+      recommended: map['recommended'] is bool ? map['recommended'] as bool : false,
+
+      // Enum handling
+      category: POICategory.fromValue((map['category'] as num?)?.toInt() ?? 5),
+
+      // Optional contact info
+      phone: map['phone'] as String?,
+      email: map['email'] as String?,
 
       imageUrls: _imageUrlsList,
+
+      // Descriptions with fallbacks
       descriptionAR: map['description_ar'] as String? ?? map['description'] as String?,
       descriptionFR: map['description_fr'] as String? ?? map['description'] as String?,
       descriptionEN: map['description_en'] as String? ?? map['description'] as String?,
+
+      // Links
       locationLink: map['location_link'] as String?,
       facebookLink: map['facebook_link'] as String?,
       instagramLink: map['instagram_link'] as String?,
       tiktokLink: map['tiktok_link'] as String?,
-      createdAt: map['created_at'] != null ? DateTime.parse(map['created_at'] as String) : null,
-      updatedAt: map['updated_at'] != null ? DateTime.parse(map['updated_at'] as String) : null,
+
+      // Dates
+      createdAt: map['created_at'] != null ? DateTime.tryParse(map['created_at'].toString()) : null,
+      updatedAt: map['updated_at'] != null ? DateTime.tryParse(map['updated_at'].toString()) : null,
     );
   }
 }

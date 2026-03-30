@@ -159,7 +159,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 return Column(
                   children: rec.map((p) {
                     final title = locale == 'ar' ? p.nameAR : p.nameFR;
-                    return _FeaturedRow(key: ValueKey(p.id), imageUrl: p.imageUrls?[0], title: title, subtitle: locale == 'ar' ? p.cityNameAR : p.cityNameFR, onRemove: p.id == null ? null : () => placesProv.removeRecommended(p.id!));
+                    return _FeaturedRow(key: ValueKey(p.id), imageUrl: p.imageUrls?[0], title: title, subtitle: locale == 'ar' ? p.cityNameAR! : p.cityNameFR!, onRemove: p.id == null ? null : () => placesProv.removeRecommended(p.id!));
                   }).toList(),
                 );
               },
