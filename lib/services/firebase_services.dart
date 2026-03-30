@@ -22,8 +22,8 @@ class FirebaseServices {
     final map = poi.toMap();
 
     // CRITICAL FIX: Always send imageUrls as list (never null) on update
-    if (map['imageUrls'] == null) {
-      map['imageUrls'] = <String>[];
+    if (map['image_urls'] == null) {
+      map['image_urls'] = <String>[];
     }
 
     await _firestore.collection(poiCollection).doc(poi.id).update(map);
