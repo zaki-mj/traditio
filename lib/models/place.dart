@@ -2,7 +2,7 @@ enum POICategory {
   hotel(1, 'hotel'),
   restaurant(2, 'restaurant'),
   attraction(3, 'attraction'),
-  store(4, 'store'),
+  guesthouse(4, 'guesthouse'),
   other(5, 'other');
 
   final int value;

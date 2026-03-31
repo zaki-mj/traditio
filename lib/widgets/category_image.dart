@@ -29,8 +29,8 @@ class CategoryImage extends StatelessWidget {
         return Icons.restaurant;
       case POICategory.attraction:
         return Icons.attractions;
-      case POICategory.store:
-        return Icons.store;
+      case POICategory.guesthouse:
+        return Icons.house;
       case POICategory.other:
         return Icons.more_horiz;
       // All enum cases covered above.
@@ -81,7 +81,7 @@ class CategoryImage extends StatelessWidget {
         return Colors.orange;
       case POICategory.attraction:
         return Colors.green;
-      case POICategory.store:
+      case POICategory.guesthouse:
         return Colors.purple;
       case POICategory.other:
         return Colors.grey;

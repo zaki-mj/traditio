@@ -291,7 +291,7 @@ class _DiscoverTraditionalPlacesScreenState extends State<DiscoverTraditionalPla
         return Icons.restaurant;
       case POICategory.attraction:
         return Icons.attractions;
-      case POICategory.store:
+      case POICategory.guesthouse:
         return Icons.store;
       case POICategory.other:
         return Icons.more_horiz;
@@ -306,7 +306,7 @@ class _DiscoverTraditionalPlacesScreenState extends State<DiscoverTraditionalPla
         return Colors.orange;
       case POICategory.attraction:
         return Colors.green;
-      case POICategory.store:
+      case POICategory.guesthouse:
         return Colors.purple;
       case POICategory.other:
         return Colors.grey;
