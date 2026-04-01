@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:traditional_gems/pages/artist_details_page.dart';
-import '../l10n/app_localizations.dart';
-import '../providers/artists_provider.dart';
-import '../models/artist.dart';
-import '../widgets/cards/artist_card.dart'; // ← You'll need to create this
-import '../theme/app_colors.dart';
-// ← Adjust name if different
+import 'package:traditional_gems/l10n/app_localizations.dart';
+import 'package:traditional_gems/models/place.dart';
+import '../providers/places_provider.dart';
+import '../widgets/cards/place_card.dart';
+import 'place_detail_page.dart';
 
-class DiscoverArtistsPage extends StatelessWidget {
-  const DiscoverArtistsPage({super.key});
+class ExplorePage extends StatelessWidget {
+  const ExplorePage({super.key});
 
-  void _openSearchFilters(BuildContext context) {
-    final prov = context.read<ArtistsProvider>();
+  void _openFilters(BuildContext context) {
+    final prov = context.read<PlacesProvider>();
     final loc = AppLocalizations(Localizations.localeOf(context));
     final theme = Theme.of(context);
+    // read provider in bottom sheet when needed
 
     showModalBottomSheet(
       context: context,
@@ -23,8 +22,8 @@ class DiscoverArtistsPage extends StatelessWidget {
       builder: (ctx) => StatefulBuilder(
         builder: (context, setModalState) => DraggableScrollableSheet(
           expand: false,
-          initialChildSize: 0.65, // Slightly smaller since no type filter
-          minChildSize: 0.5,
+          initialChildSize: 0.75,
+          minChildSize: 0.55,
           maxChildSize: 0.95,
           builder: (context, scrollController) => SingleChildScrollView(
             controller: scrollController,
@@ -33,7 +32,7 @@ class DiscoverArtistsPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Header with handle bar
+                  // Handle
                   Center(
                     child: Container(
                       width: 40,
@@ -50,7 +49,7 @@ class DiscoverArtistsPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
 
-                  // Search TextField
+                  // Search Field
                   TextField(
                     decoration: InputDecoration(
                       hintText: loc.translate('search_by_name'),
@@ -80,14 +79,56 @@ class DiscoverArtistsPage extends StatelessWidget {
                       fillColor: theme.colorScheme.surface,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     ),
-                    onChanged: (v) {
-                      prov.setSearchQuery(v);
+                    onChanged: (value) {
+                      prov.setSearchQuery(value);
                       setModalState(() {});
                     },
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 28),
 
-                  // Location Filter
+                  // ==================== CATEGORY FILTER ====================
+                  Text(loc.translate('category'), style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.5)),
+                  const SizedBox(height: 12),
+
+                  Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: POICategory.values.map((category) {
+                      final typeName = category.name; // "hotel", "restaurant", etc.
+                      final isSelected = prov.isTypeSelected(typeName);
+
+                      return GestureDetector(
+                        onTap: () {
+                          prov.toggleType(typeName);
+                          setModalState(() {});
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: isSelected ? theme.colorScheme.primary : theme.colorScheme.surface,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: isSelected ? theme.colorScheme.primary : theme.colorScheme.outline.withAlpha(60), width: isSelected ? 2 : 1),
+                            boxShadow: isSelected ? [BoxShadow(color: theme.colorScheme.primary.withAlpha(70), blurRadius: 6, offset: const Offset(0, 2))] : null,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(_getCategoryIcon(category), size: 20, color: isSelected ? theme.colorScheme.onPrimary : theme.colorScheme.primary),
+                              const SizedBox(width: 8),
+                              Text(
+                                loc.translate(category.name), // Make sure you have these keys
+                                style: theme.textTheme.bodyMedium?.copyWith(fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500, color: isSelected ? theme.colorScheme.onPrimary : theme.colorScheme.onSurface),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+
+                  const SizedBox(height: 28),
+
+                  // Location Filter (unchanged)
                   Text(loc.translate('select_location'), style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.5)),
                   const SizedBox(height: 10),
                   Container(
@@ -118,7 +159,7 @@ class DiscoverArtistsPage extends StatelessWidget {
                       },
                     ),
                   ),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 32),
 
                   // Action Buttons
                   Row(
@@ -130,10 +171,10 @@ class DiscoverArtistsPage extends StatelessWidget {
                               prov.clearFilters();
                               setModalState(() {});
                             },
-                            icon: const Icon(Icons.clear),
+                            icon: const Icon(Icons.clear_all),
                             label: Text(loc.translate('clear_filters')),
                             style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             ),
                           ),
@@ -143,18 +184,18 @@ class DiscoverArtistsPage extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: () => Navigator.pop(context),
                           icon: const Icon(Icons.search),
-                          label: Text(loc.translate('search')),
+                          label: Text(loc.translate('apply_filters')),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: theme.colorScheme.primary,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            foregroundColor: theme.colorScheme.onPrimary,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -166,52 +207,40 @@ class DiscoverArtistsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loc = AppLocalizations(Localizations.localeOf(context));
-    final theme = Theme.of(context);
-
     return Scaffold(
-      body: Consumer<ArtistsProvider>(
-        builder: (context, prov, _) {
-          final filtered = prov.filteredArtists;
-
-          return Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Results Heading
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      prov.hasActiveFilters ? loc.translate('search_results') : loc.translate('all_artists'), // Make sure this key exists in your localization
-                      style: theme.textTheme.titleMedium,
+      body: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Consumer<PlacesProvider>(
+          builder: (context, prov, _) {
+            final filtered = prov.filteredPlaces;
+            return filtered.isEmpty
+                ? Center(child: Text('No results'))
+                : ListView.builder(
+                    itemCount: filtered.length,
+                    itemBuilder: (ctx, i) => PlaceCard(
+                      place: filtered[i],
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => PlaceDetailPage(place: filtered[i]))),
                     ),
-                    if (prov.hasActiveFilters) TextButton.icon(onPressed: () => prov.clearFilters(), icon: const Icon(Icons.close, size: 18), label: Text(loc.translate('clear_filters'))),
-                  ],
-                ),
-                const SizedBox(height: 8),
-
-                // Results List
-                Expanded(
-                  child: filtered.isEmpty
-                      ? Center(
-                          child: Text(loc.translate('no_artists_found'), style: theme.textTheme.bodyLarge?.copyWith(color: Colors.grey)),
-                        )
-                      : ListView.builder(
-                          itemCount: filtered.length,
-                          itemBuilder: (ctx, i) => ArtistCard(
-                            artist: filtered[i],
-                            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ArtistDetailPage(artist: filtered[i]))),
-                          ),
-                        ),
-                ),
-              ],
-            ),
-          );
-        },
+                  );
+          },
+        ),
       ),
-      floatingActionButton: FloatingActionButton(child: const Icon(Icons.search), onPressed: () => _openSearchFilters(context)),
+      floatingActionButton: FloatingActionButton(child: const Icon(Icons.search), onPressed: () => _openFilters(context)),
     );
+  }
+}
+
+IconData _getCategoryIcon(POICategory category) {
+  switch (category) {
+    case POICategory.hotel:
+      return Icons.hotel;
+    case POICategory.restaurant:
+      return Icons.restaurant;
+    case POICategory.attraction:
+      return Icons.place;
+    case POICategory.guesthouse:
+      return Icons.home;
+    case POICategory.other:
+      return Icons.category_outlined;
   }
 }

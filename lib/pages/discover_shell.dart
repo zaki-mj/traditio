@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:traditional_gems/pages/explore_page.dart';
+import 'package:traditional_gems/pages/discover_places_pages.dart';
 import 'package:traditional_gems/pages/discover_artists_page.dart';
 import '../l10n/app_localizations.dart';
 import '../widgets/drawers/shared_menu_drawer.dart';

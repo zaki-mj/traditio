@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/places_provider.dart';
 import '../l10n/app_localizations.dart';
-import 'explore_page.dart';
+import 'discover_places_pages.dart';
 
 class CategoriesPage extends StatelessWidget {
   const CategoriesPage({super.key});
