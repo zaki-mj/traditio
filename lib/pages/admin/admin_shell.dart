@@ -107,7 +107,7 @@ class _AdminShellState extends State<AdminShell> with SingleTickerProviderStateM
                       children: [
                         _ActionButton(
                           icon: Icons.place,
-                          label: loc.translate('new_place') ?? 'New Place',
+                          label: loc.translate('new_place'),
                           color: const Color(0xFF3B7DD8),
                           onTap: () {
                             _toggleFabMenu();
@@ -117,7 +117,7 @@ class _AdminShellState extends State<AdminShell> with SingleTickerProviderStateM
                         const SizedBox(width: 28),
                         _ActionButton(
                           icon: Icons.brush,
-                          label: loc.translate('artists') ?? 'Artists',
+                          label: loc.translate('artists'),
                           color: const Color(0xFF8B5CF6),
                           onTap: () {
                             _toggleFabMenu();
@@ -127,7 +127,7 @@ class _AdminShellState extends State<AdminShell> with SingleTickerProviderStateM
                         const SizedBox(width: 28),
                         _ActionButton(
                           icon: Icons.list,
-                          label: loc.translate('view_places') ?? 'View Places',
+                          label: loc.translate('view_places'),
                           color: const Color(0xFF0D9488),
                           onTap: () {
                             _toggleFabMenu();

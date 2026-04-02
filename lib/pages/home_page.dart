@@ -53,7 +53,7 @@ class _DiscoverTraditionalPlacesScreenState extends State<DiscoverTraditionalPla
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Featured Artists', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                    Text(loc.translate('featured_places'), style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                     GestureDetector(
                       onTap: _navigateToPlaces,
                       child: Text(
@@ -149,7 +149,7 @@ class _DiscoverTraditionalPlacesScreenState extends State<DiscoverTraditionalPla
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Featured Artists', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                    Text(loc.translate('featured_places'), style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                     GestureDetector(
                       onTap: _navigateToPlaces,
                       child: Text(
@@ -245,7 +245,7 @@ class _DiscoverTraditionalPlacesScreenState extends State<DiscoverTraditionalPla
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Featured Trips', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                    Text(loc.translate('featured_trips'), style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                     GestureDetector(
                       onTap: _navigateToPlaces,
                       child: Text(
@@ -265,8 +265,8 @@ class _DiscoverTraditionalPlacesScreenState extends State<DiscoverTraditionalPla
                       return Padding(
                         padding: const EdgeInsets.only(right: 16),
                         child: HomePageCard.buildCard(
-                          title: 'Trip to ${['Kasbah', 'Medina', 'Oasis', 'Ancient Village', 'Souk'][index]}',
-                          subtitle: '3 days • Cultural immersion',
+                          title: loc.translate('trip_demo_title_$index'),
+                          subtitle: loc.translate('trip_demo_subtitle'),
                           imageUrl: 'https://images.unsplash.com/photo-1585208798174-6cedd78e0198?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', // Placeholder
                         ),
                       );

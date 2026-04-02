@@ -27,7 +27,7 @@ class _JourneysAdminPageState extends State<JourneysAdminPage> {
             padding: const EdgeInsets.only(right: 12),
             child: TextButton.icon(
               icon: const Icon(Icons.add_rounded, size: 18),
-              label: const Text('Add journey'),   // TODO: localize
+              label: Text(loc.translate('add_journey')),
               onPressed: () {
                 // TODO: navigate to JourneyFormPage
               },
@@ -40,7 +40,7 @@ class _JourneysAdminPageState extends State<JourneysAdminPage> {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
             child: AdminSearchBar(
-              hintText: 'Search journeys...',   // TODO: localize
+              hintText: loc.translate('search_journeys'),
               onChanged: (q) => setState(() => _searchQuery = q),
             ),
           ),
@@ -53,14 +53,14 @@ class _JourneysAdminPageState extends State<JourneysAdminPage> {
                   Icon(Icons.route_rounded, size: 52, color: theme.colorScheme.onSurface.withOpacity(0.15)),
                   const SizedBox(height: 16),
                   Text(
-                    'Journeys list — coming soon',   // TODO: localize
+                    loc.translate('journeys_coming_soon'),
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurface.withOpacity(0.35),
                     ),
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'Wire up JourneyProvider here.',
+                    loc.translate('journeys_wire_placeholder'),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurface.withOpacity(0.25),
                     ),

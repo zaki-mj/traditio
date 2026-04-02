@@ -46,7 +46,7 @@ class SettingsPage extends StatelessWidget {
                     Consumer<LocaleProvider>(
                       builder: (context, localeProvider, _) => ListTile(
                         leading: Icon(Icons.language, color: AppColors.primary),
-                        title: Text(_getLanguageName(localeProvider.locale.languageCode), style: theme.textTheme.bodyLarge),
+                        title: Text(_getLanguageName(localeProvider.locale.languageCode, loc), style: theme.textTheme.bodyLarge),
                         subtitle: Text(loc.translate('change_language'), style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
                         trailing: Icon(Icons.arrow_forward_ios, color: theme.colorScheme.onSurface.withValues(alpha: 0.5), size: 16),
                         onTap: () {
@@ -143,7 +143,7 @@ class SettingsPage extends StatelessWidget {
               children: <Widget>[
                 ListTile(
                   leading: Icon(Icons.language, color: AppColors.primary),
-                  title: Text('العربية'),
+                  title: Text(loc.translate('lang_native_ar')),
                   onTap: () {
                     localeProvider.setLocale(const Locale('ar'));
                     Navigator.of(context).pop();
@@ -151,7 +151,7 @@ class SettingsPage extends StatelessWidget {
                 ),
                 ListTile(
                   leading: Icon(Icons.language, color: AppColors.primary),
-                  title: Text('English'),
+                  title: Text(loc.translate('lang_native_en')),
                   onTap: () {
                     localeProvider.setLocale(const Locale('en'));
                     Navigator.of(context).pop();
@@ -159,7 +159,7 @@ class SettingsPage extends StatelessWidget {
                 ),
                 ListTile(
                   leading: Icon(Icons.language, color: AppColors.primary),
-                  title: Text('Français'),
+                  title: Text(loc.translate('lang_native_fr')),
                   onTap: () {
                     localeProvider.setLocale(const Locale('fr'));
                     Navigator.of(context).pop();
@@ -181,14 +181,14 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  String _getLanguageName(String code) {
+  String _getLanguageName(String code, AppLocalizations loc) {
     switch (code) {
       case 'en':
-        return 'English';
+        return loc.translate('lang_native_en');
       case 'ar':
-        return 'العربية';
+        return loc.translate('lang_native_ar');
       case 'fr':
-        return 'Français';
+        return loc.translate('lang_native_fr');
       default:
         return code;
     }

@@ -76,12 +76,12 @@ class AboutPage extends StatelessWidget {
                   ListTile(
                     leading: Icon(Icons.info_outline, color: Theme.of(context).colorScheme.primary),
                     title: Text(loc.translate('app_version')),
-                    subtitle: Text("0.1"),
+                    subtitle: Text(loc.translate('app_version_number')),
                   ),
                   ListTile(
                     leading: Icon(Icons.code, color: Theme.of(context).colorScheme.primary),
                     title: Text(loc.translate('developed_with')),
-                    subtitle: const Text('Flutter & Dart'),
+                    subtitle: Text(loc.translate('stack_flutter_dart')),
                   ),
                 ],
               ),

@@ -3,7 +3,6 @@ import 'package:traditional_gems/models/artist.dart';
 import '../services/firebase_services.dart';
 import '../services/cloudinary_service.dart';
 import 'package:traditional_gems/services/location_services.dart';
-import '../models/artist.dart';
 import '../l10n/app_localizations.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
@@ -91,7 +90,8 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
     } catch (e) {
       setState(() => isLoadingStates = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error loading states: $e')));
+        final loc = AppLocalizations(Localizations.localeOf(context));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.translate('error_loading_states').replaceAll('{error}', e.toString()))));
       }
     }
   }
@@ -107,7 +107,8 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
       });
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error loading cities: $e')));
+        final loc = AppLocalizations(Localizations.localeOf(context));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.translate('error_loading_cities').replaceAll('{error}', e.toString()))));
       }
     }
   }
@@ -132,7 +133,8 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
   Future<void> _saveArtist() async {
     // Basic validation
     if (_nameARController.text.trim().isEmpty || _nameFRController.text.trim().isEmpty || selectedStateCode == null || selectedCityName == null || _phoneController.text.trim().isEmpty || _emailController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill required fields'), backgroundColor: Colors.red));
+      final loc = AppLocalizations(Localizations.localeOf(context));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.translate('please_fill_required_fields')), backgroundColor: Colors.red));
       return;
     }
 
@@ -188,13 +190,15 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
       }
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Saved successfully!'), backgroundColor: Colors.green));
+        final loc = AppLocalizations(Localizations.localeOf(context));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.translate('saved_successfully')), backgroundColor: Colors.green));
         Navigator.pop(context);
       }
     } catch (e, stack) {
       print('ERROR saving POI: $e\n$stack');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error saving: $e'), backgroundColor: Colors.red));
+        final loc = AppLocalizations(Localizations.localeOf(context));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.translate('error_saving').replaceAll('{error}', e.toString())), backgroundColor: Colors.red));
       }
     } finally {
       if (mounted) setState(() => _isUploading = false);
@@ -211,14 +215,14 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
     final allImages = [..._existingImageUrls.map((url) => url), ..._newPickedImages.map((f) => f.path)];
 
     return Scaffold(
-      appBar: AppBar(title: Text(isEditing ? 'Edit Artist' : 'Create Artist')),
+      appBar: AppBar(title: Text(isEditing ? loc.translate('edit_artist') : loc.translate('create_artist'))),
       body: Stack(
         children: [
           ListView(
             padding: const EdgeInsets.all(16),
             children: [
               // Photos Section
-              Text('Photos', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+              Text(loc.translate('photos_section'), style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
               const SizedBox(height: 12),
 
               SizedBox(
@@ -232,9 +236,9 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                             children: [
                               Icon(Icons.add_a_photo, size: 64, color: theme.colorScheme.primary),
                               const SizedBox(height: 16),
-                              Text('Tap to add photos', style: theme.textTheme.titleMedium),
+                              Text(loc.translate('tap_to_add_photos'), style: theme.textTheme.titleMedium),
                               const SizedBox(height: 8),
-                              Text('(up to 6 images)'),
+                              Text(loc.translate('up_to_six_images_note')),
                             ],
                           ),
                         ),
@@ -261,7 +265,7 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                                   children: [
                                     Icon(Icons.add_photo_alternate, size: 40, color: theme.colorScheme.primary),
                                     const SizedBox(height: 8),
-                                    Text('Add more', style: theme.textTheme.bodyMedium),
+                                    Text(loc.translate('add_more'), style: theme.textTheme.bodyMedium),
                                     Text('${_existingImageUrls.length + _newPickedImages.length}/6'),
                                   ],
                                 ),
@@ -288,7 +292,7 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                       decoration: BoxDecoration(color: theme.colorScheme.primary, borderRadius: BorderRadius.circular(12)),
-                                      child: Text('Main', style: TextStyle(color: theme.colorScheme.onPrimary, fontSize: 12)),
+                                      child: Text(loc.translate('photo_main_badge'), style: TextStyle(color: theme.colorScheme.onPrimary, fontSize: 12)),
                                     ),
                                   ),
                                 Positioned(
@@ -330,7 +334,7 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Basic Information',
+                        loc.translate('basic_information'),
                         style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                       ),
                       const SizedBox(height: 16),
@@ -338,8 +342,8 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                       TextField(
                         controller: _nameARController,
                         decoration: InputDecoration(
-                          labelText: 'Name (Arabic)',
-                          hintText: 'اسم المكان',
+                          labelText: loc.translate('name_arabic'),
+                          hintText: loc.translate('hint_name_arabic'),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           prefixIcon: const Icon(Icons.language),
                         ),
@@ -349,8 +353,8 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                       TextField(
                         controller: _nameFRController,
                         decoration: InputDecoration(
-                          labelText: 'Name (French)',
-                          hintText: 'Nom du lieu',
+                          labelText: loc.translate('name_french'),
+                          hintText: loc.translate('hint_name_french_example'),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           prefixIcon: const Icon(Icons.language),
                         ),
@@ -366,7 +370,7 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                                     value: selectedStateCode,
                                     isExpanded: true,
                                     decoration: InputDecoration(
-                                      labelText: currentLocale == 'ar' ? 'الولاية' : 'Wilaya',
+                                      labelText: loc.translate('wilaya_field'),
                                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                       prefixIcon: Icon(Icons.location_on, color: theme.colorScheme.primary),
                                       filled: true,
@@ -397,7 +401,7 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                               value: selectedCityName,
                               isExpanded: true,
                               decoration: InputDecoration(
-                                labelText: currentLocale == 'ar' ? 'البلدية' : 'Commune',
+                                labelText: loc.translate('commune_field'),
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                 prefixIcon: Icon(Icons.location_city, color: theme.colorScheme.primary),
                                 filled: true,
@@ -433,7 +437,7 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                       TextField(
                         controller: _descriptionARController,
                         decoration: InputDecoration(
-                          labelText: 'Description (Arabic)',
+                          labelText: loc.translate('description_arabic'),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           prefixIcon: const Icon(Icons.description),
                         ),
@@ -444,7 +448,7 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                       TextField(
                         controller: _descriptionFRController,
                         decoration: InputDecoration(
-                          labelText: 'Description (French)',
+                          labelText: loc.translate('description_french'),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           prefixIcon: const Icon(Icons.description),
                         ),
@@ -454,7 +458,7 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                       TextField(
                         controller: _descriptionENController,
                         decoration: InputDecoration(
-                          labelText: 'Description (English)',
+                          labelText: loc.translate('description_english'),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           prefixIcon: const Icon(Icons.description),
                         ),
@@ -485,8 +489,8 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                         controller: _phoneController,
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
-                          labelText: 'Phone',
-                          hintText: '+213 555 123 456',
+                          labelText: loc.translate('phone'),
+                          hintText: loc.translate('phone_example_hint'),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           prefixIcon: const Icon(Icons.phone),
                         ),
@@ -496,8 +500,8 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          labelText: 'Email',
-                          hintText: 'info@example.com',
+                          labelText: loc.translate('email'),
+                          hintText: loc.translate('email_example_hint'),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           prefixIcon: const Icon(Icons.email),
                         ),
@@ -506,8 +510,8 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                       TextField(
                         controller: _addressController,
                         decoration: InputDecoration(
-                          labelText: 'Location Link (Google Maps)',
-                          hintText: 'https://maps.google.com/...',
+                          labelText: loc.translate('maps_link_label'),
+                          hintText: loc.translate('maps_link_hint'),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           prefixIcon: const Icon(Icons.map),
                         ),
@@ -536,8 +540,8 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                       TextField(
                         controller: _facebookController,
                         decoration: InputDecoration(
-                          labelText: 'Facebook URL',
-                          hintText: 'https://facebook.com/...',
+                          labelText: loc.translate('facebook_url_label'),
+                          hintText: loc.translate('facebook_url_hint'),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           prefixIcon: const Icon(Icons.link),
                         ),
@@ -546,8 +550,8 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                       TextField(
                         controller: _instagramController,
                         decoration: InputDecoration(
-                          labelText: 'Instagram URL',
-                          hintText: 'https://instagram.com/...',
+                          labelText: loc.translate('instagram_url_label'),
+                          hintText: loc.translate('instagram_url_hint'),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           prefixIcon: const Icon(Icons.link),
                         ),
@@ -556,8 +560,8 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
                       TextField(
                         controller: _tiktokController,
                         decoration: InputDecoration(
-                          labelText: 'TikTok URL',
-                          hintText: 'https://tiktok.com/@...',
+                          labelText: loc.translate('tiktok_url_label'),
+                          hintText: loc.translate('tiktok_url_hint'),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           prefixIcon: const Icon(Icons.link),
                         ),
@@ -572,13 +576,13 @@ class _ArtistFormPageState extends State<ArtistFormPage> {
               Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+                    child: OutlinedButton(onPressed: () => Navigator.pop(context), child: Text(loc.translate('cancel'))),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: _isUploading ? null : _saveArtist,
-                      child: _isUploading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2.5)) : Text(isEditing ? 'Update' : 'Create'),
+                      child: _isUploading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2.5)) : Text(isEditing ? loc.translate('button_update') : loc.translate('button_create')),
                     ),
                   ),
                 ],

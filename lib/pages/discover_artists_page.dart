@@ -184,7 +184,7 @@ class DiscoverArtistsPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      prov.hasActiveFilters ? loc.translate('search_results') : loc.translate('all_artists'), // Make sure this key exists in your localization
+                      prov.hasActiveFilters ? loc.translate('search_results') : loc.translate('all_artists'),
                       style: theme.textTheme.titleMedium,
                     ),
                     if (prov.hasActiveFilters) TextButton.icon(onPressed: () => prov.clearFilters(), icon: const Icon(Icons.close, size: 18), label: Text(loc.translate('clear_filters'))),

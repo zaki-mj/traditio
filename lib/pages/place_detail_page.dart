@@ -357,7 +357,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                               // Facebook
                               _SocialIconButton(
                                 assetPath: 'assets/pictures/facebook.png',
-                                tooltip: 'Facebook',
+                                tooltip: loc.translate('social_facebook'),
                                 enabled: widget.place.facebookLink != null && widget.place.facebookLink!.isNotEmpty,
                                 onTap: () => _launchURL(context, widget.place.facebookLink, fallbackMessage: loc.translate('link_not_available')),
                               ),
@@ -365,7 +365,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                               // Instagram
                               _SocialIconButton(
                                 assetPath: 'assets/pictures/instagram.png',
-                                tooltip: 'Instagram',
+                                tooltip: loc.translate('social_instagram'),
                                 enabled: widget.place.instagramLink != null && widget.place.instagramLink!.isNotEmpty,
                                 onTap: () => _launchURL(context, widget.place.instagramLink, fallbackMessage: loc.translate('link_not_available')),
                               ),
@@ -373,7 +373,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                               // TikTok
                               _SocialIconButton(
                                 assetPath: 'assets/pictures/tiktok.png',
-                                tooltip: 'TikTok',
+                                tooltip: loc.translate('social_tiktok'),
                                 enabled: widget.place.tiktokLink != null && widget.place.tiktokLink!.isNotEmpty,
                                 onTap: () => _launchURL(context, widget.place.tiktokLink, fallbackMessage: loc.translate('link_not_available')),
                               ),

@@ -342,19 +342,19 @@ class _ArtistDetailPageState extends State<ArtistDetailPage> {
                             children: [
                               _SocialIconButton(
                                 assetPath: 'assets/pictures/facebook.png',
-                                tooltip: 'Facebook',
+                                tooltip: loc.translate('social_facebook'),
                                 enabled: widget.artist.facebookLink != null && widget.artist.facebookLink!.isNotEmpty,
                                 onTap: () => _launchURL(context, widget.artist.facebookLink, fallbackMessage: loc.translate('link_not_available')),
                               ),
                               _SocialIconButton(
                                 assetPath: 'assets/pictures/instagram.png',
-                                tooltip: 'Instagram',
+                                tooltip: loc.translate('social_instagram'),
                                 enabled: widget.artist.instagramLink != null && widget.artist.instagramLink!.isNotEmpty,
                                 onTap: () => _launchURL(context, widget.artist.instagramLink, fallbackMessage: loc.translate('link_not_available')),
                               ),
                               _SocialIconButton(
                                 assetPath: 'assets/pictures/tiktok.png',
-                                tooltip: 'TikTok',
+                                tooltip: loc.translate('social_tiktok'),
                                 enabled: widget.artist.tiktokLink != null && widget.artist.tiktokLink!.isNotEmpty,
                                 onTap: () => _launchURL(context, widget.artist.tiktokLink, fallbackMessage: loc.translate('link_not_available')),
                               ),

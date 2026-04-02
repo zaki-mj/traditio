@@ -116,7 +116,7 @@ class ExplorePage extends StatelessWidget {
                               Icon(_getCategoryIcon(category), size: 20, color: isSelected ? theme.colorScheme.onPrimary : theme.colorScheme.primary),
                               const SizedBox(width: 8),
                               Text(
-                                loc.translate(category.name), // Make sure you have these keys
+                                loc.translate('type_${category.name}'),
                                 style: theme.textTheme.bodyMedium?.copyWith(fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500, color: isSelected ? theme.colorScheme.onPrimary : theme.colorScheme.onSurface),
                               ),
                             ],
@@ -207,6 +207,7 @@ class ExplorePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations(Localizations.localeOf(context));
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -214,7 +215,7 @@ class ExplorePage extends StatelessWidget {
           builder: (context, prov, _) {
             final filtered = prov.filteredPlaces;
             return filtered.isEmpty
-                ? Center(child: Text('No results'))
+                ? Center(child: Text(loc.translate('no_places_found')))
                 : ListView.builder(
                     itemCount: filtered.length,
                     itemBuilder: (ctx, i) => PlaceCard(

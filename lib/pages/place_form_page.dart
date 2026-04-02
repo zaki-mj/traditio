@@ -95,7 +95,8 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
     } catch (e) {
       setState(() => isLoadingStates = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error loading states: $e')));
+        final loc = AppLocalizations(Localizations.localeOf(context));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.translate('error_loading_states').replaceAll('{error}', e.toString()))));
       }
     }
   }
@@ -111,7 +112,8 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
       });
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error loading cities: $e')));
+        final loc = AppLocalizations(Localizations.localeOf(context));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.translate('error_loading_cities').replaceAll('{error}', e.toString()))));
       }
     }
   }
@@ -146,7 +148,8 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
   Future<void> _savePlace() async {
     // Validation
     if (_nameARController.text.trim().isEmpty || _nameFRController.text.trim().isEmpty || selectedStateCode == null || selectedCityName == null || _phoneController.text.trim().isEmpty || _emailController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all required fields'), backgroundColor: Colors.red));
+      final loc = AppLocalizations(Localizations.localeOf(context));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.translate('please_fill_required_fields')), backgroundColor: Colors.red));
       return;
     }
 
@@ -163,7 +166,8 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
       } catch (e) {
         print('Image upload error: $e');
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Some images failed to upload'), backgroundColor: Colors.orange));
+          final loc = AppLocalizations(Localizations.localeOf(context));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.translate('some_images_failed_upload')), backgroundColor: Colors.orange));
         }
       }
     }
@@ -211,13 +215,15 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
       }
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Saved successfully!'), backgroundColor: Colors.green));
+        final loc = AppLocalizations(Localizations.localeOf(context));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.translate('saved_successfully')), backgroundColor: Colors.green));
         Navigator.pop(context, true); // Optional: return true to refresh previous page
       }
     } catch (e) {
       print('Error saving place: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to save: $e'), backgroundColor: Colors.red));
+        final loc = AppLocalizations(Localizations.localeOf(context));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.translate('failed_to_save').replaceAll('{error}', e.toString())), backgroundColor: Colors.red));
       }
     } finally {
       if (mounted) setState(() => _isUploading = false);
@@ -252,14 +258,14 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
     final bool canAddMore = totalImages < 6;
 
     return Scaffold(
-      appBar: AppBar(title: Text(isEditing ? 'Edit Place' : 'Create Place')),
+      appBar: AppBar(title: Text(isEditing ? loc.translate('edit_place') : loc.translate('create_place'))),
       body: Stack(
         children: [
           ListView(
             padding: const EdgeInsets.all(16),
             children: [
               // ====================== PHOTOS SECTION ======================
-              Text('Photos ($totalImages/6)', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+              Text(loc.translate('photos_with_count').replaceAll('{current}', '$totalImages').replaceAll('{max}', '6'), style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
               const SizedBox(height: 12),
 
               SizedBox(
@@ -273,9 +279,9 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                             children: [
                               Icon(Icons.add_a_photo, size: 64, color: theme.colorScheme.primary),
                               const SizedBox(height: 16),
-                              Text('Tap to add photos', style: theme.textTheme.titleMedium),
+                              Text(loc.translate('tap_to_add_photos'), style: theme.textTheme.titleMedium),
                               const SizedBox(height: 8),
-                              const Text('(Maximum 6 images)'),
+                              Text(loc.translate('max_six_images_note')),
                             ],
                           ),
                         ),
@@ -302,7 +308,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                                   children: [
                                     Icon(Icons.add_photo_alternate, size: 40, color: theme.colorScheme.primary),
                                     const SizedBox(height: 8),
-                                    const Text('Add more'),
+                                    Text(loc.translate('add_more')),
                                     Text('$totalImages/6'),
                                   ],
                                 ),
@@ -329,7 +335,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                       decoration: BoxDecoration(color: theme.colorScheme.primary, borderRadius: BorderRadius.circular(12)),
-                                      child: Text('Main', style: TextStyle(color: theme.colorScheme.onPrimary, fontSize: 12)),
+                                      child: Text(loc.translate('photo_main_badge'), style: TextStyle(color: theme.colorScheme.onPrimary, fontSize: 12)),
                                     ),
                                   ),
                                 Positioned(
@@ -363,27 +369,27 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Basic Information',
+                        loc.translate('basic_information'),
                         style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                       ),
                       const SizedBox(height: 16),
 
                       TextField(
                         controller: _nameARController,
-                        decoration: const InputDecoration(labelText: 'Name (Arabic)', border: OutlineInputBorder()),
+                        decoration: InputDecoration(labelText: loc.translate('name_arabic'), border: const OutlineInputBorder()),
                         textDirection: TextDirection.rtl,
                       ),
                       const SizedBox(height: 12),
                       TextField(
                         controller: _nameFRController,
-                        decoration: const InputDecoration(labelText: 'Name (French)', border: OutlineInputBorder()),
+                        decoration: InputDecoration(labelText: loc.translate('name_french'), border: const OutlineInputBorder()),
                       ),
                       const SizedBox(height: 12),
 
                       DropdownButtonFormField<String>(
                         value: _selectedType,
-                        decoration: const InputDecoration(labelText: 'Type', border: OutlineInputBorder()),
-                        items: ['hotel', 'restaurant', 'attraction', 'store', 'other'].map((type) => DropdownMenuItem(value: type, child: Text(type.capitalize()))).toList(),
+                        decoration: InputDecoration(labelText: loc.translate('type_field'), border: const OutlineInputBorder()),
+                        items: ['hotel', 'restaurant', 'attraction', 'store', 'other'].map((type) => DropdownMenuItem(value: type, child: Text(loc.translate('type_$type')))).toList(),
                         onChanged: (value) => setState(() => _selectedType = value ?? 'hotel'),
                       ),
                       const SizedBox(height: 20),
@@ -396,7 +402,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                                 ? const Center(child: CircularProgressIndicator())
                                 : DropdownButtonFormField<String>(
                                     value: selectedStateCode,
-                                    decoration: const InputDecoration(labelText: 'Wilaya', border: OutlineInputBorder()),
+                                    decoration: InputDecoration(labelText: loc.translate('wilaya_field'), border: const OutlineInputBorder()),
                                     items: states.map((state) {
                                       return DropdownMenuItem<String>(value: state['code'], child: Text('${state['code']} ${state['nameAR'] ?? state['nameFR']}'));
                                     }).toList(),
@@ -417,7 +423,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                           Expanded(
                             child: DropdownButtonFormField<String>(
                               value: selectedCityName,
-                              decoration: const InputDecoration(labelText: 'Commune', border: OutlineInputBorder()),
+                              decoration: InputDecoration(labelText: loc.translate('commune_field'), border: const OutlineInputBorder()),
                               items: cities.map((city) => DropdownMenuItem<String>(value: city['nameFR'], child: Text(currentLocale == 'ar' ? (city['nameAR'] ?? city['nameFR']) : city['nameFR']))).toList(),
                               onChanged: (value) {
                                 if (value != null) {
@@ -438,7 +444,7 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                       TextField(
                         controller: _ratingController,
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        decoration: const InputDecoration(labelText: 'Rating (0-5)', border: OutlineInputBorder()),
+                        decoration: InputDecoration(labelText: loc.translate('rating_range'), border: const OutlineInputBorder()),
                       ),
                     ],
                   ),
@@ -462,8 +468,8 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                         controller: _phoneController,
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
-                          labelText: 'Phone',
-                          hintText: '+213 555 123 456',
+                          labelText: loc.translate('phone'),
+                          hintText: loc.translate('phone_example_hint'),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           prefixIcon: const Icon(Icons.phone),
                         ),
@@ -473,8 +479,8 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          labelText: 'Email',
-                          hintText: 'info@example.com',
+                          labelText: loc.translate('email'),
+                          hintText: loc.translate('email_example_hint'),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           prefixIcon: const Icon(Icons.email),
                         ),
@@ -483,8 +489,8 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                       TextField(
                         controller: _addressController,
                         decoration: InputDecoration(
-                          labelText: 'Location Link (Google Maps)',
-                          hintText: 'https://maps.google.com/...',
+                          labelText: loc.translate('maps_link_label'),
+                          hintText: loc.translate('maps_link_hint'),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           prefixIcon: const Icon(Icons.map),
                         ),
@@ -513,8 +519,8 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                       TextField(
                         controller: _facebookController,
                         decoration: InputDecoration(
-                          labelText: 'Facebook URL',
-                          hintText: 'https://facebook.com/...',
+                          labelText: loc.translate('facebook_url_label'),
+                          hintText: loc.translate('facebook_url_hint'),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           prefixIcon: const Icon(Icons.link),
                         ),
@@ -523,8 +529,8 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                       TextField(
                         controller: _instagramController,
                         decoration: InputDecoration(
-                          labelText: 'Instagram URL',
-                          hintText: 'https://instagram.com/...',
+                          labelText: loc.translate('instagram_url_label'),
+                          hintText: loc.translate('instagram_url_hint'),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           prefixIcon: const Icon(Icons.link),
                         ),
@@ -533,8 +539,8 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                       TextField(
                         controller: _tiktokController,
                         decoration: InputDecoration(
-                          labelText: 'TikTok URL',
-                          hintText: 'https://tiktok.com/@...',
+                          labelText: loc.translate('tiktok_url_label'),
+                          hintText: loc.translate('tiktok_url_hint'),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           prefixIcon: const Icon(Icons.link),
                         ),
@@ -549,13 +555,13 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
               Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+                    child: OutlinedButton(onPressed: () => Navigator.pop(context), child: Text(loc.translate('cancel'))),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: _isUploading ? null : _savePlace,
-                      child: _isUploading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : Text(isEditing ? 'Update' : 'Create'),
+                      child: _isUploading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : Text(isEditing ? loc.translate('button_update') : loc.translate('button_create')),
                     ),
                   ),
                 ],
@@ -573,9 +579,4 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
       ),
     );
   }
-}
-
-// Simple extension for capitalize (optional)
-extension StringExtension on String {
-  String capitalize() => isNotEmpty ? '${this[0].toUpperCase()}${substring(1)}' : '';
 }

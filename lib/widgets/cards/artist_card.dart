@@ -127,7 +127,7 @@ class ArtistCard extends StatelessWidget {
                         children: [
                           // You can replace this Chip with something else if you want
                           // e.g. "Artiste" label, recommended badge, etc.
-                          if (artist.recommended) Chip(label: const Text("Recommended"), backgroundColor: Colors.amber.withAlpha(80), labelStyle: const TextStyle(fontSize: 12)) else const SizedBox.shrink(),
+                          if (artist.recommended) Chip(label: Text(AppLocalizations(Localizations.localeOf(context)).translate('recommended')), backgroundColor: Colors.amber.withAlpha(80), labelStyle: const TextStyle(fontSize: 12)) else const SizedBox.shrink(),
 
                           Icon(Icons.chevron_right, color: theme.hintColor),
                         ],

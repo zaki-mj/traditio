@@ -77,7 +77,7 @@ class CategoriesPage extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(12)),
-                        child: Text('$count items', style: const TextStyle(color: Colors.white, fontSize: 12)),
+                        child: Text(loc.translate('items_count').replaceAll('{count}', '$count'), style: const TextStyle(color: Colors.white, fontSize: 12)),
                       ),
                     ],
                   ),
