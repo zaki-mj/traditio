@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:traditional_gems/pages/admin/artists_admin_page.dart';
 import 'package:traditional_gems/pages/admin/dictionary_admin_page.dart';
 import 'package:traditional_gems/pages/admin/journeys_admin_page.dart';
-import 'package:traditional_gems/pages/admin/places_admin_page.dart';
+import 'package:traditional_gems/pages/admin/places_admin_page.dart' hide DictionaryAdminPage;
 import '../../l10n/app_localizations.dart';
 import '../../providers/places_provider.dart';
 

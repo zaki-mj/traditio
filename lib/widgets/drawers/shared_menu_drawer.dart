@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:traditional_gems/pages/dictionary_page.dart';
 import 'package:traditional_gems/pages/favorites_page.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/app_colors.dart';
@@ -58,6 +59,14 @@ class SharedMenuDrawer extends StatelessWidget {
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FavoritesPage()));
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.translate, color: AppColors.primary),
+                  title: Text(loc.translate('dictionary')),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DictionaryPage()));
                   },
                 ),
                 ListTile(
