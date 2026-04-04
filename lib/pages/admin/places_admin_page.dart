@@ -13,9 +13,9 @@ class PlacesAdminPage extends StatefulWidget {
 }
 
 class _PlacesAdminPageState extends State<PlacesAdminPage> {
-  static const _allTypes = ['hotel', 'restaurant', 'attraction', 'store', 'other'];
-  static const _typeColors = {'hotel': Color(0xFF3B7DD8), 'restaurant': Color(0xFFE07B39), 'attraction': Color(0xFF16A34A), 'store': Color(0xFF8B5CF6), 'other': Color(0xFF6B7280)};
-  static const _typeIcons = {'hotel': Icons.hotel_rounded, 'restaurant': Icons.restaurant_rounded, 'attraction': Icons.attractions_rounded, 'store': Icons.store_rounded, 'other': Icons.more_horiz_rounded};
+  static const _allTypes = ['hotel', 'restaurant', 'attraction', 'guesthouse', 'other'];
+  static const _typeColors = {'hotel': Color(0xFF3B7DD8), 'restaurant': Color(0xFFE07B39), 'attraction': Color(0xFF16A34A), 'guesthouse': Color(0xFF8B5CF6), 'other': Color(0xFF6B7280)};
+  static const _typeIcons = {'hotel': Icons.hotel_rounded, 'restaurant': Icons.restaurant_rounded, 'attraction': Icons.attractions_rounded, 'guesthouse': Icons.home, 'other': Icons.more_horiz_rounded};
 
   String _searchQuery = '';
   String _selectedType = '';
@@ -188,6 +188,7 @@ class _PlaceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final loc = AppLocalizations(Localizations.localeOf(context));
 
     return Material(
       color: theme.colorScheme.surface,
@@ -230,9 +231,9 @@ class _PlaceCard extends StatelessWidget {
                     const SizedBox(height: 10),
                     Row(
                       children: [
-                        _ActionChip(label: 'Edit', icon: Icons.edit_rounded, onTap: onEdit, color: theme.colorScheme.primary),
+                        _ActionChip(label: loc.translate("edit"), icon: Icons.edit_rounded, onTap: onEdit, color: theme.colorScheme.primary),
                         const SizedBox(width: 8),
-                        _ActionChip(label: 'Delete', icon: Icons.delete_outline_rounded, onTap: onDelete, color: Colors.red),
+                        _ActionChip(label: loc.translate("delete"), icon: Icons.delete_outline_rounded, onTap: onDelete, color: Colors.red),
                       ],
                     ),
                   ],

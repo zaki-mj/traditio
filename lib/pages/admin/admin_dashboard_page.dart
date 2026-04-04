@@ -126,7 +126,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               _TypeCard(context, label: loc.translate('hotels'), count: places.where((p) => p.category.name == 'hotel').length, icon: Icons.hotel, color: Colors.blue),
               _TypeCard(context, label: loc.translate('restaurants'), count: places.where((p) => p.category.name == 'restaurant').length, icon: Icons.restaurant, color: Colors.orange),
               _TypeCard(context, label: loc.translate('attractions'), count: places.where((p) => p.category.name == 'attraction').length, icon: Icons.attractions, color: Colors.green),
-              _TypeCard(context, label: loc.translate('stores'), count: places.where((p) => p.category.name == 'store').length, icon: Icons.store, color: Colors.purple),
+              _TypeCard(context, label: loc.translate('guesthouses'), count: places.where((p) => p.category.name == 'guesthouse').length, icon: Icons.home, color: Colors.purple),
               _TypeCard(context, label: loc.translate('other'), count: places.where((p) => p.category.name == 'other').length, icon: Icons.more_horiz, color: Colors.grey),
             ],
           ),
@@ -148,6 +148,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               stream: FirebaseServices().streamRecommendedPOIs(),
               builder: (_, snap) {
                 final rec = snap.hasData ? snap.data! : placesProv.recommended;
+
                 if (rec.isEmpty) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -156,10 +157,17 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     ),
                   );
                 }
+
                 return Column(
                   children: rec.map((p) {
                     final title = locale == 'ar' ? p.nameAR : p.nameFR;
-                    return _FeaturedRow(key: ValueKey(p.id), imageUrl: p.imageUrls?[0], title: title, subtitle: locale == 'ar' ? p.cityNameAR! : p.cityNameFR!, onRemove: p.id == null ? null : () => placesProv.removeRecommended(p.id!));
+
+                    // Safe image URL handling
+                    final imageUrl = (p.imageUrls != null && p.imageUrls!.isNotEmpty) ? p.imageUrls![0] : null; // or a default placeholder URL
+
+                    final subtitle = locale == 'ar' ? (p.cityNameAR ?? '') : (p.cityNameFR ?? '');
+
+                    return _FeaturedRow(key: ValueKey(p.id), imageUrl: imageUrl, title: title, subtitle: subtitle, onRemove: p.id == null ? null : () => placesProv.removeRecommended(p.id!));
                   }).toList(),
                 );
               },

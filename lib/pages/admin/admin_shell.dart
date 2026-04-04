@@ -159,7 +159,7 @@ class _AdminShellState extends State<AdminShell> with SingleTickerProviderStateM
       bottomNavigationBar: BottomAppBar(
         notchMargin: 6,
         shape: const CircularNotchedRectangle(),
-        elevation: 12,
+        elevation: 20,
         shadowColor: Colors.black38,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -208,12 +208,12 @@ class _NavItem extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.symmetric(vertical: 2),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(icon, color: color, size: 22),
-              const SizedBox(height: 4),
+              const SizedBox(height: 2),
               Text(label, style: TextStyle(fontSize: 12, color: color)),
             ],
           ),
