@@ -57,7 +57,7 @@ class _AdminShellState extends State<AdminShell> with SingleTickerProviderStateM
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(_selectedIndex == 0 ? loc.translate('dashboard') : loc.translate('places')), centerTitle: true),
+      appBar: AppBar(title: Text(_selectedIndex == 0 ? loc.translate('dashboard') : loc.translate('categories')), centerTitle: true),
       drawer: SharedMenuDrawer(
         isAdmin: true,
         onLogout: () {
@@ -107,7 +107,7 @@ class _AdminShellState extends State<AdminShell> with SingleTickerProviderStateM
                       children: [
                         _ActionButton(
                           icon: Icons.place,
-                          label: loc.translate('new_place'),
+                          label: loc.translate('places'),
                           color: const Color(0xFF3B7DD8),
                           onTap: () {
                             _toggleFabMenu();
@@ -122,16 +122,6 @@ class _AdminShellState extends State<AdminShell> with SingleTickerProviderStateM
                           onTap: () {
                             _toggleFabMenu();
                             Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ArtistFormPage()));
-                          },
-                        ),
-                        const SizedBox(width: 28),
-                        _ActionButton(
-                          icon: Icons.list,
-                          label: loc.translate('view_places'),
-                          color: const Color(0xFF0D9488),
-                          onTap: () {
-                            _toggleFabMenu();
-                            setState(() => _selectedIndex = 1);
                           },
                         ),
                       ],
@@ -176,7 +166,7 @@ class _AdminShellState extends State<AdminShell> with SingleTickerProviderStateM
             const SizedBox(width: 80),
             _NavItem(
               icon: Icons.list,
-              label: loc.translate('places'),
+              label: loc.translate('categories'),
               isSelected: _selectedIndex == 1,
               onTap: () {
                 if (_isFabExpanded) _toggleFabMenu();

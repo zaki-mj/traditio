@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:traditional_gems/l10n/app_localizations.dart';
 import 'package:traditional_gems/models/artist.dart';
+import 'package:traditional_gems/models/journey.dart';
 import 'package:traditional_gems/providers/artists_provider.dart';
+import 'package:traditional_gems/providers/journey_provider.dart';
 import '../../services/firebase_services.dart';
 import '../../models/place.dart';
 import '../../widgets/category_image.dart';
@@ -35,19 +37,6 @@ class _JourneyPlaceholder {
 // Placeholder data (swap with real providers when ready)
 // ---------------------------------------------------------------------------
 
-final List<_ArtistPlaceholder> _mockArtists = [
-  _ArtistPlaceholder(id: 'a1', nameFR: 'Aïcha Redouane', nameAR: 'عائشة ردوان', featured: true),
-  _ArtistPlaceholder(id: 'a2', nameFR: 'Lounès Matoub', nameAR: 'لونيس معتوب', featured: true),
-  _ArtistPlaceholder(id: 'a3', nameFR: 'Idir', nameAR: 'إيدير', featured: false),
-  _ArtistPlaceholder(id: 'a4', nameFR: 'Souad Massi', nameAR: 'سعاد ماسي', featured: false),
-];
-
-final List<_JourneyPlaceholder> _mockJourneys = [
-  _JourneyPlaceholder(id: 'j1', nameFR: 'Route des Zianides', nameAR: 'طريق الزيانيين', featured: true),
-  _JourneyPlaceholder(id: 'j2', nameFR: 'Circuit Sahara', nameAR: 'جولة الصحراء', featured: false),
-  _JourneyPlaceholder(id: 'j3', nameFR: 'Balcon du Djurdjura', nameAR: 'شرفة جرجرة', featured: false),
-];
-
 // ---------------------------------------------------------------------------
 // Dashboard
 // ---------------------------------------------------------------------------
@@ -63,25 +52,23 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   // Expansion state for each featured section
   bool _placesExpanded = false;
   bool _artistsExpanded = false;
-  bool _journeysExpanded = false;
 
   // Local mutable copies of placeholders (real providers will replace these)
-  final List<_ArtistPlaceholder> _artists = List.from(_mockArtists);
-  final List<_JourneyPlaceholder> _journeys = List.from(_mockJourneys);
 
   @override
   Widget build(BuildContext context) {
     final placesProv = context.watch<PlacesProvider>();
     final artistsProv = context.watch<ArtistsProvider>();
+    final journeysProv = context.watch<JourneyProvider>();
     final places = placesProv.allPlaces;
     final artists = artistsProv.allArtists;
+    final journeys = journeysProv.allJourneys;
     final theme = Theme.of(context);
     final loc = AppLocalizations(Localizations.localeOf(context));
     final locale = Localizations.localeOf(context).languageCode;
 
     final int totalPlaces = places.length;
     final int totalArtists = artists.length;
-    final int totalJourneys = _journeys.length;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -104,7 +91,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           Row(
             children: [
               Expanded(
-                child: _StatCard(title: loc.translate('journeys'), value: totalJourneys.toString(), icon: Icons.route, color: Colors.teal),
+                child: _StatCard(title: loc.translate('journeys'), value: journeysProv.totalJourneys.toString(), icon: Icons.route, color: Colors.teal),
               ),
               const SizedBox(width: 12),
               Expanded(child: Container()),
@@ -205,22 +192,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             ),
           ),
           const SizedBox(height: 8),
-
-          // Journeys section (placeholder)
-          _FeaturedSection(
-            title: loc.translate('journeys'),
-            icon: Icons.route,
-            accentColor: Colors.teal,
-            isExpanded: _journeysExpanded,
-            onToggle: () => setState(() => _journeysExpanded = !_journeysExpanded),
-            featuredCount: _journeys.where((j) => j.featured).length,
-            child: Column(
-              children: _journeys.where((j) => j.featured).map((j) {
-                final title = locale == 'ar' ? j.nameAR : j.nameFR;
-                return _FeaturedRow(key: ValueKey(j.id), title: title, subtitle: loc.translate('placeholder_data'), onRemove: () => setState(() => j.featured = false));
-              }).toList(),
-            ),
-          ),
         ],
       ),
     );

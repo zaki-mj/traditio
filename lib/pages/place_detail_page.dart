@@ -152,6 +152,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
     bool hasPhone = widget.place.phone != "NULL" && widget.place.phone!.trim().isNotEmpty;
     bool hasEmail = widget.place.email != "NULL" && widget.place.email!.trim().isNotEmpty;
 
+    bool hasDescription = widget.place.descriptionAR != "NULL" && widget.place.descriptionAR!.trim().isNotEmpty;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(Localizations.localeOf(context).languageCode == 'ar' ? widget.place.nameAR : widget.place.nameFR),
@@ -226,7 +228,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                   ),
 
                   // ... rest of your cards (Description, Contact, Address, Social) remain unchanged ...
-                  if (widget.place.description != null && widget.place.description!.trim().isNotEmpty)
+                  if (widget.place.descriptionAR != null && widget.place.descriptionAR!.trim().isNotEmpty)
                     Card(
                       color: theme.colorScheme.surface,
                       elevation: 2,

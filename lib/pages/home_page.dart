@@ -237,51 +237,6 @@ class _DiscoverTraditionalPlacesScreenState extends State<DiscoverTraditionalPla
               ],
             ),
           ),
-
-          const SizedBox(height: 32),
-
-          // 3. Featured Trips section
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(loc.translate('featured_trips'), style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                    GestureDetector(
-                      onTap: _navigateToPlaces,
-                      child: Text(
-                        loc.translate('see_all'),
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  height: 240,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 5,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 16),
-                        child: HomePageCard.buildCard(
-                          title: loc.translate('trip_demo_title_$index'),
-                          subtitle: loc.translate('trip_demo_subtitle'),
-                          imageUrl: 'https://images.unsplash.com/photo-1585208798174-6cedd78e0198?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', // Placeholder
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 40), // Bottom spacing
         ],
       ),
     );

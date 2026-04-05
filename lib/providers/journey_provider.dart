@@ -9,6 +9,7 @@ class JourneyProvider extends ChangeNotifier {
 
   List<Journey> _journeys = [];
   String _searchQuery = '';
+  final List<Journey> _all = [];
 
   List<Journey> get filteredJourneys {
     if (_searchQuery.isEmpty) return _journeys;
@@ -27,6 +28,10 @@ class JourneyProvider extends ChangeNotifier {
       notifyListeners();
     });
   }
+
+  List<Journey> get allJourneys => List.unmodifiable(_all);
+
+  int get totalJourneys => _journeys.length;
 
   Future<void> addJourney(Journey journey) async {
     await _service.addJourney(journey);

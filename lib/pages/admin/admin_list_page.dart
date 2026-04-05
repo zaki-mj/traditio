@@ -53,17 +53,7 @@ class AdminListPage extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            loc.translate('manage_content'),
-            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: theme.colorScheme.onSurface.withOpacity(0.6), letterSpacing: 0.5),
-          ),
-          const SizedBox(height: 16),
-          Expanded(child: GridView.count(crossAxisCount: 2, crossAxisSpacing: 14, mainAxisSpacing: 14, childAspectRatio: 1.05, children: categories.map((c) => _buildTile(context, c)).toList())),
-        ],
-      ),
+      child: Expanded(child: GridView.count(crossAxisCount: 2, crossAxisSpacing: 14, mainAxisSpacing: 14, childAspectRatio: 1.05, children: categories.map((c) => _buildTile(context, c)).toList())),
     );
   }
 
