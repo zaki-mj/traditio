@@ -8,7 +8,7 @@ import 'providers/places_provider.dart';
 import 'providers/artists_provider.dart';
 import 'providers/favorites_provider.dart';
 import 'providers/admin_provider.dart';
-import 'providers/dictionary_provider.dart'; // ← Added
+import 'providers/dictionary_provider.dart';
 import 'theme/app_theme.dart';
 import 'l10n/app_localizations.dart';
 import 'pages/welcome_page.dart';
@@ -38,7 +38,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ArtistsProvider()),
         ChangeNotifierProvider(create: (_) => FavoritesProvider()),
         ChangeNotifierProvider(create: (_) => AdminProvider()),
-        ChangeNotifierProvider(create: (_) => DictionaryProvider()), // ← Added here
+        ChangeNotifierProvider(create: (_) => DictionaryProvider()), 
         ChangeNotifierProvider(create: (_) => JourneyProvider()),
       ],
       child: Consumer2<ThemeProvider, LocaleProvider>(
