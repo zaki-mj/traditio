@@ -25,14 +25,7 @@ class CloudinaryService {
         final String name = p.basenameWithoutExtension(originalFile.path);
         final String compressedPath = '$dir/compressed_${name}_${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-        final XFile? result = await FlutterImageCompress.compressAndGetFile(
-          originalFile.absolute.path,
-          compressedPath,
-          quality: 75, // ← try 70 if you want smaller files
-          minWidth: 1280,
-          minHeight: 1280,
-          format: CompressFormat.jpeg,
-        );
+        final XFile? result = await FlutterImageCompress.compressAndGetFile(originalFile.absolute.path, compressedPath, quality: 75, minWidth: 1280, minHeight: 1280, format: CompressFormat.jpeg);
 
         if (result == null) throw Exception('Compression failed');
 
