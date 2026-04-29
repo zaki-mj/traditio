@@ -34,16 +34,7 @@ class PlaceCard extends StatelessWidget {
                   children: [
                     CategoryImage(imageUrl: place.imageUrls?.isNotEmpty == true ? place.imageUrls![0] : null, category: place.category, enableHero: enableHero, heroTag: enableHero ? 'place_image_${place.id}' : null, fit: BoxFit.cover),
                     Container(decoration: const BoxDecoration(gradient: AppColors.overlayGradient)),
-                    Positioned(
-                      left: 12,
-                      bottom: 12,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('${Localizations.localeOf(context).languageCode == 'ar' ? place.wilayaNameAR : place.wilayaNameFR} • ${AppLocalizations(Localizations.localeOf(context)).translate('type_${place.category.name}')}', style: theme.textTheme.bodySmall?.copyWith(color: Colors.white70)),
-                        ],
-                      ),
-                    ),
+
                     Positioned(
                       top: 8,
                       right: 8,
@@ -86,7 +77,10 @@ class PlaceCard extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Chip(label: Text(place.rating.toString()), backgroundColor: theme.colorScheme.onPrimaryFixedVariant),
+                          if (place.wilayaNameAR != "NULL" && place.category.name != "NULL")
+                            Text('${Localizations.localeOf(context).languageCode == 'ar' ? place.wilayaNameAR : place.wilayaNameFR} • ${AppLocalizations(Localizations.localeOf(context)).translate('type_${place.category.name}')}', style: theme.textTheme.bodyMedium)
+                          else
+                            Expanded(child: Text("")),
                           Icon(Icons.chevron_right, color: theme.hintColor),
                         ],
                       ),

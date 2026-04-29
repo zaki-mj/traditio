@@ -214,21 +214,13 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                               Text(loc.translate('type_${widget.place.category.name}'), style: theme.textTheme.bodyMedium),
                             ],
                           ),
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              Icon(Icons.star, color: theme.colorScheme.primary),
-                              const SizedBox(width: 6),
-                              Text('${widget.place.rating}', style: theme.textTheme.bodyMedium),
-                            ],
-                          ),
                         ],
                       ),
                     ),
                   ),
 
                   // ... rest of your cards (Description, Contact, Address, Social) remain unchanged ...
-                  if (widget.place.descriptionAR != null && widget.place.descriptionAR!.trim().isNotEmpty)
+                  if (widget.place.descriptionAR != null && widget.place.descriptionAR!.trim().isNotEmpty && widget.place.descriptionAR != "NULL")
                     Card(
                       color: theme.colorScheme.surface,
                       elevation: 2,
@@ -243,7 +235,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                               style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                             ),
                             const SizedBox(height: 12),
-                            Text(widget.place.description!, style: theme.textTheme.bodyMedium),
+
+                            Expanded(child: Text(Localizations.localeOf(context).languageCode == 'ar' ? widget.place.descriptionAR! : (Localizations.localeOf(context).languageCode == 'fr' ? widget.place.descriptionFR! : widget.place.descriptionEN!))),
                           ],
                         ),
                       ),
