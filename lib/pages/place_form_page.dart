@@ -10,7 +10,6 @@ import '../l10n/app_localizations.dart';
 
 class PlaceFormPage extends StatefulWidget {
   final PointOfInterest? place;
-
   const PlaceFormPage({super.key, this.place});
 
   @override
@@ -401,10 +400,18 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                             child: isLoadingStates
                                 ? const Center(child: CircularProgressIndicator())
                                 : DropdownButtonFormField<String>(
+                                    isExpanded: true,
                                     value: selectedStateCode,
                                     decoration: InputDecoration(labelText: loc.translate('wilaya_field'), border: const OutlineInputBorder()),
                                     items: states.map((state) {
-                                      return DropdownMenuItem<String>(value: state['code'], child: Text('${state['code']} ${state['nameAR'] ?? state['nameFR']}'));
+                                      return DropdownMenuItem<String>(
+                                        value: state['code'],
+                                        child: Text(
+                                          '${state['code']} ${state['nameAR'] ?? state['nameFR']}',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                        ),
+                                      );
                                     }).toList(),
                                     onChanged: (value) {
                                       if (value != null) {
@@ -419,12 +426,20 @@ class _PlaceFormPageState extends State<PlaceFormPage> {
                                     },
                                   ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 6),
                           Expanded(
                             child: DropdownButtonFormField<String>(
+                              isExpanded: true,
                               value: selectedCityName,
-                              decoration: InputDecoration(labelText: loc.translate('commune_field'), border: const OutlineInputBorder()),
-                              items: cities.map((city) => DropdownMenuItem<String>(value: city['nameFR'], child: Text(currentLocale == 'ar' ? (city['nameAR'] ?? city['nameFR']) : city['nameFR']))).toList(),
+                              decoration: InputDecoration(labelText: loc.translate('commune_field'), labelStyle: TextStyle(), border: const OutlineInputBorder()),
+                              items: cities.map((city) => DropdownMenuItem<String>(
+                                    value: city['nameFR'],
+                                    child: Text(
+                                      currentLocale == 'ar' ? (city['nameAR'] ?? city['nameFR']) : city['nameFR'],
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                  )).toList(),
                               onChanged: (value) {
                                 if (value != null) {
                                   final city = cities.firstWhere((c) => c['nameFR'] == value);

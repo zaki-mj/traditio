@@ -199,13 +199,15 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                             style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                           ),
                           const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              Icon(Icons.location_on, color: theme.colorScheme.primary),
-                              const SizedBox(width: 6),
-                              Expanded(child: Text(Localizations.localeOf(context).languageCode == 'ar' ? '${widget.place.cityNameAR}، ${widget.place.wilayaNameAR}' : '${widget.place.cityNameFR}, ${widget.place.wilayaNameFR}', style: theme.textTheme.bodyLarge)),
-                            ],
-                          ),
+                          if (widget.place.cityNameAR != 'NULL' && widget.place.wilayaNameAR != 'NULL')
+                            Row(
+                              children: [
+                                Icon(Icons.location_on, color: theme.colorScheme.primary),
+                                const SizedBox(width: 6),
+
+                                Expanded(child: Text(Localizations.localeOf(context).languageCode == 'ar' ? '${widget.place.cityNameAR}، ${widget.place.wilayaNameAR}' : '${widget.place.cityNameFR}, ${widget.place.wilayaNameFR}', style: theme.textTheme.bodyLarge)),
+                              ],
+                            ),
                           const SizedBox(height: 12),
                           Row(
                             children: [
@@ -329,55 +331,57 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
                         ),
                       ),
                     ),
-                  const SizedBox(height: 16),
 
-                  // Social links card (Facebook, Instagram, TikTok)
-                  Card(
-                    color: theme.colorScheme.surface,
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            loc.translate('social'),
-                            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
-                          ),
-                          const SizedBox(height: 12),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              // Facebook
-                              _SocialIconButton(
-                                assetPath: 'assets/pictures/facebook.png',
-                                tooltip: loc.translate('social_facebook'),
-                                enabled: widget.place.facebookLink != null && widget.place.facebookLink!.isNotEmpty,
-                                onTap: () => _launchURL(context, widget.place.facebookLink, fallbackMessage: loc.translate('link_not_available')),
-                              ),
+                  if (widget.place.facebookLink != 'NULL' || widget.place.instagramLink != 'NULL' || widget.place.tiktokLink != 'NULL') ...[
+                    const SizedBox(height: 16),
 
-                              // Instagram
-                              _SocialIconButton(
-                                assetPath: 'assets/pictures/instagram.png',
-                                tooltip: loc.translate('social_instagram'),
-                                enabled: widget.place.instagramLink != null && widget.place.instagramLink!.isNotEmpty,
-                                onTap: () => _launchURL(context, widget.place.instagramLink, fallbackMessage: loc.translate('link_not_available')),
-                              ),
+                    Card(
+                      color: theme.colorScheme.surface,
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              loc.translate('social'),
+                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
+                            ),
+                            const SizedBox(height: 12),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                // Facebook
+                                _SocialIconButton(
+                                  assetPath: 'assets/pictures/facebook.png',
+                                  tooltip: loc.translate('social_facebook'),
+                                  enabled: widget.place.facebookLink != null && widget.place.facebookLink!.isNotEmpty,
+                                  onTap: () => _launchURL(context, widget.place.facebookLink, fallbackMessage: loc.translate('link_not_available')),
+                                ),
 
-                              // TikTok
-                              _SocialIconButton(
-                                assetPath: 'assets/pictures/tiktok.png',
-                                tooltip: loc.translate('social_tiktok'),
-                                enabled: widget.place.tiktokLink != null && widget.place.tiktokLink!.isNotEmpty,
-                                onTap: () => _launchURL(context, widget.place.tiktokLink, fallbackMessage: loc.translate('link_not_available')),
-                              ),
-                            ],
-                          ),
-                        ],
+                                // Instagram
+                                _SocialIconButton(
+                                  assetPath: 'assets/pictures/instagram.png',
+                                  tooltip: loc.translate('social_instagram'),
+                                  enabled: widget.place.instagramLink != null && widget.place.instagramLink!.isNotEmpty,
+                                  onTap: () => _launchURL(context, widget.place.instagramLink, fallbackMessage: loc.translate('link_not_available')),
+                                ),
+
+                                // TikTok
+                                _SocialIconButton(
+                                  assetPath: 'assets/pictures/tiktok.png',
+                                  tooltip: loc.translate('social_tiktok'),
+                                  enabled: widget.place.tiktokLink != null && widget.place.tiktokLink!.isNotEmpty,
+                                  onTap: () => _launchURL(context, widget.place.tiktokLink, fallbackMessage: loc.translate('link_not_available')),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ],
               ),
             ),

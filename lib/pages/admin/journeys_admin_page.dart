@@ -250,7 +250,19 @@ class _JourneysAdminPageState extends State<JourneysAdminPage> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () async {
-                          if (nameARCtrl.text.isEmpty || nameFRCtrl.text.isEmpty) return;
+                          final nameAREmpty = nameARCtrl.text.trim().isEmpty;
+                          final nameFREmpty = nameFRCtrl.text.trim().isEmpty;
+                          final noPoisSelected = selectedPois.isEmpty;
+
+                          if (nameAREmpty || nameFREmpty || noPoisSelected) {
+                            final missing = <String>[];
+                            if (nameAREmpty) missing.add(loc.translate('name_ar'));
+                            if (nameFREmpty) missing.add(loc.translate('name_fr'));
+                            if (noPoisSelected) missing.add(loc.translate('selected_places'));
+
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${loc.translate('fill_all_fields')}: ${missing.join(", ")}'), backgroundColor: Colors.red));
+                            return;
+                          }
 
                           final newJourney = Journey(id: journey?.id, nameAR: nameARCtrl.text.trim(), nameFR: nameFRCtrl.text.trim(), descriptionAR: descARCtrl.text.trim(), descriptionFR: descFRCtrl.text.trim(), descriptionEN: descENCtrl.text.trim(), pois: selectedPois);
 
@@ -410,41 +422,44 @@ class _JourneyPlaceCard extends StatelessWidget {
     final locale = Localizations.localeOf(context).languageCode;
 
     final title = locale == 'ar' ? place.nameAR : place.nameFR;
-    final city = locale == 'ar' ? (place.cityNameAR ?? place.wilayaNameAR) : (place.cityNameFR ?? place.wilayaNameFR);
+    final city = locale == 'ar' ? (place.wilayaNameAR != 'NULL' ? place.wilayaNameAR : '') : (place.cityNameFR != 'NULL' ? place.wilayaNameFR : "");
 
     return Material(
       color: theme.colorScheme.surface,
       borderRadius: BorderRadius.circular(16),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: isSelected ? theme.colorScheme.primary : theme.colorScheme.outline.withOpacity(0.15), width: isSelected ? 2 : 1),
-          ),
-          padding: const EdgeInsets.all(14),
-          child: Row(
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(color: _getCategoryColor(place.category).withOpacity(0.15), borderRadius: BorderRadius.circular(12)),
-                child: Icon(_getCategoryIcon(place.category), color: _getCategoryColor(place.category), size: 22),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 4),
-                    Text(city, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.6))),
-                  ],
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: isSelected ? theme.colorScheme.primary : theme.colorScheme.outline.withOpacity(0.15), width: isSelected ? 2 : 1),
+            ),
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(color: _getCategoryColor(place.category).withOpacity(0.15), borderRadius: BorderRadius.circular(12)),
+                  child: Icon(_getCategoryIcon(place.category), color: _getCategoryColor(place.category), size: 22),
                 ),
-              ),
-              if (isSelected) const Icon(Icons.check_circle, color: Colors.green, size: 26),
-            ],
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                      const SizedBox(height: 4),
+                      Text(city, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.6))),
+                    ],
+                  ),
+                ),
+                if (isSelected) const Icon(Icons.check_circle, color: Colors.green, size: 26),
+              ],
+            ),
           ),
         ),
       ),
